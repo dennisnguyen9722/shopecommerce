@@ -1,0 +1,11 @@
+{
+  "name": "ecommerce-monorepo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "dennis <dnc221297@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ]
+}

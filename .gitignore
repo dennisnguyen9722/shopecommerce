@@ -1,0 +1,28 @@
+# pnpm/yarn
+node_modules
+.pnpm-store
+
+# env
+.env
+.env.local
+.env.development
+.env.production
+
+# Next.js
+.next
+out
+
+# Turbo / monorepo
+turbo
+dist
+build
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*

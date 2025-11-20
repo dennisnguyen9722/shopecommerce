@@ -1,0 +1,868 @@
+[2025-11-12 16:46:42] info: ✅ MongoDB connected
+[2025-11-12 16:46:42] info: 🚀 API running at http://localhost:4000
+[2025-11-12 16:47:01] info: Testing error route
+[2025-11-12 16:47:01] error: GET /admin/test-error - Đây là lỗi giả lập
+[2025-11-13 08:27:20] info: ✅ MongoDB connected
+[2025-11-13 08:27:20] info: 🚀 API running at http://localhost:4000
+[2025-11-13 09:24:23] info: ✅ MongoDB connected
+[2025-11-13 09:24:23] info: 🚀 API running at http://localhost:4000
+[2025-11-13 09:25:14] info: ✅ MongoDB connected
+[2025-11-13 09:25:14] info: 🚀 API running at http://localhost:4000
+[2025-11-13 09:30:55] info: ✅ MongoDB connected
+[2025-11-13 09:30:55] info: 🚀 API running at http://localhost:4000
+[2025-11-13 09:50:02] error: POST /auth/login - Không tìm thấy người dùng
+[2025-11-13 09:57:31] info: ✅ MongoDB connected
+[2025-11-13 09:57:31] info: 🚀 API running at http://localhost:4000
+[2025-11-13 10:06:28] error: GET /admin/metrics - Token không hợp lệ hoặc đã hết hạn
+[2025-11-13 10:06:28] error: GET /admin/revenue - Token không hợp lệ hoặc đã hết hạn
+[2025-11-13 10:06:28] error: GET /admin/orders-stats - Token không hợp lệ hoặc đã hết hạn
+[2025-11-13 10:06:28] error: GET /admin/customers-stats - Token không hợp lệ hoặc đã hết hạn
+[2025-11-13 10:06:28] error: GET /admin/revenue - Token không hợp lệ hoặc đã hết hạn
+[2025-11-13 10:06:28] error: GET /admin/notifications - Token không hợp lệ hoặc đã hết hạn
+[2025-11-13 13:22:25] info: ✅ MongoDB connected
+[2025-11-13 13:22:25] info: 🚀 API running at http://localhost:4000
+[2025-11-13 14:06:49] error: POST /admin/products/upload - Unexpected field
+[2025-11-13 14:56:48] info: ✅ MongoDB connected
+[2025-11-13 14:56:48] info: 🚀 API running at http://localhost:4000
+[2025-11-13 15:24:49] info: ✅ MongoDB connected
+[2025-11-13 15:24:49] info: 🚀 API running at http://localhost:4000
+[2025-11-13 15:27:01] info: ✅ MongoDB connected
+[2025-11-13 15:27:01] info: 🚀 API running at http://localhost:4000
+[2025-11-13 15:28:54] info: ✅ MongoDB connected
+[2025-11-13 15:28:54] info: 🚀 API running at http://localhost:4000
+[2025-11-13 15:29:45] info: ✅ MongoDB connected
+[2025-11-13 15:29:45] info: 🚀 API running at http://localhost:4000
+[2025-11-13 15:32:01] info: ✅ MongoDB connected
+[2025-11-13 15:32:01] info: 🚀 API running at http://localhost:4000
+[2025-11-13 15:32:07] info: ✅ MongoDB connected
+[2025-11-13 15:32:07] info: 🚀 API running at http://localhost:4000
+[2025-11-13 15:37:05] info: ✅ MongoDB connected
+[2025-11-13 15:37:05] info: 🚀 API running at http://localhost:4000
+[2025-11-13 15:37:19] info: ✅ MongoDB connected
+[2025-11-13 15:37:19] info: 🚀 API running at http://localhost:4000
+[2025-11-13 15:41:09] info: ✅ MongoDB connected
+[2025-11-13 15:41:09] info: 🚀 API running at http://localhost:4000
+[2025-11-13 15:42:50] info: ✅ MongoDB connected
+[2025-11-13 15:42:50] info: 🚀 API running at http://localhost:4000
+[2025-11-13 15:43:42] info: ✅ MongoDB connected
+[2025-11-13 15:43:42] info: 🚀 API running at http://localhost:4000
+[2025-11-13 15:45:34] info: ✅ MongoDB connected
+[2025-11-13 15:45:34] info: 🚀 API running at http://localhost:4000
+[2025-11-13 15:45:40] info: ✅ MongoDB connected
+[2025-11-13 15:45:40] info: 🚀 API running at http://localhost:4000
+[2025-11-13 15:55:25] info: ✅ MongoDB connected
+[2025-11-13 15:55:25] info: 🚀 API running at http://localhost:4000
+[2025-11-13 16:10:50] error: GET /admin/products/69159d4415913292d18a4d30 - Không có token hoặc token không hợp lệ
+[2025-11-13 16:10:51] error: GET /admin/products/69159d4415913292d18a4d30 - Không có token hoặc token không hợp lệ
+[2025-11-13 16:10:53] error: GET /admin/products/69159d4415913292d18a4d30 - Không có token hoặc token không hợp lệ
+[2025-11-13 16:10:57] error: GET /admin/products/69159d4415913292d18a4d30 - Không có token hoặc token không hợp lệ
+[2025-11-13 16:11:08] info: ✅ MongoDB connected
+[2025-11-13 16:11:08] info: 🚀 API running at http://localhost:4000
+[2025-11-13 16:13:17] error: GET /admin/products/69159d4415913292d18a4d30 - Không có token hoặc token không hợp lệ
+[2025-11-13 16:13:18] error: GET /admin/products/69159d4415913292d18a4d30 - Không có token hoặc token không hợp lệ
+[2025-11-13 16:13:20] error: GET /admin/products/69159d4415913292d18a4d30 - Không có token hoặc token không hợp lệ
+[2025-11-13 16:13:24] error: GET /admin/products/69159d4415913292d18a4d30 - Không có token hoặc token không hợp lệ
+[2025-11-13 16:15:39] info: ✅ MongoDB connected
+[2025-11-13 16:15:39] info: 🚀 API running at http://localhost:4000
+[2025-11-14 08:34:03] info: ✅ MongoDB connected
+[2025-11-14 08:34:03] info: 🚀 API running at http://localhost:4000
+[2025-11-14 08:59:53] info: ✅ MongoDB connected
+[2025-11-14 08:59:53] info: 🚀 API running at http://localhost:4000
+[2025-11-14 10:52:41] info: ✅ MongoDB connected
+[2025-11-14 10:52:41] info: 🚀 API running at http://localhost:4000
+[2025-11-14 10:53:18] info: ✅ MongoDB connected
+[2025-11-14 10:53:18] info: 🚀 API running at http://localhost:4000
+[2025-11-14 10:56:53] info: ✅ MongoDB connected
+[2025-11-14 10:56:53] info: 🚀 API running at http://localhost:4000
+[2025-11-14 10:57:07] info: ✅ MongoDB connected
+[2025-11-14 10:57:07] info: 🚀 API running at http://localhost:4000
+[2025-11-14 11:14:06] info: ✅ MongoDB connected
+[2025-11-14 11:14:06] info: 🚀 API running at http://localhost:4000
+[2025-11-14 11:14:15] info: ✅ MongoDB connected
+[2025-11-14 11:14:15] info: 🚀 API running at http://localhost:4000
+[2025-11-14 13:42:38] info: ✅ MongoDB connected
+[2025-11-14 13:42:38] info: 🚀 API running at http://localhost:4000
+[2025-11-14 15:12:02] info: ✅ MongoDB connected
+[2025-11-14 15:12:02] info: 🚀 API running at http://localhost:4000
+[2025-11-14 15:37:15] error: PUT /admin/categories/6916ea279002e6f85f619893 - Cast to ObjectId failed for value "" (type string) at path "parent" because of "BSONError"
+[2025-11-14 15:40:06] info: ✅ MongoDB connected
+[2025-11-14 15:40:06] info: 🚀 API running at http://localhost:4000
+[2025-11-14 16:04:16] info: ✅ MongoDB connected
+[2025-11-14 16:04:16] info: 🚀 API running at http://localhost:4000
+[2025-11-14 16:21:11] info: ✅ MongoDB connected
+[2025-11-14 16:21:11] info: 🚀 API running at http://localhost:4000
+[2025-11-14 16:26:00] info: ✅ MongoDB connected
+[2025-11-14 16:26:00] info: 🚀 API running at http://localhost:4000
+[2025-11-14 16:32:43] info: ✅ MongoDB connected
+[2025-11-14 16:32:43] info: 🚀 API running at http://localhost:4000
+[2025-11-15 09:22:41] info: ✅ MongoDB connected
+[2025-11-15 09:22:41] info: 🚀 API running at http://localhost:4000
+[2025-11-15 10:16:21] info: ✅ MongoDB connected
+[2025-11-15 10:16:21] info: 🚀 API running at http://localhost:4000
+[2025-11-15 10:20:38] info: ✅ MongoDB connected
+[2025-11-15 10:20:38] info: 🚀 API running at http://localhost:4000
+[2025-11-15 10:21:54] info: ✅ MongoDB connected
+[2025-11-15 10:21:54] info: 🚀 API running at http://localhost:4000
+[2025-11-15 10:29:38] error: MongoDB connection error: querySrv ETIMEOUT _mongodb._tcp.cluster0.5izekk1.mongodb.net
+[2025-11-15 10:29:55] info: ✅ MongoDB connected
+[2025-11-15 10:29:55] info: 🚀 API running at http://localhost:4000
+[2025-11-15 10:51:39] info: ✅ MongoDB connected
+[2025-11-15 10:51:39] info: 🚀 API running at http://localhost:4000
+[2025-11-15 11:13:39] info: ✅ MongoDB connected
+[2025-11-15 11:13:39] info: 🚀 API running at http://localhost:4000
+[2025-11-15 13:47:37] info: ✅ MongoDB connected
+[2025-11-15 13:47:37] info: 🚀 API running at http://localhost:4000
+[2025-11-15 13:52:09] info: ✅ MongoDB connected
+[2025-11-15 13:52:09] info: 🚀 API running at http://localhost:4000
+[2025-11-15 13:56:25] info: ✅ MongoDB connected
+[2025-11-15 13:56:25] info: 🚀 API running at http://localhost:4000
+[2025-11-15 13:57:36] info: ✅ MongoDB connected
+[2025-11-15 13:57:36] info: 🚀 API running at http://localhost:4000
+[2025-11-15 13:58:33] info: ✅ MongoDB connected
+[2025-11-15 13:58:33] info: 🚀 API running at http://localhost:4000
+[2025-11-15 13:58:47] info: ✅ MongoDB connected
+[2025-11-15 13:58:47] info: 🚀 API running at http://localhost:4000
+[2025-11-15 14:03:00] info: ✅ MongoDB connected
+[2025-11-15 14:03:00] info: 🚀 API running at http://localhost:4000
+[2025-11-15 14:03:53] info: ✅ MongoDB connected
+[2025-11-15 14:03:53] info: 🚀 API running at http://localhost:4000
+[2025-11-15 14:04:58] info: ✅ MongoDB connected
+[2025-11-15 14:04:58] info: 🚀 API running at http://localhost:4000
+[2025-11-15 14:09:06] info: ✅ MongoDB connected
+[2025-11-15 14:09:06] info: 🚀 API running at http://localhost:4000
+[2025-11-15 14:09:20] info: ✅ MongoDB connected
+[2025-11-15 14:09:20] info: 🚀 API running at http://localhost:4000
+[2025-11-15 16:05:50] info: ✅ MongoDB connected
+[2025-11-15 16:05:50] info: 🚀 API running at http://localhost:4000
+[2025-11-17 08:29:50] info: ✅ MongoDB connected
+[2025-11-17 08:29:50] info: 🚀 API running at http://localhost:4000
+[2025-11-17 08:31:12] error: POST /auth/login - Sai mật khẩu
+[2025-11-17 08:49:40] error: POST /auth/login - Sai mật khẩu
+[2025-11-17 08:49:43] error: POST /auth/login - Sai mật khẩu
+[2025-11-17 09:41:54] info: ✅ MongoDB connected
+[2025-11-17 09:41:54] info: 🚀 API running at http://localhost:4000
+[2025-11-17 10:46:50] info: ✅ MongoDB connected
+[2025-11-17 10:46:51] info: 🚀 API running at http://localhost:4000
+[2025-11-17 10:47:04] info: ✅ MongoDB connected
+[2025-11-17 10:47:04] info: 🚀 API running at http://localhost:4000
+[2025-11-17 10:47:27] info: ✅ MongoDB connected
+[2025-11-17 10:47:27] info: 🚀 API running at http://localhost:4000
+[2025-11-17 10:54:15] info: ✅ MongoDB connected
+[2025-11-17 10:54:15] info: 🚀 API running at http://localhost:4000
+[2025-11-17 11:08:12] info: ✅ MongoDB connected
+[2025-11-17 11:08:12] info: 🚀 API running at http://localhost:4000
+[2025-11-17 11:12:54] info: ✅ MongoDB connected
+[2025-11-17 11:12:54] info: 🚀 API running at http://localhost:4000
+[2025-11-17 11:14:40] info: ✅ MongoDB connected
+[2025-11-17 11:14:40] info: 🚀 API running at http://localhost:4000
+[2025-11-17 13:31:40] info: ✅ MongoDB connected
+[2025-11-17 13:31:40] info: 🚀 API running at http://localhost:4000
+[2025-11-17 14:06:50] info: ✅ MongoDB connected
+[2025-11-17 14:06:50] info: 🚀 API running at http://localhost:4000
+[2025-11-17 14:49:28] info: 📦 MongoDB connected
+[2025-11-17 14:49:28] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-17 14:49:53] info: 🔌 Admin connected: CG7fgO-V2RjFvBd7AAAB
+[2025-11-17 14:49:56] info: 🔌 Admin connected: D4GshkDaAZilKSlRAAAD
+[2025-11-17 14:57:46] info: 🔌 Admin connected: FRMYyK54-MK2aX05AAAF
+[2025-11-17 14:57:48] info: 🔌 Admin connected: qaK0XZVC08AJ8Om1AAAH
+[2025-11-17 14:57:56] info: 🔌 Admin connected: Dms3jU0HIsuAWrLeAAAJ
+[2025-11-17 14:57:56] info: 🔌 Admin connected: a83MitK-YT_F-ZGzAAAL
+[2025-11-17 15:01:53] info: 🔌 Admin connected: haBLBlfynt2OCyipAAAN
+[2025-11-17 15:01:54] info: 🔌 Admin connected: 7F7JAi8qXE2CgwLRAAAP
+[2025-11-17 15:19:10] info: 🔌 Admin connected: fYLJWSqBAGqNlYF7AAAR
+[2025-11-17 15:19:12] info: 🔌 Admin connected: uh4W7ovHCuO2_k0TAAAT
+[2025-11-17 15:20:09] info: 🔌 Admin connected: cHMtotqRTdtY1vraAAAV
+[2025-11-17 15:20:09] info: 🔌 Admin connected: q7vnvJ-Wd5S04y-DAAAX
+[2025-11-17 15:20:14] info: 🔌 Admin connected: OCSIPX6JkWFde3HfAAAZ
+[2025-11-17 15:20:27] info: 🔌 Admin connected: aFiQ38R1ULHLsp31AAAb
+[2025-11-17 15:20:28] info: 🔌 Admin connected: 4_zuMm-YAzBxJKzdAAAd
+[2025-11-17 15:20:53] info: 🔌 Admin connected: LxkfaK2Dt-5S9VhXAAAf
+[2025-11-17 15:20:54] info: 🔌 Admin connected: ZBqKpqTXqtsmK4VdAAAh
+[2025-11-17 15:21:02] info: 🔌 Admin connected: Jh8n1s2KCtK2y0HBAAAj
+[2025-11-17 15:22:43] info: 🔌 Admin connected: zo253BSuyu8MtMu1AAAl
+[2025-11-17 15:22:44] info: 🔌 Admin connected: IUclo3bpvhif8SBSAAAn
+[2025-11-17 15:22:49] info: 🔌 Admin connected: Lsqivh9N0EdScYhbAAAp
+[2025-11-17 15:24:43] info: 🔌 Admin connected: vkSVXZx2AM-oQG27AAAr
+[2025-11-17 15:24:49] info: 🔌 Admin connected: Dl3ZLyi_AT9qOLsVAAAt
+[2025-11-17 15:28:52] info: 🔌 Admin connected: i3rvkifhrnqrBH5CAAAv
+[2025-11-17 15:28:53] info: 🔌 Admin connected: eMDu8r2ccfwqGY6fAAAx
+[2025-11-17 15:29:29] info: 📦 MongoDB connected
+[2025-11-17 15:29:29] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-17 15:29:30] info: 🔌 Admin connected: ntgQzQjn5mOm6TtFAAAB
+[2025-11-17 15:29:30] info: 🔌 Admin connected: Vsp8DDX0MCmIz364AAAD
+[2025-11-17 15:29:30] info: 🔌 Admin connected: cBAiSaqDv3pf7jCiAAAF
+[2025-11-17 15:29:30] info: 🔌 Admin connected: xZbaOJ0UZ3Aqc-znAAAH
+[2025-11-17 15:29:30] info: 🔌 Admin connected: AQ9yoius-wNHyBp6AAAJ
+[2025-11-17 15:29:31] info: 🔌 Admin connected: eJ4sQ5K0LAMktVw5AAAL
+[2025-11-17 15:29:31] info: 🔌 Admin connected: y2j70rm-pozEVBF_AAAN
+[2025-11-17 15:29:32] info: 🔌 Admin connected: E9BMUwN7a8IrAY-uAAAP
+[2025-11-17 15:29:32] info: 🔌 Admin connected: QGRTTNTtcv0r0yAXAAAR
+[2025-11-17 15:29:33] info: 🔌 Admin connected: YpXIjPHSKGiIa5yZAAAT
+[2025-11-17 15:29:33] info: 🔌 Admin connected: fMrv_ZFkMlNxM9z-AAAV
+[2025-11-17 15:29:34] info: 🔌 Admin connected: afH3PWh2B2IUEb0EAAAX
+[2025-11-17 15:29:34] info: 🔌 Admin connected: Pg9McVqmcVH_0ru-AAAZ
+[2025-11-17 15:29:52] info: 🔌 Admin connected: 9D_OIpoyE2B1G38LAAAb
+[2025-11-17 15:29:53] info: 🔌 Admin connected: m9QtJbioNb0LdFhXAAAd
+[2025-11-17 15:35:00] info: 🔌 Admin connected: KVUwhmhrl9zo_FG_AAAf
+[2025-11-17 15:35:00] info: 🔌 Admin connected: 9K3RM0I4ex1sRqkPAAAh
+[2025-11-17 15:35:29] info: 🔌 Admin connected: qF2S9hARNWNqhBcGAAAj
+[2025-11-17 15:35:30] info: 🔌 Admin connected: rmpEj9ZI10UQQ0yGAAAl
+[2025-11-17 15:38:54] info: 🔌 Admin connected: gKd4p_zKtSMQOh4UAAAn
+[2025-11-17 15:38:54] info: 🔌 Admin connected: HhUnWm0UP4RqEWCiAAAp
+[2025-11-17 15:39:21] info: 🔌 Admin connected: uFea4ou0DeW_JJdRAAAr
+[2025-11-17 15:39:22] info: 🔌 Admin connected: VxgiuzaWSqC86bo7AAAt
+[2025-11-17 15:40:38] info: 📦 MongoDB connected
+[2025-11-17 15:40:38] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-17 15:40:38] info: 🔌 Admin connected: qOUoQJfOi_SqbWN4AAAB
+[2025-11-17 15:40:38] info: 🔌 Admin connected: 0C_wIf0Z8s2VUK6lAAAD
+[2025-11-17 15:40:39] info: 🔌 Admin connected: bX-JuMMCiSxCPeA_AAAF
+[2025-11-17 15:40:39] info: 🔌 Admin connected: JcVYhrQyGtBPcPXGAAAH
+[2025-11-17 15:40:39] info: 🔌 Admin connected: a4KVAAyfa6hNwtm7AAAJ
+[2025-11-17 15:40:39] info: 🔌 Admin connected: 1DCHHQB2yoPaOp7wAAAL
+[2025-11-17 15:40:39] info: 🔌 Admin connected: xXwzABYL4S-NoXJiAAAN
+[2025-11-17 15:40:39] info: 🔌 Admin connected: RZQ08xzU_y68hcnXAAAP
+[2025-11-17 15:40:40] info: 🔌 Admin connected: 3eYIdQfB0CKkJka7AAAR
+[2025-11-17 15:40:41] info: 🔌 Admin connected: aM4CvHMgeGNYYpNdAAAT
+[2025-11-17 15:40:42] info: 🔌 Admin connected: chT7FzS1xhcaVD-3AAAV
+[2025-11-17 15:40:42] info: 🔌 Admin connected: jQGULz1-roV8d0CNAAAX
+[2025-11-17 15:40:42] info: 🔌 Admin connected: S7_Bj6pOHaXESNkQAAAZ
+[2025-11-17 15:40:42] info: 🔌 Admin connected: tWyFHjd65tsOH7iAAAAb
+[2025-11-17 15:40:42] info: 🔌 Admin connected: PNt-xJrSGjAi7Xq2AAAd
+[2025-11-17 15:40:43] info: 🔌 Admin connected: _cYFuEC8E92xtsqWAAAf
+[2025-11-17 15:40:43] info: 🔌 Admin connected: 9V1UpX14esq8Y-wdAAAh
+[2025-11-17 15:40:50] error: GET /admin/inventory/list - Không có token hoặc token không hợp lệ
+[2025-11-17 15:41:00] info: 🔌 Admin connected: zvbsGfYdLvH9254LAAAj
+[2025-11-17 15:41:09] info: 🔌 Admin connected: vElx1XN3NwYzB8AAAAAl
+[2025-11-17 15:41:24] info: 🔌 Admin connected: MQkbb49YHSzhnjapAAAn
+[2025-11-17 15:41:24] info: 🔌 Admin connected: SymIeRbtQLP5-i4wAAAp
+[2025-11-17 15:44:09] info: 🔌 Admin connected: Y681sXrhE1mcE9-nAAAr
+[2025-11-17 15:44:10] info: 🔌 Admin connected: ohBqQPmDe24wV-jhAAAt
+[2025-11-17 15:47:02] info: 🔌 Admin connected: jZK1kd5XygAZNP6UAAAv
+[2025-11-17 15:47:03] info: 🔌 Admin connected: a1iHf_bbksUOGRI-AAAx
+[2025-11-17 15:47:07] info: 🔌 Admin connected: pJ6vUbAXgwsJS3fjAAAz
+[2025-11-17 15:47:08] info: 🔌 Admin connected: P98InabmI8yY_WR3AAA1
+[2025-11-17 16:03:19] info: 📦 MongoDB connected
+[2025-11-17 16:03:19] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-17 16:03:19] info: 🔌 Admin connected: lcflHuysImx7gemsAAAB
+[2025-11-17 16:03:19] info: 🔌 Admin connected: dRUUNKLNtcYNLnorAAAD
+[2025-11-17 16:03:19] info: 🔌 Admin connected: aS-A1JQLio56gL1XAAAF
+[2025-11-17 16:03:20] info: 🔌 Admin connected: ydzs3gL_zRxEbXJlAAAH
+[2025-11-17 16:03:20] info: 🔌 Admin connected: GnJf5rs_OWMwbvI-AAAJ
+[2025-11-17 16:03:20] info: 🔌 Admin connected: 58SIf3hAwdrQn278AAAL
+[2025-11-17 16:03:20] info: 🔌 Admin connected: bktPTA8fox8aR2uuAAAO
+[2025-11-17 16:03:20] info: 🔌 Admin connected: VjptzPZytf55CK4XAAAP
+[2025-11-17 16:03:20] info: 🔌 Admin connected: Um7b8EF8gnsOYy1cAAAR
+[2025-11-17 16:03:21] info: 🔌 Admin connected: 7c7uY6o4f4rjHi7gAAAT
+[2025-11-17 16:03:22] info: 🔌 Admin connected: MDNtsOWTT8wzE_R6AAAV
+[2025-11-17 16:03:22] info: 🔌 Admin connected: xlNVKvgJzqP5oAaeAAAX
+[2025-11-17 16:03:23] info: 🔌 Admin connected: v1OCG4p-A4UJxZQ7AAAZ
+[2025-11-17 16:03:23] info: 🔌 Admin connected: veuiIAqoI9GzIUVBAAAb
+[2025-11-17 16:03:23] info: 🔌 Admin connected: pePdHkRj2ZdfXBTXAAAd
+[2025-11-17 16:03:23] info: 🔌 Admin connected: EYv0-q1wybquFkrtAAAf
+[2025-11-17 16:03:23] info: 🔌 Admin connected: 4-bB5qBWAo4nYTH_AAAh
+[2025-11-17 16:03:23] info: 🔌 Admin connected: 9gm9D8L_K9KTKGGXAAAj
+[2025-11-17 16:03:24] info: 🔌 Admin connected: T8F8jQle_TmlzAwGAAAl
+[2025-11-17 16:03:24] info: 🔌 Admin connected: WE2mmyXiva5xeQgJAAAn
+[2025-11-17 16:03:24] info: 🔌 Admin connected: KxxdJXZVKZi4qY0AAAAp
+[2025-11-17 16:03:24] info: 🔌 Admin connected: bdm0dhm08B-eSRvmAAAr
+[2025-11-18 08:21:43] info: 📦 MongoDB connected
+[2025-11-18 08:21:43] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-18 08:22:20] info: 🔌 Admin connected: R9YiS8J-KNALp7ZCAAAB
+[2025-11-18 08:22:21] info: 🔌 Admin connected: EoZobekSnpvgWfMTAAAD
+[2025-11-18 08:26:36] info: 🔌 Admin connected: SpyfZ6BgwH63vzBJAAAF
+[2025-11-18 08:26:37] info: 🔌 Admin connected: A2PzNCHnP3pyrcX7AAAH
+[2025-11-18 09:09:32] info: 🔌 Admin connected: TGQISmvo7qjlpEtgAAAJ
+[2025-11-18 09:26:47] info: 📦 MongoDB connected
+[2025-11-18 09:26:47] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-18 09:26:47] info: 🔌 Admin connected: 0RdyfdQlPTJg1oZQAAAB
+[2025-11-18 09:26:51] info: 🔌 Admin connected: eCYvzRhOfbFOdT7RAAAD
+[2025-11-18 09:26:52] info: 🔌 Admin connected: miMBc0e6ntM5zvaWAAAF
+[2025-11-18 09:26:58] info: 📦 MongoDB connected
+[2025-11-18 09:26:58] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-18 09:26:58] info: 🔌 Admin connected: S2FGHFRpqVzhr0C5AAAB
+[2025-11-18 09:26:59] info: 🔌 Admin connected: JYEuKoXwKZtdu03iAAAD
+[2025-11-18 09:27:01] info: 🔌 Admin connected: fGnfvzuoEoOshAzjAAAF
+[2025-11-18 09:47:35] info: 🔌 Admin connected: rVxbR3TFVHUGR0DvAAAH
+[2025-11-18 09:47:36] info: 🔌 Admin connected: QO8wPAlrJVpSEcztAAAJ
+[2025-11-18 09:49:10] info: 🔌 Admin connected: hEUdSRZBM02moQ8XAAAL
+[2025-11-18 09:49:11] info: 🔌 Admin connected: uW2i6oodLKBuC-XRAAAN
+[2025-11-18 09:57:37] info: 🔌 Admin connected: t7nOUc3RaVUz-Jn0AAAP
+[2025-11-18 09:57:38] info: 🔌 Admin connected: Kww9iQ9ciPoxBIyXAAAR
+[2025-11-18 09:59:35] info: 🔌 Admin connected: AI1et3z-YvRywmooAAAT
+[2025-11-18 09:59:36] info: 🔌 Admin connected: YClHtdj2-e9N9EbDAAAV
+[2025-11-18 10:11:09] info: 🔌 Admin connected: mhgvlhCcrZi1PrfcAAAX
+[2025-11-18 10:14:57] info: 🔌 Admin connected: ZIZgFQM5KLOnHgKBAAAZ
+[2025-11-18 10:14:58] info: 🔌 Admin connected: zMY6S5abJmdZnMW8AAAb
+[2025-11-18 10:15:21] error: POST /admin/banners - Banner validation failed: position: `homepage` is not a valid enum value for path `position`.
+[2025-11-18 10:17:56] info: 📦 MongoDB connected
+[2025-11-18 10:17:56] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-18 10:17:56] info: 🔌 Admin connected: NiFpmRzBTR0uQ-vVAAAB
+[2025-11-18 10:17:59] info: 🔌 Admin connected: LpUpMm896waM0HHfAAAD
+[2025-11-18 10:17:59] info: 🔌 Admin connected: j4CZkBiDr3P7hmGeAAAF
+[2025-11-18 10:18:00] info: 🔌 Admin connected: Wh7stMriDVcsm33GAAAH
+[2025-11-18 10:18:01] info: 🔌 Admin connected: 7oXWWgubCqujofDvAAAJ
+[2025-11-18 10:18:01] info: 🔌 Admin connected: 6o4SfYpVFAmvgzOvAAAL
+[2025-11-18 10:18:02] info: 🔌 Admin connected: o8kIgb2I5gYW_Pu4AAAN
+[2025-11-18 10:18:03] info: 🔌 Admin connected: 3sJRVL-k03Lk8MDhAAAP
+[2025-11-18 10:26:59] info: 🔌 Admin connected: HIaJBrP_3e9Vgo7WAAAR
+[2025-11-18 10:27:30] info: 🔌 Admin connected: 0x8uDzKQqv6jTliMAAAT
+[2025-11-18 10:27:32] info: 🔌 Admin connected: 5ow8F_K2LN78ZBB9AAAV
+[2025-11-18 10:40:23] info: 📦 MongoDB connected
+[2025-11-18 10:40:23] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-18 10:40:23] info: 🔌 Admin connected: JvrCuJpmxZN3UHn-AAAB
+[2025-11-18 10:40:24] info: 🔌 Admin connected: QEgibcC7u2e4rigBAAAD
+[2025-11-18 10:40:24] info: 🔌 Admin connected: 6p2q0uMz11V8MkDVAAAF
+[2025-11-18 10:40:24] info: 🔌 Admin connected: kQEgH9Ew4_Hvxye_AAAH
+[2025-11-18 10:40:24] info: 🔌 Admin connected: wQSn6jvEE2-5kc-CAAAJ
+[2025-11-18 10:40:24] info: 🔌 Admin connected: T_2heP8G8p_EiTxpAAAL
+[2025-11-18 10:40:25] info: 🔌 Admin connected: FeMEPJ0m3ZzR-_ZZAAAN
+[2025-11-18 10:40:25] info: 🔌 Admin connected: CJi1Ahfn1LfPh4CgAAAP
+[2025-11-18 10:46:04] error: GET /admin/blog/posts - Không có token hoặc token không hợp lệ
+[2025-11-18 10:46:04] error: GET /admin/blog/posts - Không có token hoặc token không hợp lệ
+[2025-11-18 10:56:30] info: 📦 MongoDB connected
+[2025-11-18 10:56:30] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-18 10:56:31] info: 🔌 Admin connected: AnZS-M5V4x0AU-GzAAAB
+[2025-11-18 10:56:31] info: 🔌 Admin connected: RwzI7LyOdqKWkvydAAAD
+[2025-11-18 10:56:31] info: 🔌 Admin connected: N337coDuDoM93VawAAAF
+[2025-11-18 10:56:32] info: 🔌 Admin connected: 6-XEzLxsqZEHP8xoAAAH
+[2025-11-18 10:56:33] info: 🔌 Admin connected: SRvh_J2ikueH3awSAAAJ
+[2025-11-18 10:56:34] info: 🔌 Admin connected: qWtccgUPuXU5W4qfAAAL
+[2025-11-18 10:56:35] info: 🔌 Admin connected: kphTQIgMJ8tVmRfXAAAN
+[2025-11-18 10:56:35] info: 🔌 Admin connected: eUviGRe-LCAOkkigAAAP
+[2025-11-18 10:56:39] error: GET /admin/blog/posts - Không có token hoặc token không hợp lệ
+[2025-11-18 10:56:52] info: 🔌 Admin connected: eb58dtCz56KbVjq1AAAR
+[2025-11-18 10:56:53] info: 🔌 Admin connected: kdrAJ399bwuzh0Q1AAAT
+[2025-11-18 10:56:53] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:56:53] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:56:53] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:56:54] info: 🔌 Admin connected: j0W5Knbo1W-2LgY7AAAV
+[2025-11-18 10:56:54] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:56:54] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:56:54] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:56:54] info: 🔌 Admin connected: KWfZV7DcMr-FAs0EAAAX
+[2025-11-18 10:56:54] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:56:54] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:56:54] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:56:55] info: 🔌 Admin connected: VB9C9gg1s5MdfyV-AAAZ
+[2025-11-18 10:56:55] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:56:55] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:56:55] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:56:56] info: 🔌 Admin connected: RL8Bsj2LvTDMUISjAAAb
+[2025-11-18 10:56:56] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:56:56] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:56:56] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:56:56] info: 🔌 Admin connected: R4GCChRA-L7pN-qLAAAd
+[2025-11-18 10:56:56] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:56:56] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:56:56] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:56:57] info: 🔌 Admin connected: o4cfGtr51qcH-SQGAAAf
+[2025-11-18 10:56:57] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:56:57] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:56:57] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:56:58] info: 🔌 Admin connected: uQi1ceNeyRZPTGyzAAAh
+[2025-11-18 10:56:58] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:56:58] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:56:58] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:56:58] info: 🔌 Admin connected: AHEvHYFF120SE6vFAAAj
+[2025-11-18 10:56:58] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:56:58] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:56:58] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:56:59] info: 🔌 Admin connected: 7TMwY7f1j5-jOeDxAAAl
+[2025-11-18 10:56:59] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:56:59] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:56:59] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:00] info: 🔌 Admin connected: ZKsuyzINnUELVI-3AAAn
+[2025-11-18 10:57:01] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:01] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:01] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:02] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:02] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:03] info: 🔌 Admin connected: PEsaeR-BjHLvJQ3vAAAp
+[2025-11-18 10:57:04] info: 🔌 Admin connected: IWBcIeAQp2jng7uwAAAr
+[2025-11-18 10:57:04] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:04] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:04] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:05] info: 🔌 Admin connected: mJwcXApzTrYFpV2RAAAt
+[2025-11-18 10:57:05] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:05] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:05] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:05] info: 🔌 Admin connected: YOxj3xrnnLL4kwu7AAAv
+[2025-11-18 10:57:05] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:05] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:05] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:06] info: 🔌 Admin connected: AzSv4ddgZ8s2KW1jAAAx
+[2025-11-18 10:57:06] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:06] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:06] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:07] info: 🔌 Admin connected: hwPG_3tF5XJAs5F5AAAz
+[2025-11-18 10:57:07] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:07] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:07] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:08] info: 🔌 Admin connected: MgbYTFMEGgDz1pQDAAA1
+[2025-11-18 10:57:08] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:08] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:08] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:08] info: 🔌 Admin connected: hlXFG99q63SACRIBAAA3
+[2025-11-18 10:57:08] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:08] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:08] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:09] info: 🔌 Admin connected: 3yAanT_b7d9UFzFzAAA5
+[2025-11-18 10:57:09] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:09] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:09] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:10] info: 🔌 Admin connected: uvjf6-pkFaIbwu48AAA7
+[2025-11-18 10:57:10] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:10] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:10] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:11] info: 🔌 Admin connected: vUxjR_y3hnwfa9g6AAA9
+[2025-11-18 10:57:11] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:11] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:11] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:11] info: 🔌 Admin connected: 7kbG5rapV8AvyKaEAAA_
+[2025-11-18 10:57:11] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:11] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:11] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:12] info: 🔌 Admin connected: L82-NF62WlTVV862AABB
+[2025-11-18 10:57:12] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:12] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:12] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:13] info: 🔌 Admin connected: sxAJtzPoSt2sL0SMAABD
+[2025-11-18 10:57:13] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:13] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:13] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:13] info: 🔌 Admin connected: xOaTVhuQBkTJ-pEZAABF
+[2025-11-18 10:57:14] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:14] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:14] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:14] info: 🔌 Admin connected: rYxhbQxK2qjmoDppAABH
+[2025-11-18 10:57:14] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:14] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:14] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:15] info: 🔌 Admin connected: WW-nub1D2UotLxe4AABJ
+[2025-11-18 10:57:15] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:15] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:15] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:16] info: 🔌 Admin connected: DsHsKYKAEM6f_aM1AABL
+[2025-11-18 10:57:16] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:16] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:16] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:17] info: 🔌 Admin connected: G4E61lbd4kRZWo4mAABN
+[2025-11-18 10:57:17] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:17] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:17] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:17] info: 🔌 Admin connected: xGBvXQQsapBdOTLYAABP
+[2025-11-18 10:57:18] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:18] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:18] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:18] info: 🔌 Admin connected: Hs-x19eYprMq2YZeAABR
+[2025-11-18 10:57:18] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:18] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:18] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:19] info: 🔌 Admin connected: wu41RxXwlKmfP2rxAABT
+[2025-11-18 10:57:19] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:19] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:19] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:21] info: 🔌 Admin connected: Otco1jh_oEtODrRVAABV
+[2025-11-18 10:57:21] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:21] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:21] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:21] info: 🔌 Admin connected: Fb7QenyK5AYz6J4_AABX
+[2025-11-18 10:57:21] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:21] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:21] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:22] info: 🔌 Admin connected: ofZQ9pkonBgIHCcXAABZ
+[2025-11-18 10:57:22] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:22] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:22] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:23] info: 🔌 Admin connected: E-ArPAwXaXL5M0HwAABb
+[2025-11-18 10:57:23] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:23] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:23] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:23] info: 🔌 Admin connected: 4vEJsZk9E1ApMAWEAABd
+[2025-11-18 10:57:24] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:24] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:24] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:24] info: 🔌 Admin connected: c3DbvbvBLiA1PvlfAABf
+[2025-11-18 10:57:24] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:24] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:24] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:25] info: 🔌 Admin connected: c_y6hdJuFM_Y5zLMAABh
+[2025-11-18 10:57:25] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:25] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:25] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:26] info: 🔌 Admin connected: 39u5qVRlnv1MjOwUAABj
+[2025-11-18 10:57:26] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:26] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:26] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:27] info: 🔌 Admin connected: fWQpQvDsMAl3anJZAABl
+[2025-11-18 10:57:27] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:27] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:27] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:28] info: 🔌 Admin connected: 2Pj7_fllC6f514hxAABn
+[2025-11-18 10:57:28] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:28] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:28] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:28] info: 🔌 Admin connected: GLekBTc9-1d4SLicAABp
+[2025-11-18 10:57:28] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:28] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:28] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:29] info: 🔌 Admin connected: 8wdsMmx5IaRV4BmXAABr
+[2025-11-18 10:57:29] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:29] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:29] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:31] info: 🔌 Admin connected: XuccrPXBIsgueOE-AABt
+[2025-11-18 10:57:31] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:31] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:31] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:32] info: 🔌 Admin connected: ykk1bgh1JEEUzf3bAABv
+[2025-11-18 10:57:32] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:32] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:32] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:33] info: 🔌 Admin connected: P70bW5pustTkdRSNAABx
+[2025-11-18 10:57:34] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:34] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:34] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:35] info: 🔌 Admin connected: kk4ug_KzoTh8sqU4AABz
+[2025-11-18 10:57:35] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:35] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:35] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:36] info: 🔌 Admin connected: 5-ie5vt8IIAvCHYSAAB1
+[2025-11-18 10:57:37] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:37] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:37] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:38] info: 🔌 Admin connected: 1fhHn6eAIXNvDPB9AAB3
+[2025-11-18 10:57:38] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:38] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:38] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:39] info: 🔌 Admin connected: jP5k1CkPZhBi-tXuAAB5
+[2025-11-18 10:57:40] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:40] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:40] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:41] info: 🔌 Admin connected: gCEYCwPGAmh2SgNiAAB7
+[2025-11-18 10:57:41] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:41] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:41] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:42] info: 🔌 Admin connected: 4Fqryvo3MbgMAPf7AAB9
+[2025-11-18 10:57:42] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:42] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:42] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:43] info: 🔌 Admin connected: 47Jexg41Q3vMDIwyAAB_
+[2025-11-18 10:57:44] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:44] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:44] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:45] info: 🔌 Admin connected: 2e2u8Re0dPGdVuJDAACB
+[2025-11-18 10:57:45] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:45] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:45] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:46] info: 🔌 Admin connected: 0KK-Bf0bI9Th8utfAACD
+[2025-11-18 10:57:46] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:46] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:46] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:47] info: 🔌 Admin connected: MsvvlU7nWMZdwzuaAACF
+[2025-11-18 10:57:47] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:47] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:47] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:48] info: 🔌 Admin connected: ORAMQy55N8K1b5ACAACH
+[2025-11-18 10:57:48] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:48] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:48] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:49] info: 🔌 Admin connected: HkbqMBI2nOpKmsNJAACJ
+[2025-11-18 10:57:50] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:50] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:50] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:51] info: 🔌 Admin connected: Y9KzwOy7_cbJZi7JAACL
+[2025-11-18 10:57:51] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:51] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:51] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:52] info: 🔌 Admin connected: 3tuWsKFUojEaff8zAACN
+[2025-11-18 10:57:52] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:52] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:52] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:54] info: 🔌 Admin connected: zVX8m3BXnEb6A96qAACP
+[2025-11-18 10:57:54] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:54] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:54] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:55] info: 🔌 Admin connected: LdzybU3KjC7Tr_R7AACR
+[2025-11-18 10:57:55] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:55] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:55] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:56] info: 🔌 Admin connected: izCJl9i2X22QSgONAACT
+[2025-11-18 10:57:56] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:56] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:56] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:57] info: 🔌 Admin connected: vq-Mw4nNROPtR83sAACV
+[2025-11-18 10:57:57] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:57] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:57] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:58] info: 🔌 Admin connected: ciBd9W32ap-_iyk8AACX
+[2025-11-18 10:57:59] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:59] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:57:59] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:00] info: 🔌 Admin connected: 1kG4fBFsvgG_QWEjAACZ
+[2025-11-18 10:58:00] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:00] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:00] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:01] info: 🔌 Admin connected: VeHjFv6uqGyQ45WuAACb
+[2025-11-18 10:58:01] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:01] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:01] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:02] info: 🔌 Admin connected: 2W0jEkEkLqxCRsa3AACd
+[2025-11-18 10:58:02] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:02] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:02] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:04] info: 🔌 Admin connected: jFmrO2KBbgRAa0TbAACf
+[2025-11-18 10:58:04] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:04] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:04] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:05] info: 🔌 Admin connected: XDtpzIhEEVVuo74DAACh
+[2025-11-18 10:58:05] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:05] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:05] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:06] info: 🔌 Admin connected: NhnaJ13L2xHLeiApAACj
+[2025-11-18 10:58:06] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:06] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:06] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:06] info: 🔌 Admin connected: mLTOqGkaLKWA8D8kAACl
+[2025-11-18 10:58:06] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:06] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:06] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:07] info: 🔌 Admin connected: nlpIF-tdKF3eaJb3AACn
+[2025-11-18 10:58:08] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:08] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:08] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:08] info: 🔌 Admin connected: Bjg9KVcRYrFjNxfVAACp
+[2025-11-18 10:58:09] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:09] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:09] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:10] info: 🔌 Admin connected: JCvOrFSxmZnkNZU2AACr
+[2025-11-18 10:58:10] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:10] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:10] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:11] info: 🔌 Admin connected: NmbCuNjOdF4PwEAaAACt
+[2025-11-18 10:58:11] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:11] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-18 10:58:11] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 11:04:37] info: 📦 MongoDB connected
+[2025-11-18 11:04:37] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-18 11:04:44] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-18 11:07:41] info: 🔌 Admin connected: p0P6-iwc4B19P6T8AAAB
+[2025-11-18 11:07:50] info: 🔌 Admin connected: XiOkZw5p-jAXCgA5AAAD
+[2025-11-18 11:07:51] info: 🔌 Admin connected: azet2UPteD61FqFgAAAF
+[2025-11-18 11:08:11] info: 🔌 Admin connected: s5yXJJTQCLwB709uAAAH
+[2025-11-18 11:08:25] error: GET /admin/blog/posts - Không có token hoặc token không hợp lệ
+[2025-11-18 11:08:25] error: GET /admin/blog/posts - Không có token hoặc token không hợp lệ
+[2025-11-18 11:08:33] info: 🔌 Admin connected: NOFa1jDVBYBahe1MAAAJ
+[2025-11-18 11:08:34] info: 🔌 Admin connected: NwOAWYYFOOHmTItOAAAL
+[2025-11-18 11:08:34] error: GET /admin/blog/posts - Không có token hoặc token không hợp lệ
+[2025-11-18 11:09:10] error: GET /admin/blog/posts - Không có token hoặc token không hợp lệ
+[2025-11-18 11:09:10] error: GET /admin/blog/posts - Không có token hoặc token không hợp lệ
+[2025-11-18 11:14:20] info: 🔌 Admin connected: c-jsvoY2vsCHZZG1AAAN
+[2025-11-18 11:14:21] info: 🔌 Admin connected: LzCMlffS8gPPkwUtAAAP
+[2025-11-18 11:14:35] info: 🔌 Admin connected: OT5SwXk0GZ6AcUJ-AAAR
+[2025-11-18 11:14:36] info: 🔌 Admin connected: gKwMHR-zxH_IV_VzAAAT
+[2025-11-18 11:27:35] info: 🔌 Admin connected: mPG8_GEf-XLU9y6DAAAV
+[2025-11-18 11:27:36] info: 🔌 Admin connected: bTjvB7GlaklWWsmEAAAX
+[2025-11-18 11:44:35] error: POST /admin/blog/categories - Token không hợp lệ hoặc đã hết hạn
+[2025-11-18 11:45:16] info: 🔌 Admin connected: gdalsTsugKerTQqCAAAZ
+[2025-11-18 11:45:16] info: 🔌 Admin connected: PQ0fSqMrEaNGuPApAAAb
+[2025-11-18 11:48:56] error: POST /admin/blog/tags - BlogTag validation failed: slug: Path `slug` is required.
+[2025-11-18 11:51:01] info: 📦 MongoDB connected
+[2025-11-18 11:51:01] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-18 11:51:02] info: 🔌 Admin connected: E03OZbTAxJzjF88OAAAB
+[2025-11-18 11:51:02] info: 🔌 Admin connected: 9Yvmt4jyzDCqe4KbAAAD
+[2025-11-18 11:51:03] info: 🔌 Admin connected: 4J80yhA5-VSG_JV4AAAF
+[2025-11-18 11:51:03] info: 🔌 Admin connected: qCfx068Cx7LQ2maNAAAH
+[2025-11-18 11:51:03] info: 🔌 Admin connected: Wgxhe9nEELB5PTJjAAAJ
+[2025-11-18 11:51:03] info: 🔌 Admin connected: xEPJsyOyTON64E9xAAAL
+[2025-11-18 11:51:04] info: 🔌 Admin connected: yZEsxaJqf19b7SJ8AAAN
+[2025-11-18 11:51:22] info: 📦 MongoDB connected
+[2025-11-18 11:51:22] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-18 11:51:22] info: 🔌 Admin connected: woHwYGIFpZ8xDb58AAAB
+[2025-11-18 11:51:22] info: 🔌 Admin connected: Swyoy_OUNVs7aweTAAAD
+[2025-11-18 11:51:22] info: 🔌 Admin connected: ArVkhMBfNXsone6oAAAF
+[2025-11-18 11:51:22] info: 🔌 Admin connected: ct2lNgESwhjRVMAkAAAH
+[2025-11-18 11:51:23] info: 🔌 Admin connected: t7KHEt6h_7t7eGi9AAAJ
+[2025-11-18 11:51:23] info: 🔌 Admin connected: T2SIh8ctjxn_CHqiAAAL
+[2025-11-18 11:51:26] info: 🔌 Admin connected: R-IrXI_QEaQTEAXJAAAN
+[2025-11-18 11:51:36] info: 🔌 Admin connected: WkPiyih-GRz5xZuPAAAP
+[2025-11-18 11:51:36] info: 🔌 Admin connected: tlD1_28UytsW87zHAAAR
+[2025-11-18 11:52:21] info: 🔌 Admin connected: TmpidPEcHrVekm-9AAAT
+[2025-11-18 11:52:21] info: 🔌 Admin connected: rjj2vCT8LyBX4tW-AAAV
+[2025-11-18 11:52:48] info: 🔌 Admin connected: _xtYbSNtia1OiSYKAAAX
+[2025-11-18 11:52:49] info: 🔌 Admin connected: WRyaQyhmW8DsZ7SGAAAZ
+[2025-11-18 11:52:57] info: 🔌 Admin connected: _uWcW6ePHB4g_t4eAAAb
+[2025-11-18 11:53:17] info: 🔌 Admin connected: 6A3FxVBlkT9-U7mZAAAd
+[2025-11-18 11:59:32] info: 🔌 Admin connected: MaJ1uGt-oW-nDzLAAAAf
+[2025-11-18 11:59:34] info: 🔌 Admin connected: DDseRDILUF45HaTdAAAh
+[2025-11-18 12:02:08] info: 🔌 Admin connected: -k8qelQIvV7848tyAAAj
+[2025-11-18 12:02:09] info: 🔌 Admin connected: G_T5XqjSAypnjFMmAAAl
+[2025-11-18 12:02:16] info: 🔌 Admin connected: sxbyg350_2r45GC0AAAn
+[2025-11-18 12:02:17] info: 🔌 Admin connected: q2BBsYHtTCvFn49XAAAp
+[2025-11-18 12:02:24] info: 🔌 Admin connected: GPwHYjJHMAKmUfxHAAAr
+[2025-11-18 12:40:15] info: 🔌 Admin connected: 0vb9BQiNkqghdaH4AAAt
+[2025-11-18 13:12:26] info: 🔌 Admin connected: X6Lmwr0e6Or7gxVzAAAv
+[2025-11-18 13:12:27] info: 🔌 Admin connected: 8DF5RnsCyum0H09RAAAx
+[2025-11-18 13:26:42] info: 🔌 Admin connected: oRzd9xt6mi82JyjCAAAz
+[2025-11-18 13:26:44] info: 🔌 Admin connected: UQkUzcd76NYXiyXFAAA1
+[2025-11-18 14:02:05] info: 🔌 Admin connected: baQG7Ai7gamUt9rXAAA3
+[2025-11-18 14:02:06] info: 🔌 Admin connected: Tc9hdTnIEibr_Mp7AAA5
+[2025-11-18 14:09:43] info: 🔌 Admin connected: 7vek_MkMtxRUoK8gAAA7
+[2025-11-18 14:09:43] info: 🔌 Admin connected: cIyLGlGtzx7idawfAAA9
+[2025-11-18 14:34:41] info: 🔌 Admin connected: z24WXW8FJYdtiG7LAAA_
+[2025-11-18 14:34:42] info: 🔌 Admin connected: ObsGEaFyX10tyu_bAABB
+[2025-11-18 14:58:22] info: 🔌 Admin connected: XgdiaVurIxsAr1t-AABD
+[2025-11-18 14:58:22] info: 🔌 Admin connected: BaqOnVO6hcAj61paAABF
+[2025-11-18 14:58:30] info: 🔌 Admin connected: 8gOqaIIPi2w5euvmAABH
+[2025-11-18 14:58:31] info: 🔌 Admin connected: xe71YUXoE-QqifTXAABJ
+[2025-11-18 15:01:13] info: 🔌 Admin connected: hdTBFuJ_Uqf9chhUAABL
+[2025-11-18 15:01:14] info: 🔌 Admin connected: mekDlPIlvSqBy1jUAABN
+[2025-11-18 15:01:32] info: 🔌 Admin connected: OZ9GyzfkQN9GC-o3AABP
+[2025-11-18 15:01:33] info: 🔌 Admin connected: -tjIEloUyztCcZtWAABR
+[2025-11-18 15:29:08] info: 🔌 Admin connected: yRfVAoFkBvkFURh7AABT
+[2025-11-18 15:29:10] info: 🔌 Admin connected: -ZgVhu9aDPiPnGk2AABV
+[2025-11-18 15:29:40] info: 🔌 Admin connected: tfvB3mK3nbYillb6AABX
+[2025-11-18 15:29:41] info: 🔌 Admin connected: Sk_EK1VJ_44nyD9RAABZ
+[2025-11-18 15:32:16] info: 🔌 Admin connected: Nlp6V34OLtaTk1SkAABb
+[2025-11-18 15:32:18] info: 🔌 Admin connected: tm5WjJA-0AzN4rrJAABd
+[2025-11-18 15:32:50] info: 🔌 Admin connected: QuImh9bURVnFqVZxAABf
+[2025-11-18 15:32:52] info: 🔌 Admin connected: grg8BwrHUr01S9O7AABh
+[2025-11-18 15:39:10] info: 📦 MongoDB connected
+[2025-11-18 15:39:10] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-18 15:39:11] info: 🔌 Admin connected: cyu2B_ldIOzHRUJ8AAAB
+[2025-11-18 15:39:11] info: 🔌 Admin connected: F8uBEFoKF58bBd-CAAAD
+[2025-11-18 15:39:11] info: 🔌 Admin connected: HNbXSyA3pvOFZT2pAAAF
+[2025-11-18 15:39:12] info: 🔌 Admin connected: 0-dBBHdSSf9CWXARAAAH
+[2025-11-18 15:39:12] info: 🔌 Admin connected: 6i7a5Wd-sdKIkV4iAAAJ
+[2025-11-18 15:39:12] info: 🔌 Admin connected: A4CGQ4TfiAY1nwpvAAAL
+[2025-11-18 15:39:13] info: 🔌 Admin connected: mjBPYnJcv1qwutBHAAAN
+[2025-11-18 15:39:13] info: 🔌 Admin connected: 1F2zlTRrRNexesrZAAAP
+[2025-11-18 15:39:13] info: 🔌 Admin connected: sdoDc89TNwYVxZ18AAAR
+[2025-11-18 15:39:13] info: 🔌 Admin connected: 0585U2VtRnCHNLYGAAAT
+[2025-11-18 15:39:13] info: 🔌 Admin connected: HJeTyIspVij3YRACAAAV
+[2025-11-18 15:39:14] info: 🔌 Admin connected: xCnIt43_gET8hD2vAAAX
+[2025-11-18 15:39:15] info: 🔌 Admin connected: fPD6WUpMFewZskgNAAAZ
+[2025-11-18 15:44:21] info: 📦 MongoDB connected
+[2025-11-18 15:44:21] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-18 15:44:21] info: 🔌 Admin connected: jAMs7knmz8UPKVU1AAAB
+[2025-11-18 15:44:22] info: 🔌 Admin connected: DzGO7UrPKFy2PbJ3AAAD
+[2025-11-18 15:44:22] info: 🔌 Admin connected: BaKszn0sB485MspTAAAF
+[2025-11-18 15:44:22] info: 🔌 Admin connected: DRofpuVntvNEgIpdAAAH
+[2025-11-18 15:44:22] info: 🔌 Admin connected: -AsMAZvLQ-b_pKezAAAJ
+[2025-11-18 15:44:23] info: 🔌 Admin connected: uGqWNRqoBXyCWfuHAAAL
+[2025-11-18 15:44:24] info: 🔌 Admin connected: 7kEtsaLP0JYxWzHtAAAN
+[2025-11-18 15:44:24] info: 🔌 Admin connected: qV3zL6VSVSjaISkuAAAP
+[2025-11-18 15:44:24] info: 🔌 Admin connected: LMWtOb2Zemcyt7UpAAAR
+[2025-11-18 15:44:24] info: 🔌 Admin connected: PNsHUk3rhjkJKk89AAAT
+[2025-11-18 15:44:25] info: 🔌 Admin connected: BoTXsx5DwKR-jVwaAAAV
+[2025-11-18 15:44:25] info: 🔌 Admin connected: L3nYCqus6Gdz0JsZAAAX
+[2025-11-18 15:44:25] info: 🔌 Admin connected: cde7vcWBPyhanS-IAAAZ
+[2025-11-18 15:44:34] info: 🔌 Admin connected: tdVH--m9YegU8cO-AAAb
+[2025-11-18 15:44:35] info: 🔌 Admin connected: 498DfRczx0HFzYTwAAAd
+[2025-11-18 15:49:27] info: 🔌 Admin connected: 4vPvQRWZd7fctVVjAAAf
+[2025-11-18 15:49:30] info: 🔌 Admin connected: bG_TiVvv7iX0xurPAAAh
+[2025-11-18 15:55:07] info: 🔌 Admin connected: uWj-6Tkmc9WJjS2CAAAj
+[2025-11-18 15:55:08] info: 🔌 Admin connected: L7zDFhmnqmqYmXqzAAAl
+[2025-11-18 15:55:54] info: 🔌 Admin connected: crZMn7IMgtj_XV8YAAAn
+[2025-11-18 15:55:55] info: 🔌 Admin connected: OBNnVA2elf7pfruqAAAp
+[2025-11-18 16:03:40] info: 🔌 Admin connected: 2t2jRGDjc7o-ucwTAAAr
+[2025-11-18 16:03:42] info: 🔌 Admin connected: P2S50D3US7Farr2xAAAt
+[2025-11-18 16:08:04] info: 🔌 Admin connected: b14AulYbr-Y3orQ8AAAv
+[2025-11-18 16:08:05] info: 🔌 Admin connected: fdbvySTDE1DhlOi5AAAx
+[2025-11-18 16:45:22] info: 📦 MongoDB connected
+[2025-11-18 16:45:22] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-18 16:46:46] info: 🔌 Admin connected: BGxUgjOWN9UBK3uCAAAB
+[2025-11-19 08:23:49] info: 📦 MongoDB connected
+[2025-11-19 08:23:49] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-19 08:24:27] info: 🔌 Admin connected: vIspE4yS0_pFDk2eAAAB
+[2025-11-19 08:24:29] info: 🔌 Admin connected: BT-AYKKJkLGz-p3jAAAD
+[2025-11-19 08:29:47] info: 🔌 Admin connected: V83m1TvUuA-BavaHAAAF
+[2025-11-19 08:29:48] info: 🔌 Admin connected: 7gG8sXcoLx0v5__LAAAH
+[2025-11-19 08:32:31] info: 🔌 Admin connected: lyNDMirj5i8tUumwAAAJ
+[2025-11-19 08:32:32] info: 🔌 Admin connected: PP3IOHfL_0E2Ra1VAAAL
+[2025-11-19 08:44:26] info: 🔌 Admin connected: hK5YeIUP2r3_hhhWAAAN
+[2025-11-19 08:44:27] info: 🔌 Admin connected: -I6AeakyHTY0MSf1AAAP
+[2025-11-19 09:03:09] info: 🔌 Admin connected: HjmeQF8sExhIsJfiAAAR
+[2025-11-19 09:03:10] info: 🔌 Admin connected: kZv6JLPUdMcZUg42AAAT
+[2025-11-19 09:30:13] info: 🔌 Admin connected: oXyyRG8uW5rC-wmyAAAV
+[2025-11-19 09:50:16] info: 🔌 Admin connected: 553oD_7F3gbvt3p7AAAX
+[2025-11-19 09:50:18] info: 🔌 Admin connected: N0MOlaBa_078Pr8FAAAZ
+[2025-11-19 09:50:51] info: 🔌 Admin connected: hu_SK57huABNVPC9AAAb
+[2025-11-19 09:50:52] info: 🔌 Admin connected: qGg6lmrHfnHja2OtAAAd
+[2025-11-19 10:03:39] info: 🔌 Admin connected: No1UzVO9m7UFhockAAAf
+[2025-11-19 10:03:39] info: 🔌 Admin connected: 7NmhbtMDXnTgY7PmAAAh
+[2025-11-19 10:04:06] info: 🔌 Admin connected: qd0X8GJGsWSK1QXhAAAj
+[2025-11-19 10:04:07] info: 🔌 Admin connected: Ua3UIlVAmSP06MjLAAAl
+[2025-11-19 10:20:10] info: 🔌 Admin connected: 4MKnoyEpa9v54TFqAAAn
+[2025-11-19 10:36:09] info: 🔌 Admin connected: UvxxCAHTK4fQ-FgEAAAp
+[2025-11-19 10:36:10] info: 🔌 Admin connected: EMdWo64HKdmjrNk_AAAr
+[2025-11-19 10:45:06] info: 🔌 Admin connected: 9qKFQEO2YyTzViNoAAAt
+[2025-11-19 10:45:08] info: 🔌 Admin connected: bp5qjny0F2ZAs_bUAAAv
+[2025-11-19 10:53:19] info: 🔌 Admin connected: KJY0Xmh6xvANzLswAAAx
+[2025-11-19 10:53:20] info: 🔌 Admin connected: WIJ6QH9KfmYs5bdVAAAz
+[2025-11-19 10:53:42] info: 🔌 Admin connected: eRQe3MhDr2roEjKnAAA1
+[2025-11-19 10:53:43] info: 🔌 Admin connected: dcuJAFl4y1c_EddlAAA3
+[2025-11-19 10:58:55] info: 🔌 Admin connected: ACSswJf6axG-06upAAA5
+[2025-11-19 10:58:55] info: 🔌 Admin connected: Mji2COYZB-OYiBzbAAA7
+[2025-11-19 11:11:54] info: 🔌 Admin connected: 6LqJt529OZQb7QxUAAA9
+[2025-11-19 11:11:55] info: 🔌 Admin connected: E6EZThg-MyuPMZMaAAA_
+[2025-11-19 11:12:02] info: 🔌 Admin connected: OTWUtnHw0vmZGp7YAABB
+[2025-11-19 11:12:03] info: 🔌 Admin connected: YxpUVaL57pnze3QzAABD
+[2025-11-19 11:16:05] info: 🔌 Admin connected: SyV1f66rdNGZ6FBxAABF
+[2025-11-19 11:16:06] info: 🔌 Admin connected: jp2Z15r9iwho59ucAABH
+[2025-11-19 11:16:34] info: 🔌 Admin connected: yq6wP8BODhSa6oTZAABJ
+[2025-11-19 11:16:34] info: 🔌 Admin connected: ULVBskc1b2YgNhWcAABL
+[2025-11-19 11:26:52] info: 🔌 Admin connected: F1cPBZgn8o5MJyVuAABN
+[2025-11-19 11:26:53] info: 🔌 Admin connected: I4gZZ1ti37VNYmI2AABP
+[2025-11-19 11:26:59] info: 🔌 Admin connected: eVgtaLMONXc_0IfaAABR
+[2025-11-19 11:27:00] info: 🔌 Admin connected: ekN_bta8B8Xd5aJZAABT
+[2025-11-19 11:37:24] info: 🔌 Admin connected: 2274X5IBIGvEzVe5AABV
+[2025-11-19 11:37:25] info: 🔌 Admin connected: 69hz1qEuXyDDjqj1AABX
+[2025-11-19 11:40:32] info: 🔌 Admin connected: eh2vT6oj7bPCT0KBAABZ
+[2025-11-19 11:40:33] info: 🔌 Admin connected: 8YoDFF_vKL2VjDsMAABb
+[2025-11-19 11:45:35] info: 🔌 Admin connected: yNzKiY0nnnaMkQSBAABd
+[2025-11-19 11:45:36] info: 🔌 Admin connected: ZOeE8Y4G_ct_sYQ7AABf
+[2025-11-19 11:45:42] info: 🔌 Admin connected: Qe7aoUqDlORxXXcAAABh
+[2025-11-19 11:45:43] info: 🔌 Admin connected: tyhLyUzQzZIsS_VkAABj
+[2025-11-19 11:51:36] info: 🔌 Admin connected: YqF3vo9XMT5uCovPAABl
+[2025-11-19 11:51:38] info: 🔌 Admin connected: MCscfm0gy-n4cNpwAABn
+[2025-11-19 11:53:10] info: 🔌 Admin connected: y0OmODEeKjzG3lW-AABp
+[2025-11-19 11:53:11] info: 🔌 Admin connected: 3OWtgXhl432aSViKAABr
+[2025-11-19 11:56:28] info: 🔌 Admin connected: QRWotcf4MmV6aTAFAABt
+[2025-11-19 11:56:30] info: 🔌 Admin connected: AFcpRELxAmYvxLXXAABv
+[2025-11-19 12:02:15] info: 🔌 Admin connected: DEX3bWL3DHStbAWQAABx
+[2025-11-19 12:02:16] info: 🔌 Admin connected: SyjhUA4F48zyIKZ1AABz
+[2025-11-19 12:04:30] info: 🔌 Admin connected: kWV8TgETOYYZjTToAAB1
+[2025-11-19 12:04:32] info: 🔌 Admin connected: 54ZsYxeOhjXgCQKSAAB3
+[2025-11-19 12:04:42] info: 🔌 Admin connected: 81JMekZ-4jmG7HyhAAB5
+[2025-11-19 12:04:43] info: 🔌 Admin connected: 7hfjIjc--QX9dP1DAAB7
+[2025-11-19 12:30:09] info: 🔌 Admin connected: baLjmFuhYFSvujQtAAB9
+[2025-11-19 12:30:10] info: 🔌 Admin connected: 0NxD7H9IGZw2_Uv9AAB_
+[2025-11-19 12:37:09] info: 🔌 Admin connected: U-27kXEfM-1MqKkCAACB
+[2025-11-19 13:18:03] info: 📦 MongoDB connected
+[2025-11-19 13:18:03] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-19 13:18:29] info: 🔌 Admin connected: CTl_jEWZ4ccmmV0zAAAB
+[2025-11-19 13:18:30] info: 🔌 Admin connected: pkG2_NWL2S4d0422AAAD
+[2025-11-19 13:19:30] info: 🔌 Admin connected: K7MWr4kPfcpGaZGtAAAF
+[2025-11-19 13:19:31] info: 🔌 Admin connected: CGd6DV42inhHdo-oAAAH
+[2025-11-19 13:44:06] info: 🔌 Admin connected: 6LIBjHdiLo4zDZfOAAAJ
+[2025-11-19 13:44:07] info: 🔌 Admin connected: 8QV4WCX2M6EOXkS_AAAL
+[2025-11-19 13:52:09] info: 🔌 Admin connected: cPKl0H9K1M7gLSpQAAAN
+[2025-11-19 13:52:10] info: 🔌 Admin connected: xmGz4m2qWkw4VUSjAAAP
+[2025-11-19 13:56:05] info: 🔌 Admin connected: frzI2xbN3nY9NOTCAAAR
+[2025-11-19 13:56:06] info: 🔌 Admin connected: ZPDb3i1CuiYzrzI-AAAT
+[2025-11-19 14:13:39] info: 🔌 Admin connected: fX39B-PjT4Uo5PGaAAAV
+[2025-11-19 14:13:39] info: 🔌 Admin connected: TJGRcFe-XJoB44-zAAAX
+[2025-11-19 14:17:15] error: POST /admin/blog/categories - BlogCategory validation failed: slug: Path `slug` is required.
+[2025-11-19 14:18:24] error: POST /admin/blog/categories - BlogCategory validation failed: slug: Path `slug` is required.
+[2025-11-19 14:21:58] info: 🔌 Admin connected: 5nT3Pdb_qOLOapPrAAAZ
+[2025-11-19 14:21:57] info: 🔌 Admin connected: ADbjcvHG8n8nVI_jAAAb
+[2025-11-19 14:29:59] info: 🔌 Admin connected: kOuWVcHzKzg3bFIZAAAd
+[2025-11-19 14:29:59] info: 🔌 Admin connected: eQL-qspki5dUTOHDAAAf
+[2025-11-19 14:43:23] info: 🔌 Admin connected: HXkDC3IvEShWUIX1AAAh
+[2025-11-19 14:43:25] info: 🔌 Admin connected: VCVef_bo6PwJxiW6AAAj
+[2025-11-19 14:47:34] info: 🔌 Admin connected: vPhQv4DTMfyqhrNIAAAl
+[2025-11-19 14:47:35] info: 🔌 Admin connected: Z9l_Se-MDdZwgco2AAAn
+[2025-11-19 14:57:08] info: 🔌 Admin connected: mVxczc6C3HzM0U8gAAAp
+[2025-11-19 14:57:10] info: 🔌 Admin connected: qzJcvI6p7RxHf9grAAAr
+[2025-11-19 14:59:11] info: 🔌 Admin connected: S5KJxugsmub5TvEYAAAt
+[2025-11-19 14:59:12] info: 🔌 Admin connected: o36pLxVETDxHvhn3AAAv
