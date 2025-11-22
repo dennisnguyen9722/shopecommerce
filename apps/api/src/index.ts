@@ -22,6 +22,9 @@ import bannersRoutes from './routes/banners'
 import posts from './routes/blog/posts'
 import categories from './routes/blog/categories'
 import tags from './routes/blog/tags'
+import paymentMethodsRoutes from './routes/paymentMethods'
+import shippingRulesRoutes from './routes/shippingRules'
+import locationsRoutes from './routes/locations'
 
 import { errorHandler } from './middleware/errorHandler'
 import { log } from './utils/logger'
@@ -61,6 +64,9 @@ app.use('/admin/stock-logs', stockLogsRoutes)
 app.use('/admin/customers', customersRoutes)
 app.use('/admin/analytics', analyticsRoutes)
 app.use('/admin/banners', bannersRoutes)
+app.use('/admin/payment-methods', paymentMethodsRoutes)
+app.use('/admin/shipping-rules', shippingRulesRoutes)
+app.use('/admin/locations', locationsRoutes)
 
 // NEW:
 app.use('/admin/notifications', notificationsRoutes)

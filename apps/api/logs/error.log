@@ -268,3 +268,35 @@
 [2025-11-18 11:48:56] error: POST /admin/blog/tags - BlogTag validation failed: slug: Path `slug` is required.
 [2025-11-19 14:17:15] error: POST /admin/blog/categories - BlogCategory validation failed: slug: Path `slug` is required.
 [2025-11-19 14:18:24] error: POST /admin/blog/categories - BlogCategory validation failed: slug: Path `slug` is required.
+[2025-11-22 13:47:44] error: GET /admin/metrics - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:44] error: GET /admin/orders-stats - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:44] error: GET /admin/analytics/inventory-overview - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:44] error: GET /admin/customers-stats - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:45] error: GET /admin/analytics/top-customers?limit=5 - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:45] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:45] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:45] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:45] error: GET /admin/revenue - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:45] error: GET /admin/revenue - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:45] error: GET /admin/analytics/purchase-frequency - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:46] error: GET /admin/metrics - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:46] error: GET /admin/analytics/inventory-overview - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:46] error: GET /admin/orders-stats - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:46] error: GET /admin/customers-stats - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:46] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:46] error: GET /admin/revenue - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:46] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:46] error: GET /admin/revenue - Không có token hoặc token không hợp lệ
+[2025-11-22 16:27:44] error: POST /admin/shipping-rules - ShippingRule validation failed: province: Cast to string failed for value "{ code: '79', name: 'Thành phố Hồ Chí Minh' }" (type Object) at path "province", districts.0: Cast to [string] failed for value "[ { code: '766', name: 'Quận Tân Bình' } ]" (type string) at path "districts.0" because of "CastError"
+[2025-11-22 16:27:52] error: POST /admin/shipping-rules - ShippingRule validation failed: province: Cast to string failed for value "{ code: '79', name: 'Thành phố Hồ Chí Minh' }" (type Object) at path "province", districts.0: Cast to [string] failed for value "[ { code: '766', name: 'Quận Tân Bình' } ]" (type string) at path "districts.0" because of "CastError"
+[2025-11-22 16:30:38] error: PUT /admin/shipping-rules/reorder - Cast to ObjectId failed for value "reorder" (type string) at path "_id" for model "ShippingRule"
+[2025-11-22 16:39:59] error: PUT /admin/shipping-rules/reorder - Cast to ObjectId failed for value "reorder" (type string) at path "_id" for model "ShippingRule"
+[2025-11-22 16:39:59] error: PUT /admin/shipping-rules/reorder - Cast to ObjectId failed for value "reorder" (type string) at path "_id" for model "ShippingRule"
+[2025-11-22 16:41:34] error: PUT /admin/shipping-rules/reorder - Cast to ObjectId failed for value "reorder" (type string) at path "_id" for model "ShippingRule"
+[2025-11-22 16:41:34] error: PUT /admin/shipping-rules/reorder - Cast to ObjectId failed for value "reorder" (type string) at path "_id" for model "ShippingRule"
+[2025-11-22 16:42:34] error: PUT /admin/shipping-rules/reorder - Cast to ObjectId failed for value "reorder" (type string) at path "_id" for model "ShippingRule"
+[2025-11-22 16:42:35] error: PUT /admin/shipping-rules/reorder - Cast to ObjectId failed for value "reorder" (type string) at path "_id" for model "ShippingRule"
+[2025-11-22 16:53:29] error: GET /admin/shipping-rules - Token không hợp lệ hoặc đã hết hạn
+[2025-11-22 17:00:21] error: PUT /admin/shipping-rules/reorder - Cast to ObjectId failed for value "reorder" (type string) at path "_id" for model "ShippingRule"
+[2025-11-22 17:00:23] error: PUT /admin/shipping-rules/reorder - Cast to ObjectId failed for value "reorder" (type string) at path "_id" for model "ShippingRule"
+[2025-11-22 17:00:24] error: PUT /admin/shipping-rules/reorder - Cast to ObjectId failed for value "reorder" (type string) at path "_id" for model "ShippingRule"

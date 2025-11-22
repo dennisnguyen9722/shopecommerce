@@ -866,3 +866,153 @@
 [2025-11-19 14:57:10] info: 🔌 Admin connected: qzJcvI6p7RxHf9grAAAr
 [2025-11-19 14:59:11] info: 🔌 Admin connected: S5KJxugsmub5TvEYAAAt
 [2025-11-19 14:59:12] info: 🔌 Admin connected: o36pLxVETDxHvhn3AAAv
+[2025-11-22 13:29:55] info: 📦 MongoDB connected
+[2025-11-22 13:29:55] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-22 13:47:45] info: 🔌 Admin connected: I86THxvPgHiLzeuxAAAB
+[2025-11-22 13:47:44] info: 🔌 Admin connected: JVLpSTvS_hDoBj2dAAAD
+[2025-11-22 13:47:44] error: GET /admin/metrics - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:44] error: GET /admin/orders-stats - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:44] error: GET /admin/analytics/inventory-overview - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:44] error: GET /admin/customers-stats - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:45] error: GET /admin/analytics/top-customers?limit=5 - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:45] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:45] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:45] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:45] error: GET /admin/revenue - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:45] error: GET /admin/revenue - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:45] error: GET /admin/analytics/purchase-frequency - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:46] error: GET /admin/metrics - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:46] error: GET /admin/analytics/inventory-overview - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:46] error: GET /admin/orders-stats - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:46] error: GET /admin/customers-stats - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:46] error: GET /admin/notifications/unread-count - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:46] error: GET /admin/revenue - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:46] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-11-22 13:47:46] error: GET /admin/revenue - Không có token hoặc token không hợp lệ
+[2025-11-22 13:48:02] info: 🔌 Admin connected: bn1uTl5x7SJ5lXdTAAAF
+[2025-11-22 14:00:57] info: 📦 MongoDB connected
+[2025-11-22 14:00:57] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-22 14:00:57] info: 🔌 Admin connected: -AMBWbqnakeNXwO9AAAB
+[2025-11-22 14:00:58] info: 🔌 Admin connected: PEqa_eP6ARj1M60pAAAD
+[2025-11-22 14:20:49] info: 📦 MongoDB connected
+[2025-11-22 14:20:49] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-22 14:20:50] info: 🔌 Admin connected: 3erRB5ZHR10uPVQzAAAB
+[2025-11-22 14:20:50] info: 🔌 Admin connected: tu_CgvPyuw54OTtZAAAD
+[2025-11-22 14:24:36] info: 📦 MongoDB connected
+[2025-11-22 14:24:36] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-22 14:24:37] info: 🔌 Admin connected: GnMVeox0Q-oyJo7JAAAB
+[2025-11-22 14:24:38] info: 🔌 Admin connected: G7VUDn5MW0Mx-kWbAAAD
+[2025-11-22 14:28:18] info: 📦 MongoDB connected
+[2025-11-22 14:28:18] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-22 14:28:18] info: 🔌 Admin connected: bEk3_v7GoBVA1lGfAAAB
+[2025-11-22 14:28:19] info: 🔌 Admin connected: 4cX8abLLgH040TZlAAAD
+[2025-11-22 14:29:02] info: 📦 MongoDB connected
+[2025-11-22 14:29:02] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-22 14:29:03] info: 🔌 Admin connected: xZHw3vTlgjfWo3BYAAAB
+[2025-11-22 14:29:04] info: 🔌 Admin connected: ChuHDjvqcjETNRJQAAAD
+[2025-11-22 14:30:37] info: 📦 MongoDB connected
+[2025-11-22 14:30:37] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-22 14:30:37] info: 🔌 Admin connected: dQxrDZOX2K0VFIgUAAAB
+[2025-11-22 14:30:38] info: 🔌 Admin connected: rhANv9wY9Sol7fTjAAAD
+[2025-11-22 14:30:53] info: 📦 MongoDB connected
+[2025-11-22 14:30:53] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-22 14:30:53] info: 🔌 Admin connected: NUMrj8_r-NIC9tV5AAAB
+[2025-11-22 14:30:54] info: 🔌 Admin connected: mUliSAAkXPUuSV6ZAAAD
+[2025-11-22 14:43:08] info: 📦 MongoDB connected
+[2025-11-22 14:43:08] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-22 14:43:09] info: 🔌 Admin connected: Alp-n5Km5kHgT1IPAAAB
+[2025-11-22 14:43:10] info: 🔌 Admin connected: 79va9f2E6IMFnREAAAAD
+[2025-11-22 14:44:21] info: 📦 MongoDB connected
+[2025-11-22 14:44:21] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-22 14:44:21] info: 🔌 Admin connected: u5ten-17OcgHACObAAAB
+[2025-11-22 14:44:22] info: 🔌 Admin connected: Q9ZrF1j9gSAja3yqAAAD
+[2025-11-22 14:47:15] info: 📦 MongoDB connected
+[2025-11-22 14:47:15] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-22 14:47:16] info: 🔌 Admin connected: FnNUQY60fE1hI7rHAAAB
+[2025-11-22 14:47:17] info: 🔌 Admin connected: zAaYM1xBfk936jp7AAAD
+[2025-11-22 15:27:21] info: 📦 MongoDB connected
+[2025-11-22 15:27:21] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-22 15:27:21] info: 🔌 Admin connected: G5MqCqG3BRjPQ1u4AAAB
+[2025-11-22 15:27:21] info: 🔌 Admin connected: qT2Fqp7hEs81jOvJAAAD
+[2025-11-22 15:34:18] info: 🔌 Admin connected: P-H2ggnZDoYrOmrQAAAF
+[2025-11-22 15:34:19] info: 🔌 Admin connected: q6YUaIFo4fgruRHyAAAH
+[2025-11-22 15:36:57] info: 🔌 Admin connected: QLPsHr_PyCUXGlPlAAAJ
+[2025-11-22 15:36:58] info: 🔌 Admin connected: uVX2cQMyCC1vR0wtAAAL
+[2025-11-22 15:41:34] info: 🔌 Admin connected: 47-Q-0DM51kZHTm4AAAN
+[2025-11-22 15:41:34] info: 🔌 Admin connected: -4Sw8MTqTMhJKRTyAAAP
+[2025-11-22 16:07:12] info: 📦 MongoDB connected
+[2025-11-22 16:07:12] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-22 16:07:12] info: 🔌 Admin connected: qzifvwBTmNwzDeUlAAAB
+[2025-11-22 16:07:12] info: 🔌 Admin connected: Rnhii8gg0KEAKwQzAAAD
+[2025-11-22 16:07:12] info: 🔌 Admin connected: pCxAXQQES6P77XrYAAAF
+[2025-11-22 16:07:13] info: 🔌 Admin connected: gPGrAAqC-9ARQKNGAAAH
+[2025-11-22 16:07:13] info: 🔌 Admin connected: bcrQrcn8tBudGGQBAAAJ
+[2025-11-22 16:26:47] info: 🔌 Admin connected: K9XVL6FN-JT2kdoWAAAL
+[2025-11-22 16:26:47] info: 🔌 Admin connected: 0pXXepV6o4D87R6nAAAN
+[2025-11-22 16:26:54] info: 🔌 Admin connected: 1Ttaia3bgc6WYqt6AAAP
+[2025-11-22 16:26:55] info: 🔌 Admin connected: g-Y2ipBFQ3MuYJw2AAAR
+[2025-11-22 16:27:44] error: POST /admin/shipping-rules - ShippingRule validation failed: province: Cast to string failed for value "{ code: '79', name: 'Thành phố Hồ Chí Minh' }" (type Object) at path "province", districts.0: Cast to [string] failed for value "[ { code: '766', name: 'Quận Tân Bình' } ]" (type string) at path "districts.0" because of "CastError"
+[2025-11-22 16:27:52] error: POST /admin/shipping-rules - ShippingRule validation failed: province: Cast to string failed for value "{ code: '79', name: 'Thành phố Hồ Chí Minh' }" (type Object) at path "province", districts.0: Cast to [string] failed for value "[ { code: '766', name: 'Quận Tân Bình' } ]" (type string) at path "districts.0" because of "CastError"
+[2025-11-22 16:30:25] info: 🔌 Admin connected: zQDpondPINRpGZ6NAAAT
+[2025-11-22 16:30:26] info: 🔌 Admin connected: XAi-T_uN6t_QMy4pAAAV
+[2025-11-22 16:30:38] error: PUT /admin/shipping-rules/reorder - Cast to ObjectId failed for value "reorder" (type string) at path "_id" for model "ShippingRule"
+[2025-11-22 16:30:40] info: 🔌 Admin connected: Y4xTjJBcBG7NLv23AAAX
+[2025-11-22 16:30:40] info: 🔌 Admin connected: 2Csu38Jakgro451AAAAZ
+[2025-11-22 16:37:02] info: 📦 MongoDB connected
+[2025-11-22 16:37:02] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-22 16:37:03] info: 🔌 Admin connected: ZKdRbVBJODNoQz3BAAAB
+[2025-11-22 16:37:03] info: 🔌 Admin connected: g9Zn83KiQ9GriNK5AAAD
+[2025-11-22 16:37:03] info: 🔌 Admin connected: MhAORq80fKRJboqaAAAF
+[2025-11-22 16:37:03] info: 🔌 Admin connected: fuY7JbCkdGrDNnTtAAAH
+[2025-11-22 16:37:03] info: 🔌 Admin connected: PwJT1HOC-oAV9xUyAAAJ
+[2025-11-22 16:37:03] info: 🔌 Admin connected: O9j3d_qQlj6kM5DSAAAL
+[2025-11-22 16:37:03] info: 🔌 Admin connected: vPedRSiA7p0h7-sYAAAN
+[2025-11-22 16:37:06] info: 🔌 Admin connected: 7E6RgdcSi6t0lU2QAAAP
+[2025-11-22 16:37:07] info: 🔌 Admin connected: Ncd8q8CvSsSWgTZpAAAR
+[2025-11-22 16:38:05] info: 🔌 Admin connected: lc1DOQnXSWYx0AAAAAAT
+[2025-11-22 16:38:06] info: 🔌 Admin connected: TTDnY4hywHpHVJyiAAAV
+[2025-11-22 16:39:57] info: 🔌 Admin connected: imDpfUC6wpg1Yji1AAAX
+[2025-11-22 16:39:58] info: 🔌 Admin connected: HgSUWlE1XtS_v85lAAAZ
+[2025-11-22 16:39:59] error: PUT /admin/shipping-rules/reorder - Cast to ObjectId failed for value "reorder" (type string) at path "_id" for model "ShippingRule"
+[2025-11-22 16:39:59] error: PUT /admin/shipping-rules/reorder - Cast to ObjectId failed for value "reorder" (type string) at path "_id" for model "ShippingRule"
+[2025-11-22 16:40:01] info: 🔌 Admin connected: cLFTZLWgNzxbl8GzAAAb
+[2025-11-22 16:40:01] info: 🔌 Admin connected: OkGqq3ZI_lB5YySjAAAd
+[2025-11-22 16:40:18] info: 📦 MongoDB connected
+[2025-11-22 16:40:18] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-22 16:40:18] info: 🔌 Admin connected: __daLaIczP8AP5uFAAAB
+[2025-11-22 16:40:18] info: 🔌 Admin connected: tIABuoZXZqBipglVAAAD
+[2025-11-22 16:40:18] info: 🔌 Admin connected: -1fZUkmZhNZtX1ZyAAAF
+[2025-11-22 16:40:18] info: 🔌 Admin connected: wAN9weMyzC84H-GFAAAH
+[2025-11-22 16:40:19] info: 🔌 Admin connected: DQurA8vpwkaXdQHTAAAJ
+[2025-11-22 16:40:19] info: 🔌 Admin connected: SRXnYj436_eMIrk7AAAL
+[2025-11-22 16:40:20] info: 🔌 Admin connected: FFAXr3fuoVIBZaUgAAAN
+[2025-11-22 16:40:20] info: 🔌 Admin connected: N6jmeyR5sdHJWy1AAAAP
+[2025-11-22 16:40:20] info: 🔌 Admin connected: b95uyCb2mijk8NLoAAAR
+[2025-11-22 16:40:21] info: 🔌 Admin connected: qaF56Zh6RKyeg_zhAAAT
+[2025-11-22 16:40:21] info: 🔌 Admin connected: BTZICYngDkWJFTDAAAAV
+[2025-11-22 16:41:21] info: 🔌 Admin connected: 3s69lF5ylklJCm8MAAAX
+[2025-11-22 16:41:23] info: 🔌 Admin connected: 0a88XUAq-usUa7yeAAAZ
+[2025-11-22 16:41:26] info: 🔌 Admin connected: SHrGIk4v9LCXuajPAAAb
+[2025-11-22 16:41:26] info: 🔌 Admin connected: ho9VzwEop8qsjpb5AAAd
+[2025-11-22 16:41:34] error: PUT /admin/shipping-rules/reorder - Cast to ObjectId failed for value "reorder" (type string) at path "_id" for model "ShippingRule"
+[2025-11-22 16:41:34] error: PUT /admin/shipping-rules/reorder - Cast to ObjectId failed for value "reorder" (type string) at path "_id" for model "ShippingRule"
+[2025-11-22 16:42:34] error: PUT /admin/shipping-rules/reorder - Cast to ObjectId failed for value "reorder" (type string) at path "_id" for model "ShippingRule"
+[2025-11-22 16:42:35] error: PUT /admin/shipping-rules/reorder - Cast to ObjectId failed for value "reorder" (type string) at path "_id" for model "ShippingRule"
+[2025-11-22 16:48:15] info: 🔌 Admin connected: 4IcYbDgSZut05FBbAAAf
+[2025-11-22 16:48:16] info: 🔌 Admin connected: L9cvBxFDS8P4LFMJAAAh
+[2025-11-22 16:48:19] info: 🔌 Admin connected: YQjKFXV60LGqiIUWAAAj
+[2025-11-22 16:48:20] info: 🔌 Admin connected: Z0JKuU_nGUpd9nohAAAl
+[2025-11-22 16:48:29] info: 🔌 Admin connected: mqS9wZKLKJ_meXjnAAAn
+[2025-11-22 16:50:02] info: 🔌 Admin connected: 8lSfrz3JV607xNMqAAAp
+[2025-11-22 16:50:03] info: 🔌 Admin connected: mc3rf7WjXLyjSrPnAAAr
+[2025-11-22 16:51:45] info: 🔌 Admin connected: CMLHOtnWo9XWa98lAAAt
+[2025-11-22 16:51:46] info: 🔌 Admin connected: ow3yKvle8U69GzcaAAAv
+[2025-11-22 16:51:53] info: 🔌 Admin connected: lkb8sE4CfRpBfXRBAAAx
+[2025-11-22 16:53:29] error: GET /admin/shipping-rules - Token không hợp lệ hoặc đã hết hạn
+[2025-11-22 16:58:12] info: 🔌 Admin connected: E05ZJokT63wpdfJRAAAz
+[2025-11-22 16:58:13] info: 🔌 Admin connected: 7LeiOJVlkH6o1vAMAAA1
+[2025-11-22 16:59:14] info: 🔌 Admin connected: L9Kag_Pb-lht5tllAAA3
+[2025-11-22 16:59:15] info: 🔌 Admin connected: --_3wJKl9VTnxxkHAAA5
+[2025-11-22 17:00:21] error: PUT /admin/shipping-rules/reorder - Cast to ObjectId failed for value "reorder" (type string) at path "_id" for model "ShippingRule"
+[2025-11-22 17:00:23] error: PUT /admin/shipping-rules/reorder - Cast to ObjectId failed for value "reorder" (type string) at path "_id" for model "ShippingRule"
+[2025-11-22 17:00:24] error: PUT /admin/shipping-rules/reorder - Cast to ObjectId failed for value "reorder" (type string) at path "_id" for model "ShippingRule"
