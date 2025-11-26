@@ -81,6 +81,20 @@ router.post('/', async (req, res) => {
   res.status(201).json(rule)
 })
 
+router.put('/reorder', async (req, res) => {
+  const { orderedIds } = req.body
+
+  if (!Array.isArray(orderedIds)) {
+    return res.status(400).json({ error: 'orderedIds must be array' })
+  }
+
+  for (let i = 0; i < orderedIds.length; i++) {
+    await ShippingRule.findByIdAndUpdate(orderedIds[i], { order: i })
+  }
+
+  res.json({ ok: true })
+})
+
 /**
  * UPDATE
  */
@@ -149,20 +163,6 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   const deleted = await ShippingRule.findByIdAndDelete(req.params.id)
   if (!deleted) return res.status(404).json({ error: 'Rule not found' })
-  res.json({ ok: true })
-})
-
-router.put('/reorder', async (req, res) => {
-  const { orderedIds } = req.body
-
-  if (!Array.isArray(orderedIds)) {
-    return res.status(400).json({ error: 'orderedIds must be array' })
-  }
-
-  for (let i = 0; i < orderedIds.length; i++) {
-    await ShippingRule.findByIdAndUpdate(orderedIds[i], { order: i })
-  }
-
   res.json({ ok: true })
 })
 

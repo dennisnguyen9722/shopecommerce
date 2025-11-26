@@ -36,4 +36,22 @@ router.patch('/:key/toggle', async (req, res) => {
   res.json(method)
 })
 
+// REORDER
+router.put('/reorder', async (req, res) => {
+  const { orderedKeys } = req.body
+
+  if (!Array.isArray(orderedKeys)) {
+    return res.status(400).json({ error: 'orderedKeys must be an array' })
+  }
+
+  for (let i = 0; i < orderedKeys.length; i++) {
+    await PaymentMethod.findOneAndUpdate(
+      { key: orderedKeys[i] },
+      { sortOrder: i }
+    )
+  }
+
+  res.json({ ok: true })
+})
+
 export default router

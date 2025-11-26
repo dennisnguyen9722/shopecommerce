@@ -15,7 +15,11 @@ import {
   ChevronLeft,
   TagsIcon,
   Menu,
-  CircleUser
+  Settings,
+  CreditCard,
+  Truck,
+  Mail,
+  ShieldCheck
 } from 'lucide-react'
 
 import { motion, AnimatePresence } from 'framer-motion'
@@ -34,8 +38,10 @@ export function Sidebar() {
 
   // Auto open Blog group
   const autoOpenBlog = pathname.startsWith('/admin/blog')
+  const autoOpenSettings = pathname.startsWith('/admin/settings')
+
   const [openGroup, setOpenGroup] = useState<string | null>(
-    autoOpenBlog ? 'blog' : null
+    autoOpenBlog ? 'blog' : autoOpenSettings ? 'settings' : null
   )
 
   // Auto collapse for small screens
@@ -158,6 +164,57 @@ export function Sidebar() {
               collapsed={collapsed}
             />
           </AccordionGroup>
+
+          {/* SETTINGS GROUP */}
+          <AccordionGroup
+            id="settings"
+            label="Cài đặt"
+            icon={Settings}
+            active={pathname.startsWith('/admin/settings')}
+            collapsed={collapsed}
+            openGroup={openGroup}
+            setOpenGroup={setOpenGroup}
+          >
+            <SubItem
+              href="/admin/settings/payment"
+              label="Phương thức thanh toán"
+              icon={CreditCard}
+              active={pathname.startsWith('/admin/settings/payment')}
+              collapsed={collapsed}
+            />
+
+            <SubItem
+              href="/admin/settings/shipping"
+              label="Phí vận chuyển"
+              icon={Truck}
+              active={pathname.startsWith('/admin/settings/shipping')}
+              collapsed={collapsed}
+            />
+
+            <SubItem
+              href="/admin/settings/taxes"
+              label="Thuế"
+              icon={ShieldCheck}
+              active={pathname.startsWith('/admin/settings/taxes')}
+              collapsed={collapsed}
+            />
+
+            <SubItem
+              href="/admin/settings/emails"
+              label="Email templates"
+              icon={Mail}
+              active={pathname.startsWith('/admin/settings/emails')}
+              collapsed={collapsed}
+            />
+
+            <SubItem
+              href="/admin/settings/staff"
+              label="Tài khoản & phân quyền"
+              icon={Users}
+              active={pathname.startsWith('/admin/settings/staff')}
+              collapsed={collapsed}
+            />
+          </AccordionGroup>
         </nav>
 
         {/* BOTTOM AVATAR */}
@@ -167,9 +224,7 @@ export function Sidebar() {
           className="p-4 border-t border-white/20 flex items-center gap-3"
         >
           <div className="relative">
-            <CircleUser className="w-10 h-10 text-gray-700 dark:text-gray-200" />
-
-            {/* Glow behind avatar */}
+            <Users className="w-10 h-10 text-gray-700 dark:text-gray-200" />
             <div className="absolute inset-0 blur-xl rounded-full bg-gradient-to-r from-purple-400/30 to-blue-400/30 -z-10"></div>
           </div>
 
@@ -186,7 +241,7 @@ export function Sidebar() {
 }
 
 /*-------------------------------------------------------*
- | MAIN ITEM (NEON + MOTION)
+ | MAIN ITEM
  *-------------------------------------------------------*/
 function NavItem({ href, label, icon: Icon, active, collapsed }: any) {
   const Component = (
@@ -199,20 +254,17 @@ function NavItem({ href, label, icon: Icon, active, collapsed }: any) {
           : 'hover:bg-white/40 dark:hover:bg-white/10'
       )}
     >
-      {/* Neon Active Bar */}
       {active && (
         <motion.div
           layoutId="neon-active"
-          className="absolute left-0 top-2 bottom-2 w-[3px] rounded-r-md bg-gradient-to-b from-blue-500 to-purple-500 shadow-[0_0_10px_rgba(109,40,217,0.5)]"
+          className="absolute left-0 top-2 bottom-2 w-[3px] rounded-r-md bg-gradient-to-b from-blue-500 to-purple-500"
         />
       )}
 
       <Icon
         className={cn(
           'w-5 h-5 transition',
-          active
-            ? 'text-gray-900 dark:text-white'
-            : 'text-gray-500 dark:text-gray-300 group-hover:text-black'
+          active ? 'text-gray-900 dark:text-white' : 'text-gray-500'
         )}
       />
 
@@ -259,7 +311,7 @@ function AccordionGroup({
       {active && (
         <motion.div
           layoutId="neon-active"
-          className="absolute left-0 top-2 bottom-2 w-[3px] rounded-r-md bg-gradient-to-b from-blue-500 to-purple-500 shadow-[0_0_10px_rgba(109,40,217,0.5)]"
+          className="absolute left-0 top-2 bottom-2 w-[3px] bg-gradient-to-b from-blue-500 to-purple-500"
         />
       )}
 
@@ -321,7 +373,7 @@ function SubItem({ href, label, icon: Icon, active, collapsed }: any) {
       {active && (
         <motion.div
           layoutId="sub-active"
-          className="absolute left-0 top-1 bottom-1 w-[2px] rounded-r-md bg-gradient-to-b from-purple-400 to-blue-400"
+          className="absolute left-0 top-1 bottom-1 w-[2px] bg-gradient-to-b from-purple-400 to-blue-400"
         />
       )}
 
@@ -330,7 +382,7 @@ function SubItem({ href, label, icon: Icon, active, collapsed }: any) {
           'w-4 h-4 transition',
           active
             ? 'text-gray-900 dark:text-white'
-            : 'text-gray-400 group-hover:text-gray-700 dark:text-gray-300'
+            : 'text-gray-400 group-hover:text-gray-700'
         )}
       />
 

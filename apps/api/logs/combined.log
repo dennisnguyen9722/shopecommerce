@@ -1016,3 +1016,172 @@
 [2025-11-22 17:00:21] error: PUT /admin/shipping-rules/reorder - Cast to ObjectId failed for value "reorder" (type string) at path "_id" for model "ShippingRule"
 [2025-11-22 17:00:23] error: PUT /admin/shipping-rules/reorder - Cast to ObjectId failed for value "reorder" (type string) at path "_id" for model "ShippingRule"
 [2025-11-22 17:00:24] error: PUT /admin/shipping-rules/reorder - Cast to ObjectId failed for value "reorder" (type string) at path "_id" for model "ShippingRule"
+[2025-11-25 10:45:37] error: MongoDB error: connect ECONNREFUSED 127.0.0.1:27017
+[2025-11-25 11:02:44] error: MongoDB error: connect ECONNREFUSED 127.0.0.1:27017
+[2025-11-25 11:04:22] error: MongoDB error: connect ECONNREFUSED 127.0.0.1:27017
+[2025-11-25 11:06:53] error: MongoDB error: connect ECONNREFUSED 127.0.0.1:27017
+[2025-11-25 11:07:17] info: 📦 MongoDB connected
+[2025-11-25 11:07:17] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-25 11:10:24] info: 🔌 Admin connected: 6zh7VSWjS5JAHY9yAAAB
+[2025-11-25 11:17:56] info: 🔌 Admin connected: OXAck-EiKdEMkBMoAAAD
+[2025-11-25 11:17:56] info: 🔌 Admin connected: kXYDOHqLirDQ0e6kAAAF
+[2025-11-25 11:18:04] error: PUT /admin/shipping-rules/reorder - Cast to ObjectId failed for value "reorder" (type string) at path "_id" for model "ShippingRule"
+[2025-11-25 11:20:37] info: 🔌 Admin connected: 5wWGKUSfGvqUqzEFAAAH
+[2025-11-25 11:20:41] error: PUT /admin/shipping-rules/reorder - Cast to ObjectId failed for value "reorder" (type string) at path "_id" for model "ShippingRule"
+[2025-11-25 11:23:28] info: 📦 MongoDB connected
+[2025-11-25 11:23:28] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-25 11:23:29] info: 🔌 Admin connected: h-wyTWpjTY3Jy0UEAAAB
+[2025-11-25 11:23:30] info: 🔌 Admin connected: BAc6r6zOUU8NLf1tAAAD
+[2025-11-25 11:23:37] info: 🔌 Admin connected: szFjHEpQIFGlyg6hAAAF
+[2025-11-25 11:23:38] info: 🔌 Admin connected: 8yaMAnQTv8LrIYlVAAAH
+[2025-11-25 11:40:19] info: 🔌 Admin connected: qsRSc7e_pIR0PjMAAAAJ
+[2025-11-25 11:40:20] info: 🔌 Admin connected: rCDkgTPz8U6URyfKAAAL
+[2025-11-25 11:51:24] info: 🔌 Admin connected: VNOs9S6yVynMw87YAAAN
+[2025-11-25 11:51:24] info: 🔌 Admin connected: 6b4Xh9hNqTP22cbsAAAP
+[2025-11-25 11:51:40] info: 🔌 Admin connected: DSgkSvJWOvnmewtbAAAR
+[2025-11-25 11:51:40] info: 🔌 Admin connected: -zuMFu-PNOS5Sr7WAAAT
+[2025-11-25 12:48:47] info: 📦 MongoDB connected
+[2025-11-25 12:48:47] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-25 12:48:58] info: 🔌 Admin connected: OHIaee5RBAwCGOSLAAAB
+[2025-11-25 12:48:59] info: 🔌 Admin connected: bqSMZBDy5vcpO7Q9AAAD
+[2025-11-25 12:49:13] info: 🔌 Admin connected: F5wYwcnTD4nu7eCvAAAF
+[2025-11-25 12:49:13] info: 🔌 Admin connected: x421kVKcGsyShKs2AAAH
+[2025-11-25 12:50:21] info: 🔌 Admin connected: KPlf1OYtw_4oORjfAAAJ
+[2025-11-25 12:50:25] info: 🔌 Admin connected: H4E3HKPbVkz94Fo8AAAL
+[2025-11-25 12:50:26] info: 🔌 Admin connected: 8hSgiLS4ND_bSBSJAAAN
+[2025-11-25 14:06:42] info: 📦 MongoDB connected
+[2025-11-25 14:06:42] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-25 14:06:51] info: 🔌 Admin connected: JllHzkpBPPMzTebaAAAB
+[2025-11-25 14:06:52] info: 🔌 Admin connected: MpDGHEmEXMpOaauNAAAD
+[2025-11-25 14:07:15] info: 🔌 Admin connected: -FrMdv8MLpTsuuiGAAAF
+[2025-11-25 14:26:08] info: 🔌 Admin connected: 12QVySZWJPS-HRqgAAAH
+[2025-11-25 14:26:09] info: 🔌 Admin connected: xNBoVMVpQUuNYDhOAAAJ
+[2025-11-25 14:27:38] info: 🔌 Admin connected: RFAU28if60njf5IhAAAL
+[2025-11-25 14:27:38] info: 🔌 Admin connected: o2GJ9xQxJN-G28KTAAAN
+[2025-11-25 14:37:33] info: 🔌 Admin connected: EZMWt7bZIaorGdZEAAAP
+[2025-11-25 14:38:07] info: 🔌 Admin connected: -pgwG9f-VO3oQh4zAAAR
+[2025-11-25 14:54:57] info: 🔌 Admin connected: 2anCw3eax8LwnHf0AAAT
+[2025-11-25 14:54:57] info: 🔌 Admin connected: qbrpIGdPAmsTtf1eAAAV
+[2025-11-25 15:10:55] info: 🔌 Admin connected: WDGUuNcccHpm7QvkAAAX
+[2025-11-25 15:10:55] info: 🔌 Admin connected: aio6pcpYBlbx-sP5AAAZ
+[2025-11-25 15:10:55] info: 🔌 Admin connected: kiKMuer_-ZD8GGCDAAAb
+[2025-11-25 15:26:17] info: 🔌 Admin connected: SCEkXKbWNolNJDOGAAAd
+[2025-11-25 15:41:56] info: 🔌 Admin connected: WUb5BZh2abf9xrfHAAAf
+[2025-11-25 15:41:56] info: 🔌 Admin connected: 5tpsCsavczlsAbgzAAAh
+[2025-11-25 15:41:56] info: 🔌 Admin connected: pK2iFMLRnZYw7yW3AAAj
+[2025-11-25 15:59:13] info: 🔌 Admin connected: RJyq4ZQglBWKlCIjAAAl
+[2025-11-25 15:59:13] info: 🔌 Admin connected: 1uHMiC0ROe9XJC-wAAAn
+[2025-11-25 16:14:16] info: 🔌 Admin connected: eBnq5LQpa9RX6MQsAAAp
+[2025-11-25 16:14:16] info: 🔌 Admin connected: cxj9BdtJWw30pH8-AAAr
+[2025-11-25 16:14:16] info: 🔌 Admin connected: FNbx4nfMZaDRpMz7AAAt
+[2025-11-25 16:31:01] info: 🔌 Admin connected: oFefKI-yMUJbaMhaAAAv
+[2025-11-25 16:31:02] info: 🔌 Admin connected: lYoe-3ex0YZnWf4jAAAx
+[2025-11-25 16:39:09] info: 🔌 Admin connected: KNpQe28zPx4X-ioZAAAz
+[2025-11-25 16:39:09] info: 🔌 Admin connected: n9zIYaLCFYZmdrP-AAA1
+[2025-11-25 16:39:09] info: 🔌 Admin connected: s_nK3VLMu9HAUJSWAAA3
+[2025-11-25 17:11:31] info: 🔌 Admin connected: iwju81qiHpQIrLBRAAA5
+[2025-11-25 17:11:31] info: 🔌 Admin connected: SIzjUL_0T0YIS8jhAAA7
+[2025-11-25 17:11:31] info: 🔌 Admin connected: A4b4Bc82MukoEBEkAAA9
+[2025-11-25 17:40:09] info: 🔌 Admin connected: WMqJaL4c6Rk0Jv7lAAA_
+[2025-11-25 17:40:09] info: 🔌 Admin connected: vCu-woGtHvVmmRssAABB
+[2025-11-25 17:40:09] info: 🔌 Admin connected: tQanWB-ADLgYlvW6AABD
+[2025-11-25 17:57:44] info: 🔌 Admin connected: beB1M3r49BVMoPGDAABF
+[2025-11-25 17:57:44] info: 🔌 Admin connected: EjwIOAeqkGKhKteHAABH
+[2025-11-25 18:13:30] info: 🔌 Admin connected: IuP6kxPfGblZ7-DGAABJ
+[2025-11-25 18:13:30] info: 🔌 Admin connected: ivR5U1xiy35T5oJoAABL
+[2025-11-25 18:13:30] info: 🔌 Admin connected: oyVn_V5_2yua--HjAABN
+[2025-11-25 18:41:09] info: 🔌 Admin connected: sBfCvf0g-PIBRMF1AABP
+[2025-11-25 18:41:09] info: 🔌 Admin connected: X59SqkCceCpC_KwEAABR
+[2025-11-25 18:41:09] info: 🔌 Admin connected: oAA-0k06m_GI1QmFAABT
+[2025-11-25 18:59:15] info: 🔌 Admin connected: 63Odrrvd4aH8SabYAABV
+[2025-11-25 18:59:15] info: 🔌 Admin connected: qFWQA4cJFHyL7EMTAABX
+[2025-11-25 18:59:15] info: 🔌 Admin connected: ZiOpJytmUEKHu0V0AABZ
+[2025-11-25 19:30:51] info: 🔌 Admin connected: yPB4CnDj17pTJmyfAABb
+[2025-11-25 19:30:51] info: 🔌 Admin connected: -1UfRf6PBEXXpgdKAABd
+[2025-11-25 19:30:51] info: 🔌 Admin connected: 3NofJiV_2DbJLwg2AABf
+[2025-11-25 19:42:08] info: 🔌 Admin connected: S2o8K9Ih9TZZpOtxAABh
+[2025-11-25 19:42:08] info: 🔌 Admin connected: 0GIoN_cD41lXqSHqAABj
+[2025-11-25 20:15:33] info: 🔌 Admin connected: t2FY0eVLgH-VPpU8AABl
+[2025-11-25 20:15:33] info: 🔌 Admin connected: rW30wWeBz-tbjwRFAABn
+[2025-11-25 20:32:37] info: 🔌 Admin connected: vR91kP8G7_V-tXLRAABp
+[2025-11-25 20:32:37] info: 🔌 Admin connected: BJg8fJ8n5DLcq3JLAABr
+[2025-11-25 20:32:37] info: 🔌 Admin connected: dkc4QzLdkYn2aq2UAABt
+[2025-11-25 20:58:56] info: 🔌 Admin connected: 6jMI3NWzJUDOrXO5AABv
+[2025-11-25 20:58:56] info: 🔌 Admin connected: pJAJGWeim_PSItSTAABx
+[2025-11-25 21:16:03] info: 🔌 Admin connected: FBKHP8QkuOVx_8JbAABz
+[2025-11-25 21:16:04] info: 🔌 Admin connected: pUqUWLzati3koIXtAAB1
+[2025-11-25 21:31:56] info: 🔌 Admin connected: DvwiCtD4ki2rIjUyAAB3
+[2025-11-25 21:31:56] info: 🔌 Admin connected: 1bfvll70D2FHojw2AAB5
+[2025-11-25 21:31:56] info: 🔌 Admin connected: 0ZrR5plSbnFJk23XAAB7
+[2025-11-25 21:59:35] info: 🔌 Admin connected: BDlhzHyiLkx5II__AAB9
+[2025-11-25 21:59:35] info: 🔌 Admin connected: xnSlF0sSBAkMiCMNAAB_
+[2025-11-25 22:17:11] info: 🔌 Admin connected: AEwPfDQe4Xfr9K1rAACB
+[2025-11-25 22:17:11] info: 🔌 Admin connected: 5rx01z2wGBJuTiiSAACD
+[2025-11-25 22:34:19] info: 🔌 Admin connected: X8EN6fFct_WQL4MKAACF
+[2025-11-25 22:34:19] info: 🔌 Admin connected: LggxYNmmpUOloBkDAACH
+[2025-11-25 22:34:19] info: 🔌 Admin connected: KpXepx4KSgG2Z6lGAACJ
+[2025-11-25 23:01:51] info: 🔌 Admin connected: el3dEpG2_oayqrASAACL
+[2025-11-25 23:01:51] info: 🔌 Admin connected: wQXlyu1qcJw-71CsAACN
+[2025-11-25 23:18:24] info: 🔌 Admin connected: WJyTg7cN501PQ7P-AACP
+[2025-11-25 23:35:54] info: 🔌 Admin connected: RAuBXO0ApHtDeAKuAACR
+[2025-11-25 23:35:54] info: 🔌 Admin connected: aCfdUSOQSAwKISN9AACT
+[2025-11-25 23:35:54] info: 🔌 Admin connected: xOch-fWvrbmy6XWVAACV
+[2025-11-26 00:20:56] info: 🔌 Admin connected: NggFJKzQMYDts-2nAACX
+[2025-11-26 00:20:57] info: 🔌 Admin connected: ogdYDT7VgpchIwzOAACZ
+[2025-11-26 00:38:42] info: 🔌 Admin connected: ymgwt6a1mMwrIfPRAACb
+[2025-11-26 00:38:42] info: 🔌 Admin connected: eDPBleVeCEKtHcWCAACd
+[2025-11-26 00:38:42] info: 🔌 Admin connected: c9NgsQrfiHFDZdASAACf
+[2025-11-26 00:47:08] info: 🔌 Admin connected: s8J0kYXu64tL-027AACh
+[2025-11-26 00:47:09] info: 🔌 Admin connected: ntHOicnQanCbfHdEAACj
+[2025-11-26 01:35:46] info: 🔌 Admin connected: XNeR5y0rli4oh9qZAACl
+[2025-11-26 01:35:46] info: 🔌 Admin connected: kKB2fdbTOqVuHczOAACn
+[2025-11-26 01:35:46] info: 🔌 Admin connected: U6dhQ7izPOI0i46oAACp
+[2025-11-26 02:05:42] info: 🔌 Admin connected: FQbbuMLC-x_fAYmlAACr
+[2025-11-26 02:05:42] info: 🔌 Admin connected: CN1qxhl_3iYuJys6AACt
+[2025-11-26 02:22:16] info: 🔌 Admin connected: PnYtDgSXJUQrizigAACv
+[2025-11-26 02:38:21] info: 🔌 Admin connected: UljV7arr5B14A8tXAACx
+[2025-11-26 02:38:21] info: 🔌 Admin connected: VQmII1orBrnoiv6hAACz
+[2025-11-26 02:38:21] info: 🔌 Admin connected: RbcixnGxVJT14coVAAC1
+[2025-11-26 02:54:44] info: 🔌 Admin connected: ZNRdkNyr1YsZjWUSAAC3
+[2025-11-26 02:54:44] info: 🔌 Admin connected: r8tjaDOA9h_wvA31AAC5
+[2025-11-26 03:12:17] info: 🔌 Admin connected: jBv2a1D53RizUHiAAAC7
+[2025-11-26 03:12:17] info: 🔌 Admin connected: sDZkcDzWK0HZyo-uAAC9
+[2025-11-26 03:28:37] info: 🔌 Admin connected: sRmkt_EVz8865p2kAAC_
+[2025-11-26 03:28:37] info: 🔌 Admin connected: 8NE8T-qHSVbEkdPwAADB
+[2025-11-26 03:44:04] info: 🔌 Admin connected: 7RkjT5lZWB6FZImZAADD
+[2025-11-26 03:44:04] info: 🔌 Admin connected: _wcLNWVsQCnlSnZMAADF
+[2025-11-26 03:44:04] info: 🔌 Admin connected: ztt3GHHW0-LxCmI-AADH
+[2025-11-26 04:18:13] info: 🔌 Admin connected: Vmq7Y6K3-0XSJeF0AADJ
+[2025-11-26 04:18:13] info: 🔌 Admin connected: E9yGJNoD2XP4jFrwAADL
+[2025-11-26 04:18:13] info: 🔌 Admin connected: e50s842swkn6Eea1AADN
+[2025-11-26 04:34:45] info: 🔌 Admin connected: D3PeKR1Zjb5UGo4fAADP
+[2025-11-26 04:34:45] info: 🔌 Admin connected: mrQ3l35nmz5CLsGSAADR
+[2025-11-26 04:50:15] info: 🔌 Admin connected: QgWVmvcvteKjuuayAADT
+[2025-11-26 04:50:15] info: 🔌 Admin connected: YM6aoLDCrg_UvjIsAADV
+[2025-11-26 04:50:15] info: 🔌 Admin connected: gKfXCI4OwhJnU3GFAADX
+[2025-11-26 05:22:06] info: 🔌 Admin connected: Vurmo71CeTfh-S2MAADZ
+[2025-11-26 05:22:06] info: 🔌 Admin connected: N7uidbzNpBoHLCkRAADb
+[2025-11-26 05:22:06] info: 🔌 Admin connected: 3MspbogDZwEc1O-cAADd
+[2025-11-26 05:37:36] info: 🔌 Admin connected: IS-nv1aPUy06Sa-bAADf
+[2025-11-26 05:37:36] info: 🔌 Admin connected: xdCc3h2RVg5yWi6pAADh
+[2025-11-26 05:55:03] info: 🔌 Admin connected: Ny73HQVcDiMwSHnQAADj
+[2025-11-26 05:55:03] info: 🔌 Admin connected: tpiCvmbITvrG21pSAADl
+[2025-11-26 05:55:03] info: 🔌 Admin connected: guQOTZioC6EypZKuAADn
+[2025-11-26 06:17:02] info: 🔌 Admin connected: ZSXff_SpHu7RsuX9AADp
+[2025-11-26 06:32:05] info: 🔌 Admin connected: TYHfsuWb6iHgtM41AADr
+[2025-11-26 06:32:05] info: 🔌 Admin connected: w8JR0kv9xay-5-ChAADt
+[2025-11-26 06:49:45] info: 🔌 Admin connected: rQGPDAD5FJuFuKdxAADv
+[2025-11-26 06:49:45] info: 🔌 Admin connected: VheSBl8imvqIVOXUAADx
+[2025-11-26 06:49:45] info: 🔌 Admin connected: WXJD27EGkUE-5EJOAADz
+[2025-11-26 07:07:30] info: 🔌 Admin connected: SWlvuL7DafT9wz5qAAD1
+[2025-11-26 07:07:30] info: 🔌 Admin connected: DXZGobfFUmXBuCvwAAD3
+[2025-11-26 07:25:23] info: 🔌 Admin connected: lZZhz61ArARQiFLBAAD5
+[2025-11-26 07:25:23] info: 🔌 Admin connected: ZuZGDOfJafXMMieWAAD7
+[2025-11-26 07:25:23] info: 🔌 Admin connected: utb-MIEMznqbjDJ6AAD9
+[2025-11-26 07:52:38] info: 🔌 Admin connected: h8d4_vfJIyt1oPg1AAEA
+[2025-11-26 07:52:38] info: 🔌 Admin connected: yXALHVSG1zjGaCyYAAEC
+[2025-11-26 07:52:38] info: 🔌 Admin connected: 6qqNuMI969fL4rTPAAED
+[2025-11-26 08:02:00] info: 🔌 Admin connected: ANbZmJZyTNfzEixgAAEF
+[2025-11-26 08:02:00] info: 🔌 Admin connected: L9TI8fiiTRY-5FiPAAEH
+[2025-11-26 08:04:52] info: 🔌 Admin connected: Esdati9FlzkEYeYIAAEJ
+[2025-11-26 08:04:52] info: 🔌 Admin connected: m5eNSaxapkKJbcLoAAEL

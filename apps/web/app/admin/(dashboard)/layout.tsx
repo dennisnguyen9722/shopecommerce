@@ -23,17 +23,13 @@ function AdminShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex h-screen w-full">
-      {/* SIDEBAR FIXED */}
-      <aside className="fixed left-0 top-0 h-screen z-40">
-        <Sidebar />
-      </aside>
+      {/* SIDEBAR */}
+      <Sidebar />
 
       {/* MAIN AREA */}
-      <div className="flex flex-col flex-1 ml-64">
-        {/* HEADER (Glass, Fixed) */}
+      <div className="flex flex-col flex-1">
         <Header />
 
-        {/* PAGE CONTENT SCROLLABLE */}
         <main className="flex-1 overflow-y-auto p-6 bg-linear-to-br from-gray-50 to-gray-100">
           <div className="max-w-[1500px] mx-auto">{children}</div>
         </main>

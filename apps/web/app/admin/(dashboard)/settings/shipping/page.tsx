@@ -23,7 +23,7 @@ import {
   verticalListSortingStrategy,
   arrayMove
 } from '@dnd-kit/sortable'
-import SortableItem from './sortable-item'
+import SortableItem from '@/src/components/dnd/sortable-item'
 
 export type ShippingRule = {
   _id: string
@@ -50,7 +50,6 @@ export default function ShippingSettingsPage() {
   const [selectedRule, setSelectedRule] = useState<ShippingRule | null>(null)
   const [createOpen, setCreateOpen] = useState(false)
 
-  // local ordered rules state for dnd
   const [rules, setRules] = useState<ShippingRule[]>([])
 
   const { data, refetch } = useQuery<ShippingRule[]>({
@@ -61,14 +60,12 @@ export default function ShippingSettingsPage() {
     }
   })
 
-  // sync fetched data -> local rules (keeps server order)
+  /** SYNC SERVER → LOCAL */
   useEffect(() => {
-    if (data) {
-      // sort by order if server sends order, otherwise keep as returned
-      setRules([...data])
-    }
+    if (data) setRules([...data])
   }, [data])
 
+  /** TOGGLE ACTIVE */
   const toggleMutation = useMutation({
     mutationFn: async (rule: ShippingRule) => {
       const res = await api.put(`/admin/shipping-rules/${rule._id}`, {
@@ -83,6 +80,7 @@ export default function ShippingSettingsPage() {
     }
   })
 
+  /** DELETE RULE */
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       await api.delete(`/admin/shipping-rules/${id}`)
@@ -93,22 +91,18 @@ export default function ShippingSettingsPage() {
     }
   })
 
-  // reorder mutation
+  /** REORDER */
   const reorderMutation = useMutation({
     mutationFn: async (orderedIds: string[]) => {
       await api.put('/admin/shipping-rules/reorder', { orderedIds })
     },
     onSuccess: () => {
-      toast.success('Đã lưu thứ tự ưu tiên')
-      refetch()
-    },
-    onError: () => {
-      toast.error('Lưu thứ tự thất bại')
+      toast.success('Đã lưu thứ tự')
       refetch()
     }
   })
 
-  /* dnd-kit sensors */
+  /** DND sensors */
   const sensors = useSensors(useSensor(PointerSensor))
 
   const onDragEnd = (event: any) => {
@@ -124,9 +118,7 @@ export default function ShippingSettingsPage() {
       const newOrder = arrayMove(rules, oldIndex, newIndex)
       setRules(newOrder)
 
-      // send ordered ids to backend
-      const orderedIds = newOrder.map((r) => r._id)
-      reorderMutation.mutate(orderedIds)
+      reorderMutation.mutate(newOrder.map((r) => r._id))
     }
   }
 
@@ -159,7 +151,6 @@ export default function ShippingSettingsPage() {
                     <div>
                       <h3 className="font-semibold">{rule.name}</h3>
 
-                      {/* Display rule details */}
                       <p className="text-sm text-muted-foreground mt-1">
                         {rule.type === 'flat' &&
                           `Phí cố định: ${rule.amount?.toLocaleString()}đ`}
@@ -179,30 +170,17 @@ export default function ShippingSettingsPage() {
 
                         {rule.type === 'district_based' &&
                           (() => {
-                            const province = rule.province as any
-                            const districts = rule.districts as any
+                            const province = rule.province
+                            const districts = rule.districts || []
 
-                            // Xử lý province
                             const provinceName =
-                              province?.name || province || '(Chưa có tỉnh)'
-
-                            // Xử lý districts - flatten nếu là nested array
-                            const flatDistricts = Array.isArray(districts)
-                              ? districts.flat().filter(Boolean)
-                              : []
-
+                              province?.name || '(Chưa có tỉnh)'
                             const districtNames =
-                              flatDistricts.length > 0
-                                ? flatDistricts
-                                    .map((d: any) => d?.name || d || '')
-                                    .filter(Boolean)
-                                    .join(', ')
+                              districts.length > 0
+                                ? districts.map((d) => d.name).join(', ')
                                 : '(Chưa có quận)'
 
-                            const amountStr =
-                              rule.amount?.toLocaleString() || '0'
-
-                            return `${provinceName}: ${districtNames} — ${amountStr}đ`
+                            return `${provinceName}: ${districtNames} — ${rule.amount?.toLocaleString()}đ`
                           })()}
                       </p>
                     </div>
@@ -235,19 +213,19 @@ export default function ShippingSettingsPage() {
         </DndContext>
       </div>
 
-      {/* CREATE */}
+      {/* SINGLE MODAL for both create + edit */}
       <ShippingRuleModal
-        open={createOpen}
-        onClose={() => setCreateOpen(false)}
-        onSaved={() => refetch()}
-      />
-
-      {/* EDIT */}
-      <ShippingRuleModal
-        open={!!selectedRule}
+        open={createOpen || !!selectedRule}
         rule={selectedRule}
-        onClose={() => setSelectedRule(null)}
-        onSaved={() => refetch()}
+        onClose={() => {
+          setCreateOpen(false)
+          setSelectedRule(null)
+        }}
+        onSaved={() => {
+          refetch()
+          setCreateOpen(false)
+          setSelectedRule(null)
+        }}
       />
     </div>
   )
