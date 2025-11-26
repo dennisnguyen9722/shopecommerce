@@ -25,11 +25,43 @@ export default function PaymentMethodConfigModal({
   onUpdated: () => void
 }) {
   const [config, setConfig] = useState<any>({})
+  const [uploading, setUploading] = useState(false)
 
   useEffect(() => {
     if (method) setConfig(method.config || {})
   }, [method])
 
+  // -------------------------
+  // UPLOAD QR CODE
+  // -------------------------
+  const handleUploadQR = async (e: any) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setUploading(true)
+
+    const formData = new FormData()
+    formData.append('file', file)
+
+    try {
+      const res = await api.post('/uploads/qr', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+
+      const url = res.data.url
+      setConfig({ ...config, qrCodeUrl: url })
+
+      toast.success('Tải QR code thành công!')
+    } catch (err) {
+      toast.error('Không thể upload ảnh!')
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  // -------------------------
+  // UPDATE CONFIG
+  // -------------------------
   const updateMutation = useMutation({
     mutationFn: async () => {
       const res = await api.put(`/admin/payment-methods/${method.key}`, {
@@ -86,25 +118,25 @@ export default function PaymentMethodConfigModal({
                   setConfig({ ...config, branch: e.target.value })
                 }
               />
-            </>
-          )}
 
-          {method.key === 'stripe' && (
-            <>
-              <Input
-                placeholder="Publishable Key"
-                value={config.publishableKey || ''}
-                onChange={(e) =>
-                  setConfig({ ...config, publishableKey: e.target.value })
-                }
-              />
-              <Input
-                placeholder="Secret Key"
-                value={config.secretKey || ''}
-                onChange={(e) =>
-                  setConfig({ ...config, secretKey: e.target.value })
-                }
-              />
+              {/* QR UPLOAD */}
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">QR chuyển khoản</p>
+                {config.qrCodeUrl && (
+                  <img
+                    src={config.qrCodeUrl}
+                    alt="QR"
+                    className="h-32 rounded border"
+                  />
+                )}
+
+                <Input
+                  type="file"
+                  accept="image/*"
+                  disabled={uploading}
+                  onChange={handleUploadQR}
+                />
+              </div>
             </>
           )}
 
@@ -131,6 +163,44 @@ export default function PaymentMethodConfigModal({
                   setConfig({ ...config, secretKey: e.target.value })
                 }
               />
+
+              {/* QR UPLOAD Momo */}
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">QR MoMo</p>
+                {config.qrCodeUrl && (
+                  <img
+                    src={config.qrCodeUrl}
+                    alt="QR"
+                    className="h-32 rounded border"
+                  />
+                )}
+
+                <Input
+                  type="file"
+                  accept="image/*"
+                  disabled={uploading}
+                  onChange={handleUploadQR}
+                />
+              </div>
+            </>
+          )}
+
+          {method.key === 'stripe' && (
+            <>
+              <Input
+                placeholder="Publishable Key"
+                value={config.publishableKey || ''}
+                onChange={(e) =>
+                  setConfig({ ...config, publishableKey: e.target.value })
+                }
+              />
+              <Input
+                placeholder="Secret Key"
+                value={config.secretKey || ''}
+                onChange={(e) =>
+                  setConfig({ ...config, secretKey: e.target.value })
+                }
+              />
             </>
           )}
 
@@ -144,7 +214,7 @@ export default function PaymentMethodConfigModal({
         <DialogFooter>
           <Button
             onClick={() => updateMutation.mutate()}
-            disabled={updateMutation.isPending}
+            disabled={updateMutation.isPending || uploading}
           >
             Lưu thay đổi
           </Button>

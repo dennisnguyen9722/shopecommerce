@@ -1185,3 +1185,677 @@
 [2025-11-26 08:02:00] info: 🔌 Admin connected: L9TI8fiiTRY-5FiPAAEH
 [2025-11-26 08:04:52] info: 🔌 Admin connected: Esdati9FlzkEYeYIAAEJ
 [2025-11-26 08:04:52] info: 🔌 Admin connected: m5eNSaxapkKJbcLoAAEL
+[2025-11-26 09:24:05] info: 📦 MongoDB connected
+[2025-11-26 09:24:05] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-26 09:24:14] info: 🔌 Admin connected: tO3dJcV6uGEozi2FAAAB
+[2025-11-26 09:24:14] info: 🔌 Admin connected: 8Fa6SOXah2D8hsiqAAAD
+[2025-11-26 09:26:28] info: 🔌 Admin connected: Nf-nIstlgSbtINttAAAF
+[2025-11-26 09:26:29] info: 🔌 Admin connected: Wr1HKXSbHgaR8rNIAAAH
+[2025-11-26 09:32:01] info: 📦 MongoDB connected
+[2025-11-26 09:32:01] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-26 09:32:03] info: 🔌 Admin connected: 25dxhOnh2Bx2fUicAAAB
+[2025-11-26 09:32:03] info: 🔌 Admin connected: 6iJSjwFSv4D9xNCxAAAD
+[2025-11-26 09:32:04] info: 🔌 Admin connected: ECJxZFTPHOkQQBZrAAAF
+[2025-11-26 09:32:06] info: 🔌 Admin connected: Ehxzdxot8er8GDeJAAAH
+[2025-11-26 09:32:06] info: 🔌 Admin connected: Mc2Tzh-5HjaXZDDWAAAJ
+[2025-11-26 09:40:54] info: 🔌 Admin connected: LaU2lmUQHczU6XUiAAAL
+[2025-11-26 09:40:54] info: 🔌 Admin connected: wkFpe3rLbstax6l_AAAN
+[2025-11-26 10:08:39] info: 📦 MongoDB connected
+[2025-11-26 10:08:39] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-26 10:08:40] info: 🔌 Admin connected: jHmOPYyYjiUYOTmBAAAB
+[2025-11-26 10:08:40] info: 🔌 Admin connected: FzwjTQOC1StlQHMfAAAD
+[2025-11-26 10:08:40] info: 🔌 Admin connected: NzpgiC1e3ZtyCzHHAAAF
+[2025-11-26 10:08:40] info: 🔌 Admin connected: ttI2vd3CH17sQ0BFAAAH
+[2025-11-26 10:08:40] info: 🔌 Admin connected: -8NqtFX_1VuitD8xAAAJ
+[2025-11-26 10:09:19] info: 📦 MongoDB connected
+[2025-11-26 10:09:19] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-26 10:09:19] info: 🔌 Admin connected: JDn2mpCVwab_T7ZuAAAB
+[2025-11-26 10:09:20] info: 🔌 Admin connected: Dv1SJA6SyD_9FrbmAAAD
+[2025-11-26 10:09:20] info: 🔌 Admin connected: 71k4wdPV5RIxNtxFAAAF
+[2025-11-26 10:09:20] info: 🔌 Admin connected: dOsWK-1pI0pC_DGPAAAH
+[2025-11-26 10:09:21] info: 🔌 Admin connected: 4P7KMZenVY6TIllVAAAJ
+[2025-11-26 10:12:28] info: 📦 MongoDB connected
+[2025-11-26 10:12:28] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-26 10:12:28] info: 🔌 Admin connected: 954VJQ_0mbVYPcNJAAAB
+[2025-11-26 10:12:30] info: 🔌 Admin connected: iKuCJqIgP70L2swjAAAE
+[2025-11-26 10:12:30] info: 🔌 Admin connected: -xS2sgjh-AiMCLmRAAAF
+[2025-11-26 10:12:31] info: 🔌 Admin connected: Ugi9lRkIBJBd9no4AAAH
+[2025-11-26 10:12:31] info: 🔌 Admin connected: meo6Khvu9w4Cyqf_AAAJ
+[2025-11-26 10:21:50] info: 📦 MongoDB connected
+[2025-11-26 10:21:50] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-26 10:21:50] info: 🔌 Admin connected: l-6u54t_68rv1kEnAAAB
+[2025-11-26 10:21:51] info: 🔌 Admin connected: abWgoOQkOw-ThHNSAAAD
+[2025-11-26 10:21:51] info: 🔌 Admin connected: 77gfYCTylELBofRvAAAF
+[2025-11-26 10:21:51] info: 🔌 Admin connected: 38J4gByy8NNvWQ9nAAAH
+[2025-11-26 10:21:51] info: 🔌 Admin connected: KxiaKRFd40MwAnCRAAAJ
+[2025-11-26 11:16:33] info: 📦 MongoDB connected
+[2025-11-26 11:16:33] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-26 11:16:41] info: 🔌 Admin connected: naplMUtefasKzlDTAAAB
+[2025-11-26 11:16:41] error: GET /admin/metrics - Không có quyền truy cập
+[2025-11-26 11:16:41] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:16:41] error: GET /admin/customers-stats - Không có quyền truy cập
+[2025-11-26 11:16:41] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:16:41] error: GET /admin/orders-stats - Không có quyền truy cập
+[2025-11-26 11:16:41] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:16:41] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:16:41] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:16:41] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:16:41] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:16:41] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:16:41] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:16:41] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:16:41] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:16:42] error: GET /admin/metrics - Không có quyền truy cập
+[2025-11-26 11:16:42] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:16:42] error: GET /admin/customers-stats - Không có quyền truy cập
+[2025-11-26 11:16:42] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:16:42] error: GET /admin/orders-stats - Không có quyền truy cập
+[2025-11-26 11:16:42] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:16:42] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:16:42] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:16:44] error: GET /admin/metrics - Không có quyền truy cập
+[2025-11-26 11:16:44] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:16:44] error: GET /admin/customers-stats - Không có quyền truy cập
+[2025-11-26 11:16:44] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:16:44] error: GET /admin/orders-stats - Không có quyền truy cập
+[2025-11-26 11:16:44] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:16:44] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:16:44] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:16:48] error: GET /admin/metrics - Không có quyền truy cập
+[2025-11-26 11:16:48] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:16:48] error: GET /admin/customers-stats - Không có quyền truy cập
+[2025-11-26 11:16:48] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:16:48] error: GET /admin/orders-stats - Không có quyền truy cập
+[2025-11-26 11:16:48] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:16:48] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:16:48] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:16:51] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:16:51] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:16:51] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:16:51] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:16:51] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:16:52] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:16:52] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:16:54] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:16:54] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:16:56] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:16:56] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:16:57] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:16:57] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:16:58] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:16:58] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:16:59] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:16:59] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:17:01] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:17:01] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:17:01] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:17:01] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:17:01] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:17:02] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:17:02] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:17:03] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:17:03] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:17:04] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:17:04] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:17:08] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:17:08] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:17:11] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:17:11] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:17:11] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:17:11] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:17:11] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:17:11] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:17:11] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:17:12] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:17:12] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:17:12] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:17:12] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:17:14] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:17:14] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:17:14] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:17:14] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:17:18] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:17:18] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:17:18] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:17:18] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:17:21] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:17:21] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:17:21] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:17:21] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:17:21] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:17:22] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:17:22] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:17:24] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:17:24] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:17:26] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:17:26] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:17:27] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:17:27] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:17:28] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:17:28] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:17:29] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:17:29] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:17:31] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:17:31] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:17:31] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:17:31] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:17:31] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:17:32] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:17:32] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:17:33] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:17:33] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:17:34] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:17:34] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:17:38] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:17:38] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:17:41] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:17:41] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:17:41] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:17:41] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:17:41] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:17:41] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:17:41] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:17:42] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:17:42] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:17:42] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:17:42] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:17:44] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:17:44] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:17:44] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:17:44] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:17:48] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:17:48] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:17:48] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:17:48] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:17:51] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:17:51] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:17:51] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:17:51] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:17:51] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:17:52] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:17:52] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:17:54] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:17:54] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:17:56] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:17:56] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:17:57] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:17:57] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:17:58] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:17:58] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:17:59] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:17:59] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:18:01] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:18:01] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:18:01] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:18:01] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:18:01] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:18:02] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:18:02] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:18:03] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:18:03] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:18:04] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:18:04] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:18:08] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:18:08] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:18:11] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:18:11] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:18:11] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:18:11] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:18:11] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:18:11] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:18:11] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:18:12] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:18:12] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:18:12] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:18:12] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:18:14] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:18:14] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:18:14] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:18:14] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:18:18] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:18:18] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:18:18] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:18:18] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:18:21] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:18:21] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:18:21] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:18:21] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:18:21] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:18:22] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:18:22] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:18:24] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:18:24] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:18:26] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:18:26] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:18:27] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:18:27] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:18:28] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:18:28] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:18:29] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:18:29] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:18:31] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:18:31] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:18:31] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:18:31] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:18:31] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:18:32] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:18:32] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:18:33] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:18:33] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:18:34] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:18:34] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:18:38] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:18:38] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:18:41] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:18:41] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:18:41] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:18:41] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:18:41] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:18:41] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:18:41] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:18:42] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:18:42] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:18:42] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:18:43] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:18:44] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:18:44] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:18:44] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:18:45] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:18:48] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:18:48] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:18:48] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:18:49] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:18:51] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:18:51] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:18:51] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:18:51] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:18:51] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:18:52] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:18:52] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:18:54] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:18:54] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:18:56] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:18:57] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:18:58] error: GET /admin/notifications - Không có quyền truy cập
+[2025-11-26 11:18:58] error: GET /admin/notifications/unread-count - Không có quyền truy cập
+[2025-11-26 11:18:58] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:18:58] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:19:02] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 11:19:02] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 11:19:02] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:19:02] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:19:02] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:19:12] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:19:12] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:19:12] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:19:22] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:19:22] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:19:22] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:19:32] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:19:32] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:19:32] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:19:42] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:19:42] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:19:42] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:19:52] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:19:52] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:19:52] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:20:43] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:20:43] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:20:43] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:21:43] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:21:43] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:21:43] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:22:43] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:22:43] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:22:43] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:23:43] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:23:43] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:23:43] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:24:43] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:24:43] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:24:43] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:25:43] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:25:43] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:25:43] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:26:43] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:26:43] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:26:43] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:27:43] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:27:43] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:27:43] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:28:43] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:28:43] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:28:43] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:29:43] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:29:43] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:29:43] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:30:43] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:30:43] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:30:43] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:31:43] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:31:43] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:31:43] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:32:43] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:32:43] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:32:43] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:33:43] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:33:43] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:33:43] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:34:43] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:34:43] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:34:43] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:35:43] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:35:43] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:35:43] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:36:43] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:36:43] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:36:43] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:37:43] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:37:43] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:37:43] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:38:43] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:38:43] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:38:43] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:39:43] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:39:43] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:39:43] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:40:43] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:40:43] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:40:43] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:41:43] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:41:43] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:41:43] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:42:43] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:42:43] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:42:43] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:43:43] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:43:43] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:43:43] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:44:43] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:44:43] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:44:43] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:45:43] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:45:43] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:45:43] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:46:43] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:46:43] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:46:43] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:47:43] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:47:43] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:47:43] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:48:43] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:48:43] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:48:43] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:49:43] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:49:43] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:49:43] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:50:43] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 11:50:43] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 11:50:43] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 11:51:33] info: 📦 MongoDB connected
+[2025-11-26 11:51:33] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-26 11:51:36] info: 🔌 Admin connected: a4mPJkGdBY3mkNzkAAAB
+[2025-11-26 11:51:50] info: 🔌 Admin connected: 6YKQSI3SuVxNojM8AAAD
+[2025-11-26 11:51:51] info: 🔌 Admin connected: wilpBgryudc9H1kXAAAF
+[2025-11-26 11:51:57] info: 🔌 Admin connected: GXDFOd8f6i81aYh6AAAH
+[2025-11-26 11:51:58] info: 🔌 Admin connected: rMGf2YEo2wdyRljLAAAJ
+[2025-11-26 12:01:47] info: 🔌 Admin connected: NhmLjWzfh8Ny1uCfAAAL
+[2025-11-26 12:03:56] info: 🔌 Admin connected: HEZMONbv8kD1JHgnAAAN
+[2025-11-26 12:37:39] info: 🔌 Admin connected: _RKNg2XSAV6ciQywAAAP
+[2025-11-26 13:13:05] info: 🔌 Admin connected: b9kBOojjjB4nQGfsAAAR
+[2025-11-26 13:20:06] info: 🔌 Admin connected: 2Kr-wI3ZKfErVDCeAAAT
+[2025-11-26 13:20:06] info: 🔌 Admin connected: hXdzDkfLAVcrreudAAAV
+[2025-11-26 13:21:41] info: 🔌 Admin connected: CXrnqZHmI5F9e59zAAAX
+[2025-11-26 13:37:52] info: 🔌 Admin connected: ZGtgbzxy5DLM2gKkAAAZ
+[2025-11-26 13:39:00] info: 🔌 Admin connected: -JdrKxPR9Iut3AgBAAAb
+[2025-11-26 13:39:03] info: 🔌 Admin connected: vWOhF05JphYYqSFvAAAd
+[2025-11-26 13:40:14] info: 🔌 Admin connected: miIxSfPNkS5gy3SVAAAf
+[2025-11-26 14:49:26] info: 🔌 Admin connected: qVeWm_HJKwx4Ya8BAAAh
+[2025-11-26 14:49:26] info: 🔌 Admin connected: FF77Hi8vDkAXKnP8AAAj
+[2025-11-26 14:58:31] info: 🔌 Admin connected: AjzgBNWjWB35iIr4AAAl
+[2025-11-26 14:58:31] info: 🔌 Admin connected: QavmvUggqaWJ5F_hAAAn
+[2025-11-26 16:12:17] error: PUT /admin/roles/null - Cast to ObjectId failed for value "null" (type string) at path "_id" for model "Role"
+[2025-11-26 16:12:28] error: PUT /admin/roles/null - Cast to ObjectId failed for value "null" (type string) at path "_id" for model "Role"
+[2025-11-26 16:39:33] info: 📦 MongoDB connected
+[2025-11-26 16:39:33] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-26 16:40:38] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:40:38] error: GET /admin/metrics - Không có quyền truy cập
+[2025-11-26 16:40:38] error: GET /admin/orders-stats - Không có quyền truy cập
+[2025-11-26 16:40:38] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:40:38] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 16:40:38] error: GET /admin/customers-stats - Không có quyền truy cập
+[2025-11-26 16:40:38] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 16:40:38] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 16:40:38] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:40:38] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 16:40:38] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 16:40:38] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 16:40:39] error: GET /admin/metrics - Không có quyền truy cập
+[2025-11-26 16:40:39] error: GET /admin/customers-stats - Không có quyền truy cập
+[2025-11-26 16:40:39] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:40:39] error: GET /admin/orders-stats - Không có quyền truy cập
+[2025-11-26 16:40:39] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:40:39] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:40:41] error: GET /admin/customers-stats - Không có quyền truy cập
+[2025-11-26 16:40:41] error: GET /admin/metrics - Không có quyền truy cập
+[2025-11-26 16:40:41] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:40:41] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:40:41] error: GET /admin/orders-stats - Không có quyền truy cập
+[2025-11-26 16:40:42] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:40:46] error: GET /admin/customers-stats - Không có quyền truy cập
+[2025-11-26 16:40:46] error: GET /admin/metrics - Không có quyền truy cập
+[2025-11-26 16:40:46] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:40:46] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:40:46] error: GET /admin/orders-stats - Không có quyền truy cập
+[2025-11-26 16:40:46] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:40:48] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:40:48] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 16:40:48] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:40:48] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 16:40:48] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 16:40:49] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:40:49] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:40:51] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:40:51] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:40:56] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:40:56] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:40:58] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:40:58] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:40:58] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 16:40:58] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 16:40:58] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 16:40:59] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:40:59] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:41:01] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:41:01] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:41:06] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:41:06] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:41:08] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:41:08] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 16:41:08] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:41:08] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 16:41:08] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 16:41:09] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:41:09] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:41:11] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:41:11] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:41:16] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:41:16] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:41:18] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:41:18] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:41:18] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 16:41:18] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 16:41:18] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 16:41:19] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:41:19] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:41:21] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:41:21] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:41:26] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:41:26] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:41:28] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:41:28] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:41:28] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 16:41:28] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 16:41:28] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 16:41:29] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:41:29] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:41:31] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:41:31] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:41:36] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:41:36] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:41:38] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:41:38] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:41:38] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 16:41:38] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 16:41:38] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 16:41:39] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:41:39] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:41:41] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:41:41] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:41:46] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:41:46] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:41:48] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:41:48] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:41:48] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 16:41:48] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 16:41:48] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 16:41:49] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:41:49] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:41:51] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:41:52] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:53:10] info: 📦 MongoDB connected
+[2025-11-26 16:53:10] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-26 16:53:18] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:53:18] error: GET /admin/metrics - Không có quyền truy cập
+[2025-11-26 16:53:18] error: GET /admin/customers-stats - Không có quyền truy cập
+[2025-11-26 16:53:18] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:53:18] error: GET /admin/orders-stats - Không có quyền truy cập
+[2025-11-26 16:53:18] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 16:53:19] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 16:53:19] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 16:53:19] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:53:20] error: GET /admin/customers-stats - Không có quyền truy cập
+[2025-11-26 16:53:20] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:53:20] error: GET /admin/metrics - Không có quyền truy cập
+[2025-11-26 16:53:20] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:53:20] error: GET /admin/orders-stats - Không có quyền truy cập
+[2025-11-26 16:53:20] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:53:22] error: GET /admin/customers-stats - Không có quyền truy cập
+[2025-11-26 16:53:22] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:53:22] error: GET /admin/metrics - Không có quyền truy cập
+[2025-11-26 16:53:22] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:53:22] error: GET /admin/orders-stats - Không có quyền truy cập
+[2025-11-26 16:53:22] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:53:26] error: GET /admin/customers-stats - Không có quyền truy cập
+[2025-11-26 16:53:26] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:53:26] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:53:26] error: GET /admin/metrics - Không có quyền truy cập
+[2025-11-26 16:53:26] error: GET /admin/orders-stats - Không có quyền truy cập
+[2025-11-26 16:53:26] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:53:28] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:53:28] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:53:28] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 16:53:28] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 16:53:28] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 16:53:29] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:53:29] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:53:32] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:53:32] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:53:36] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:53:36] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:53:38] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:53:38] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:53:38] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 16:53:38] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 16:53:38] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 16:53:39] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:53:39] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:53:42] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:53:42] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:53:46] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:53:46] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:53:48] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:53:48] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:53:48] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 16:53:48] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 16:53:48] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 16:53:49] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:53:49] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:53:52] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:53:52] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:53:56] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:53:56] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:53:58] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:53:58] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 16:53:58] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 16:53:58] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 16:53:58] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:54:00] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:54:00] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:54:02] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:54:02] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:54:06] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:54:06] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:54:08] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:54:08] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:54:08] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 16:54:08] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 16:54:08] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 16:54:09] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:54:09] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:54:12] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:54:12] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:54:16] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:54:16] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:54:18] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:54:18] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:54:18] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 16:54:18] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 16:54:18] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 16:54:19] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:54:19] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:54:22] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:54:22] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:54:26] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:54:26] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:54:28] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:54:28] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:54:28] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 16:54:28] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 16:54:28] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 16:54:29] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:54:29] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:54:32] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:54:32] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:54:36] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:54:36] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:54:38] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:54:38] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 16:54:38] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 16:54:38] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:54:38] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 16:54:39] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:54:39] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:54:42] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:54:42] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:54:46] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:54:46] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:54:48] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:54:48] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:54:48] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 16:54:48] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 16:54:48] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 16:54:49] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:54:49] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:58:06] info: 📦 MongoDB connected
+[2025-11-26 16:58:06] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-26 16:58:08] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:58:08] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:58:08] error: GET /admin/analytics/best-products?limit=5&days=30 - Không có quyền truy cập
+[2025-11-26 16:58:08] error: GET /admin/analytics/top-customers?limit=5 - Không có quyền truy cập
+[2025-11-26 16:58:08] error: GET /admin/analytics/purchase-frequency - Không có quyền truy cập
+[2025-11-26 16:58:10] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:58:10] error: GET /admin/revenue - Không có quyền truy cập
+[2025-11-26 16:58:12] error: GET /admin/analytics/inventory-overview - Không có quyền truy cập
+[2025-11-26 16:58:12] error: GET /admin/revenue - Không có quyền truy cập

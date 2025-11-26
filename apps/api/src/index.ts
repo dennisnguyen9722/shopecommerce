@@ -9,6 +9,7 @@ import 'express-async-errors'
 import http from 'http'
 import { Server as SocketIOServer } from 'socket.io'
 
+// ROUTES
 import adminRoutes from './routes/admin'
 import authRoutes from './routes/auth'
 import productsRoutes from './routes/products'
@@ -25,7 +26,11 @@ import tags from './routes/blog/tags'
 import paymentMethodsRoutes from './routes/paymentMethods'
 import shippingRulesRoutes from './routes/shippingRules'
 import locationsRoutes from './routes/locations'
+import uploadsRoutes from './routes/uploads'
+import rolesRoutes from './routes/roles'
+import usersRoutes from './routes/users'
 
+// MIDDLEWARE
 import { errorHandler } from './middleware/errorHandler'
 import { log } from './utils/logger'
 
@@ -42,9 +47,7 @@ app.use(express.json())
 const server = http.createServer(app)
 
 export const io = new SocketIOServer(server, {
-  cors: {
-    origin: '*'
-  }
+  cors: { origin: '*' }
 })
 
 io.on('connection', (socket) => {
@@ -57,6 +60,7 @@ io.on('connection', (socket) => {
 app.use('/admin', adminRoutes)
 app.use('/auth', authRoutes)
 
+// ADMIN RESOURCES
 app.use('/admin/products', productsRoutes)
 app.use('/admin/categories', categoriesRoutes)
 app.use('/admin/inventory', inventoryRoutes)
@@ -65,16 +69,19 @@ app.use('/admin/customers', customersRoutes)
 app.use('/admin/analytics', analyticsRoutes)
 app.use('/admin/banners', bannersRoutes)
 app.use('/admin/payment-methods', paymentMethodsRoutes)
+app.use('/admin/roles', rolesRoutes)
+app.use('/admin/users', usersRoutes)
 app.use('/admin/shipping-rules', shippingRulesRoutes)
 app.use('/admin/locations', locationsRoutes)
-
-// NEW:
 app.use('/admin/notifications', notificationsRoutes)
 
 // BLOG MODULE
 app.use('/admin/blog/posts', posts)
 app.use('/admin/blog/categories', categories)
 app.use('/admin/blog/tags', tags)
+
+// UPLOAD ROUTES
+app.use('/uploads', uploadsRoutes)
 
 /* ----------------------------
    ERROR HANDLER

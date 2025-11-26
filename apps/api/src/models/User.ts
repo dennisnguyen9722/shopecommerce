@@ -1,13 +1,35 @@
-import mongoose, { Schema } from 'mongoose'
+import mongoose, { Schema, Document } from 'mongoose'
 import bcrypt from 'bcryptjs'
 
-const UserSchema = new Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  role: { type: String, enum: ['customer', 'admin'], default: 'customer' },
-  address: String
-})
+export interface IUser extends Document {
+  name: string
+  email: string
+  password: string
+  role: mongoose.Types.ObjectId | null
+  address?: string
+
+  matchPassword(enteredPassword: string): Promise<boolean>
+}
+
+const UserSchema = new Schema<IUser>(
+  {
+    name: { type: String, required: true },
+
+    email: { type: String, required: true, unique: true },
+
+    password: { type: String, required: true },
+
+    // 🔥 Sử dụng Role model mới
+    role: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Role',
+      default: null // user mới vẫn không có role → vẫn login được → admin gán role sau
+    },
+
+    address: { type: String }
+  },
+  { timestamps: true }
+)
 
 // 🔒 Hash mật khẩu trước khi lưu
 UserSchema.pre('save', async function (next) {
@@ -22,4 +44,4 @@ UserSchema.methods.matchPassword = async function (enteredPassword: string) {
   return await bcrypt.compare(enteredPassword, this.password)
 }
 
-export default mongoose.models.User || mongoose.model('User', UserSchema)
+export default mongoose.models.User || mongoose.model<IUser>('User', UserSchema)

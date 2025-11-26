@@ -10,6 +10,9 @@ import { Input } from '@/components/ui/input'
 import api from '@/src/lib/api'
 import { setCookie } from 'cookies-next'
 
+// ⭐ ADD THIS
+import { getFirstAccessibleRoute } from '@/src/utils/getFirstRoute'
+
 export default function LoginPage() {
   const router = useRouter()
   const params = useSearchParams()
@@ -32,16 +35,21 @@ export default function LoginPage() {
         password
       })
 
-      // lưu token vào zustand (optional)
+      // Lưu token + user vào zustand
       setAuth(data.token, data.user)
 
-      // 🔥 Quan trọng: lưu token vào cookie để middleware đọc
+      // Lưu token vào cookie để middleware dùng
       setCookie('token', data.token, {
         path: '/',
         maxAge: 60 * 60 * 24 * 7
       })
 
-      router.push('/admin/overview')
+      // ⭐ LẤY DANH SÁCH QUYỀN → TÌM TRANG ĐẦU TIÊN USER ĐƯỢC VÀO
+      const perms = data.user.permissions || []
+      const firstRoute = getFirstAccessibleRoute(perms)
+
+      // ⭐ điều hướng về route phù hợp
+      router.push(firstRoute)
     } catch (error: any) {
       setErr(error.response?.data?.message || 'Đăng nhập thất bại')
     } finally {

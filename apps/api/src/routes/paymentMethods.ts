@@ -6,37 +6,25 @@ const router = express.Router()
 
 router.use(protect, adminOnly)
 
-// GET all
-router.get('/', async (_req, res) => {
-  const list = await PaymentMethod.find().sort({ sortOrder: 1 })
-  res.json(list)
-})
+const DEFAULT_BANK_CONFIG = {
+  bankName: '',
+  accountName: '',
+  accountNumber: '',
+  branch: '',
+  instructions: '',
+  qrCodeUrl: ''
+}
 
-// UPDATE config + enabled
-router.put('/:key', async (req, res) => {
-  const updated = await PaymentMethod.findOneAndUpdate(
-    { key: req.params.key },
-    req.body,
-    { new: true }
-  )
+const DEFAULT_MOMO_CONFIG = {
+  phone: '',
+  accountName: '',
+  qrCodeUrl: '',
+  instructions: ''
+}
 
-  if (!updated) return res.status(404).json({ error: 'Not found' })
-
-  res.json(updated)
-})
-
-// TOGGLE enabled
-router.patch('/:key/toggle', async (req, res) => {
-  const method = await PaymentMethod.findOne({ key: req.params.key })
-  if (!method) return res.status(404).json({ error: 'Not found' })
-
-  method.enabled = !method.enabled
-  await method.save()
-
-  res.json(method)
-})
-
+// ---------------------------
 // REORDER
+// ---------------------------
 router.put('/reorder', async (req, res) => {
   const { orderedKeys } = req.body
 
@@ -52,6 +40,59 @@ router.put('/reorder', async (req, res) => {
   }
 
   res.json({ ok: true })
+})
+
+// ---------------------------
+// GET ALL
+// ---------------------------
+router.get('/', async (_req, res) => {
+  const list = await PaymentMethod.find().sort({ sortOrder: 1 })
+  res.json(list)
+})
+
+// ---------------------------
+// UPDATE (Bank + Momo merge config)
+// ---------------------------
+router.put('/:key', async (req, res) => {
+  const { key } = req.params
+  let updates = req.body
+
+  // ---- BANK MERGE ----
+  if (key === 'bank') {
+    updates.config = {
+      ...DEFAULT_BANK_CONFIG,
+      ...(updates.config || {})
+    }
+  }
+
+  // ---- MOMO MERGE ----
+  if (key === 'momo') {
+    updates.config = {
+      ...DEFAULT_MOMO_CONFIG,
+      ...(updates.config || {})
+    }
+  }
+
+  const updated = await PaymentMethod.findOneAndUpdate({ key }, updates, {
+    new: true
+  })
+
+  if (!updated) return res.status(404).json({ error: 'Not found' })
+
+  res.json(updated)
+})
+
+// ---------------------------
+// TOGGLE
+// ---------------------------
+router.patch('/:key/toggle', async (req, res) => {
+  const method = await PaymentMethod.findOne({ key: req.params.key })
+  if (!method) return res.status(404).json({ error: 'Not found' })
+
+  method.enabled = !method.enabled
+  await method.save()
+
+  res.json(method)
 })
 
 export default router

@@ -3,6 +3,8 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
+
+// ICONS
 import {
   LayoutDashboard,
   Package,
@@ -17,9 +19,7 @@ import {
   Menu,
   Settings,
   CreditCard,
-  Truck,
-  Mail,
-  ShieldCheck
+  Truck
 } from 'lucide-react'
 
 import { motion, AnimatePresence } from 'framer-motion'
@@ -32,11 +32,23 @@ import {
   TooltipProvider
 } from '@/components/ui/tooltip'
 
-export function Sidebar() {
+// PERMISSIONS
+import { usePermission } from '@/src/hooks/usePermission'
+import { PERMISSIONS } from '@/src/constants/permissions'
+
+export function Sidebar({
+  onWidthChange
+}: {
+  onWidthChange?: (w: number) => void
+}) {
   const pathname = usePathname()
   const [collapsed, setCollapsed] = useState(false)
 
-  // Auto open Blog group
+  // Notify parent layout when width changes
+  useEffect(() => {
+    if (onWidthChange) onWidthChange(collapsed ? 80 : 260)
+  }, [collapsed])
+
   const autoOpenBlog = pathname.startsWith('/admin/blog')
   const autoOpenSettings = pathname.startsWith('/admin/settings')
 
@@ -46,13 +58,30 @@ export function Sidebar() {
 
   // Auto collapse for small screens
   useEffect(() => {
-    const handleResize = () => {
-      setCollapsed(window.innerWidth < 1280)
-    }
+    const handleResize = () => setCollapsed(window.innerWidth < 1280)
     handleResize()
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
   }, [])
+
+  // ================================
+  // PERMISSIONS CHECK
+  // ================================
+  const canDashboard = usePermission(PERMISSIONS.VIEW_DASHBOARD)
+  const canOrders = usePermission(PERMISSIONS.MANAGE_ORDERS)
+  const canProducts = usePermission(PERMISSIONS.MANAGE_PRODUCTS)
+  const canCategories = usePermission(PERMISSIONS.MANAGE_CATEGORIES)
+  const canCustomers = usePermission(PERMISSIONS.MANAGE_CUSTOMERS)
+  const canBanners = usePermission(PERMISSIONS.MANAGE_BANNERS)
+
+  const canBlogPosts = usePermission(PERMISSIONS.MANAGE_BLOG_POSTS)
+  const canBlogCategories = usePermission(PERMISSIONS.MANAGE_BLOG_CATEGORIES)
+  const canBlogTags = usePermission(PERMISSIONS.MANAGE_BLOG_TAGS)
+
+  const canPayment = usePermission(PERMISSIONS.MANAGE_PAYMENT)
+  const canShipping = usePermission(PERMISSIONS.MANAGE_SHIPPING)
+  const canUsers = usePermission(PERMISSIONS.MANAGE_USERS)
+  const canRoles = usePermission(PERMISSIONS.MANAGE_ROLES)
 
   return (
     <TooltipProvider delayDuration={80}>
@@ -82,139 +111,167 @@ export function Sidebar() {
 
         {/* NAV */}
         <nav className="flex-1 px-3 py-4 space-y-1">
-          <NavItem
-            href="/admin/overview"
-            icon={LayoutDashboard}
-            label="Tổng quan"
-            active={pathname === '/admin/overview'}
-            collapsed={collapsed}
-          />
-
-          <NavItem
-            href="/admin/orders"
-            icon={ShoppingBag}
-            label="Đơn hàng"
-            active={pathname.startsWith('/admin/orders')}
-            collapsed={collapsed}
-          />
-
-          <NavItem
-            href="/admin/products"
-            icon={Package}
-            label="Sản phẩm"
-            active={pathname.startsWith('/admin/products')}
-            collapsed={collapsed}
-          />
-
-          <NavItem
-            href="/admin/categories"
-            icon={FolderTree}
-            label="Danh mục sản phẩm"
-            active={pathname.startsWith('/admin/categories')}
-            collapsed={collapsed}
-          />
-
-          <NavItem
-            href="/admin/customers"
-            icon={Users}
-            label="Khách hàng"
-            active={pathname.startsWith('/admin/customers')}
-            collapsed={collapsed}
-          />
-
-          <NavItem
-            href="/admin/banners"
-            icon={ImageIcon}
-            label="Banner / Slider"
-            active={pathname.startsWith('/admin/banners')}
-            collapsed={collapsed}
-          />
-
-          {/* BLOG GROUP */}
-          <AccordionGroup
-            id="blog"
-            label="Blog / Tin tức"
-            icon={FileText}
-            active={pathname.startsWith('/admin/blog')}
-            collapsed={collapsed}
-            openGroup={openGroup}
-            setOpenGroup={setOpenGroup}
-          >
-            <SubItem
-              href="/admin/blog/posts"
-              label="Bài viết"
-              icon={FileText}
-              active={pathname.startsWith('/admin/blog/posts')}
+          {/* ================= Dashboard ================= */}
+          {canDashboard && (
+            <NavItem
+              href="/admin/overview"
+              icon={LayoutDashboard}
+              label="Tổng quan"
+              active={pathname === '/admin/overview'}
               collapsed={collapsed}
             />
+          )}
 
-            <SubItem
-              href="/admin/blog/categories"
-              label="Danh mục bài viết"
+          {/* ================= Orders ================= */}
+          {canOrders && (
+            <NavItem
+              href="/admin/orders"
+              icon={ShoppingBag}
+              label="Đơn hàng"
+              active={pathname.startsWith('/admin/orders')}
+              collapsed={collapsed}
+            />
+          )}
+
+          {/* ================= Products ================= */}
+          {canProducts && (
+            <NavItem
+              href="/admin/products"
+              icon={Package}
+              label="Sản phẩm"
+              active={pathname.startsWith('/admin/products')}
+              collapsed={collapsed}
+            />
+          )}
+
+          {/* ================= Product Categories ================= */}
+          {canCategories && (
+            <NavItem
+              href="/admin/categories"
               icon={FolderTree}
-              active={pathname.startsWith('/admin/blog/categories')}
+              label="Danh mục sản phẩm"
+              active={pathname.startsWith('/admin/categories')}
               collapsed={collapsed}
             />
+          )}
 
-            <SubItem
-              href="/admin/blog/tags"
-              label="Tags"
-              icon={TagsIcon}
-              active={pathname.startsWith('/admin/blog/tags')}
-              collapsed={collapsed}
-            />
-          </AccordionGroup>
-
-          {/* SETTINGS GROUP */}
-          <AccordionGroup
-            id="settings"
-            label="Cài đặt"
-            icon={Settings}
-            active={pathname.startsWith('/admin/settings')}
-            collapsed={collapsed}
-            openGroup={openGroup}
-            setOpenGroup={setOpenGroup}
-          >
-            <SubItem
-              href="/admin/settings/payment"
-              label="Phương thức thanh toán"
-              icon={CreditCard}
-              active={pathname.startsWith('/admin/settings/payment')}
-              collapsed={collapsed}
-            />
-
-            <SubItem
-              href="/admin/settings/shipping"
-              label="Phí vận chuyển"
-              icon={Truck}
-              active={pathname.startsWith('/admin/settings/shipping')}
-              collapsed={collapsed}
-            />
-
-            <SubItem
-              href="/admin/settings/taxes"
-              label="Thuế"
-              icon={ShieldCheck}
-              active={pathname.startsWith('/admin/settings/taxes')}
-              collapsed={collapsed}
-            />
-
-            <SubItem
-              href="/admin/settings/emails"
-              label="Email templates"
-              icon={Mail}
-              active={pathname.startsWith('/admin/settings/emails')}
-              collapsed={collapsed}
-            />
-
-            <SubItem
-              href="/admin/settings/staff"
-              label="Tài khoản & phân quyền"
+          {/* ================= Customers ================= */}
+          {canCustomers && (
+            <NavItem
+              href="/admin/customers"
               icon={Users}
-              active={pathname.startsWith('/admin/settings/staff')}
+              label="Khách hàng"
+              active={pathname.startsWith('/admin/customers')}
               collapsed={collapsed}
             />
-          </AccordionGroup>
+          )}
+
+          {/* ================= Banners ================= */}
+          {canBanners && (
+            <NavItem
+              href="/admin/banners"
+              icon={ImageIcon}
+              label="Banner / Slider"
+              active={pathname.startsWith('/admin/banners')}
+              collapsed={collapsed}
+            />
+          )}
+
+          {/* ================= BLOG ================= */}
+          {(canBlogPosts || canBlogCategories || canBlogTags) && (
+            <AccordionGroup
+              id="blog"
+              label="Blog / Tin tức"
+              icon={FileText}
+              active={pathname.startsWith('/admin/blog')}
+              collapsed={collapsed}
+              openGroup={openGroup}
+              setOpenGroup={setOpenGroup}
+            >
+              {canBlogPosts && (
+                <SubItem
+                  href="/admin/blog/posts"
+                  label="Bài viết"
+                  icon={FileText}
+                  active={pathname.startsWith('/admin/blog/posts')}
+                  collapsed={collapsed}
+                />
+              )}
+
+              {canBlogCategories && (
+                <SubItem
+                  href="/admin/blog/categories"
+                  label="Danh mục bài viết"
+                  icon={FolderTree}
+                  active={pathname.startsWith('/admin/blog/categories')}
+                  collapsed={collapsed}
+                />
+              )}
+
+              {canBlogTags && (
+                <SubItem
+                  href="/admin/blog/tags"
+                  label="Tags"
+                  icon={TagsIcon}
+                  active={pathname.startsWith('/admin/blog/tags')}
+                  collapsed={collapsed}
+                />
+              )}
+            </AccordionGroup>
+          )}
+
+          {/* ================= SETTINGS ================= */}
+          {(canPayment || canShipping || canUsers || canRoles) && (
+            <AccordionGroup
+              id="settings"
+              label="Cài đặt"
+              icon={Settings}
+              active={pathname.startsWith('/admin/settings')}
+              collapsed={collapsed}
+              openGroup={openGroup}
+              setOpenGroup={setOpenGroup}
+            >
+              {canPayment && (
+                <SubItem
+                  href="/admin/settings/payment"
+                  label="Phương thức thanh toán"
+                  icon={CreditCard}
+                  active={pathname.startsWith('/admin/settings/payment')}
+                  collapsed={collapsed}
+                />
+              )}
+
+              {canShipping && (
+                <SubItem
+                  href="/admin/settings/shipping"
+                  label="Phí vận chuyển"
+                  icon={Truck}
+                  active={pathname.startsWith('/admin/settings/shipping')}
+                  collapsed={collapsed}
+                />
+              )}
+
+              {canUsers && (
+                <SubItem
+                  href="/admin/settings/users"
+                  label="Tài khoản"
+                  icon={Users}
+                  active={pathname.startsWith('/admin/settings/users')}
+                  collapsed={collapsed}
+                />
+              )}
+
+              {canRoles && (
+                <SubItem
+                  href="/admin/settings/roles"
+                  label="Phân quyền (Roles)"
+                  icon={Settings}
+                  active={pathname.startsWith('/admin/settings/roles')}
+                  collapsed={collapsed}
+                />
+              )}
+            </AccordionGroup>
+          )}
         </nav>
 
         {/* BOTTOM AVATAR */}
@@ -223,10 +280,7 @@ export function Sidebar() {
           animate={{ opacity: 1, y: 0 }}
           className="p-4 border-t border-white/20 flex items-center gap-3"
         >
-          <div className="relative">
-            <Users className="w-10 h-10 text-gray-700 dark:text-gray-200" />
-            <div className="absolute inset-0 blur-xl rounded-full bg-gradient-to-r from-purple-400/30 to-blue-400/30 -z-10"></div>
-          </div>
+          <Users className="w-10 h-10 text-gray-700 dark:text-gray-200" />
 
           {!collapsed && (
             <div className="flex flex-col">
@@ -263,7 +317,7 @@ function NavItem({ href, label, icon: Icon, active, collapsed }: any) {
 
       <Icon
         className={cn(
-          'w-5 h-5 transition',
+          'w-5 h-5',
           active ? 'text-gray-900 dark:text-white' : 'text-gray-500'
         )}
       />
@@ -360,7 +414,7 @@ function AccordionGroup({
  | SUB ITEM
  *-------------------------------------------------------*/
 function SubItem({ href, label, icon: Icon, active, collapsed }: any) {
-  const component = (
+  const Component = (
     <Link
       href={href}
       className={cn(
@@ -379,7 +433,7 @@ function SubItem({ href, label, icon: Icon, active, collapsed }: any) {
 
       <Icon
         className={cn(
-          'w-4 h-4 transition',
+          'w-4 h-4',
           active
             ? 'text-gray-900 dark:text-white'
             : 'text-gray-400 group-hover:text-gray-700'
@@ -393,10 +447,10 @@ function SubItem({ href, label, icon: Icon, active, collapsed }: any) {
   if (collapsed)
     return (
       <Tooltip>
-        <TooltipTrigger asChild>{component}</TooltipTrigger>
+        <TooltipTrigger asChild>{Component}</TooltipTrigger>
         <TooltipContent side="right">{label}</TooltipContent>
       </Tooltip>
     )
 
-  return component
+  return Component
 }
