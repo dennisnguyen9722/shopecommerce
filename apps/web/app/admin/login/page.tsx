@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/src/store/authStore'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card'
@@ -9,10 +9,10 @@ import { Input } from '@/components/ui/input'
 import api from '@/src/lib/api'
 import { setCookie } from 'cookies-next'
 import { getFirstRoute } from '@/src/utils/getFirstRoute'
+import { toast } from 'sonner' // ⭐ THÊM IMPORT
 
 export default function LoginPage() {
   const router = useRouter()
-  const params = useSearchParams()
   const setAuth = useAuthStore((s) => s.setAuth)
 
   const [email, setEmail] = useState('')
@@ -36,15 +36,19 @@ export default function LoginPage() {
         maxAge: 60 * 60 * 24 * 7
       })
 
+      // ⭐ THÊM TOAST
+      toast.success('Đăng nhập thành công! 🎉')
+
       // CHỜ ZUSTAND CẬP NHẬT
       setTimeout(() => {
         const firstRoute = getFirstRoute(data.user)
         console.log('➡ redirect to:', firstRoute)
-
         router.push(firstRoute)
       }, 50)
     } catch (err: any) {
-      setErr(err.response?.data?.message || 'Đăng nhập thất bại')
+      const errorMsg = err.response?.data?.message || 'Đăng nhập thất bại'
+      setErr(errorMsg)
+      toast.error(errorMsg) // ⭐ THÊM TOAST ERROR
     } finally {
       setLoading(false)
     }
@@ -63,6 +67,7 @@ export default function LoginPage() {
             value={email}
             autoComplete="off"
             onChange={(e) => setEmail(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleLogin()} // ⭐ BONUS: Enter để login
           />
 
           <Input
@@ -71,6 +76,7 @@ export default function LoginPage() {
             autoComplete="new-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleLogin()} // ⭐ BONUS
           />
 
           {err && <p className="text-red-500 text-sm text-center">{err}</p>}

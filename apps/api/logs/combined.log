@@ -2037,3 +2037,52 @@
 [2025-11-27 11:46:43] info: 🚀 API running + Socket.IO on http://localhost:4000
 [2025-11-27 11:46:56] info: 📦 MongoDB connected
 [2025-11-27 11:46:56] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-27 13:21:45] info: 📦 MongoDB connected
+[2025-11-27 13:21:45] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-27 13:26:44] info: 📦 MongoDB connected
+[2025-11-27 13:26:44] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-27 13:28:29] info: 📦 MongoDB connected
+[2025-11-27 13:28:29] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-27 13:31:27] info: 📦 MongoDB connected
+[2025-11-27 13:31:27] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-27 13:33:29] info: 📦 MongoDB connected
+[2025-11-27 13:33:30] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-27 13:33:54] info: 📦 MongoDB connected
+[2025-11-27 13:33:54] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-27 13:41:41] info: 📦 MongoDB connected
+[2025-11-27 13:41:41] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-27 13:58:40] info: 📦 MongoDB connected
+[2025-11-27 13:58:40] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-27 13:59:54] info: 📦 MongoDB connected
+[2025-11-27 13:59:54] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-27 14:17:16] error: GET /auth/profile/me - Token không hợp lệ hoặc đã hết hạn
+[2025-11-27 14:17:16] error: GET /auth/profile/me - Token không hợp lệ hoặc đã hết hạn
+[2025-11-27 14:17:47] error: GET /auth/profile/me - Token không hợp lệ hoặc đã hết hạn
+[2025-11-27 14:17:47] error: GET /auth/profile/me - Token không hợp lệ hoặc đã hết hạn
+[2025-11-27 14:18:19] error: GET /auth/profile/me - Token không hợp lệ hoặc đã hết hạn
+[2025-11-27 14:18:43] error: GET /auth/profile/me - Token không hợp lệ hoặc đã hết hạn
+[2025-11-27 14:18:43] error: GET /auth/profile/me - Token không hợp lệ hoặc đã hết hạn
+[2025-11-27 14:20:58] info: 📦 MongoDB connected
+[2025-11-27 14:20:58] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-27 14:23:08] info: 📦 MongoDB connected
+[2025-11-27 14:23:08] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-27 14:23:37] info: 📦 MongoDB connected
+[2025-11-27 14:23:37] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-27 14:24:09] info: 📦 MongoDB connected
+[2025-11-27 14:24:09] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-27 14:24:18] info: 📦 MongoDB connected
+[2025-11-27 14:24:18] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-27 14:28:32] error: GET /auth/profile/me - Token không hợp lệ hoặc đã hết hạn
+[2025-11-27 14:28:32] error: GET /auth/profile/me - Token không hợp lệ hoặc đã hết hạn
+[2025-11-27 14:34:36] error: GET /auth/profile/me - Token không hợp lệ hoặc đã hết hạn
+[2025-11-27 14:35:31] info: 📦 MongoDB connected
+[2025-11-27 14:35:31] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-27 14:40:58] info: 📦 MongoDB connected
+[2025-11-27 14:40:59] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-27 14:41:34] info: 📦 MongoDB connected
+[2025-11-27 14:41:34] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-27 14:43:06] info: 📦 MongoDB connected
+[2025-11-27 14:43:06] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-27 15:13:10] info: 📦 MongoDB connected
+[2025-11-27 15:13:10] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-11-27 15:43:22] error: POST /auth/login - Không tìm thấy người dùng

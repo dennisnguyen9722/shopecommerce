@@ -19,7 +19,8 @@ import {
   Menu,
   Settings,
   CreditCard,
-  Truck
+  Truck,
+  UserCircle
 } from 'lucide-react'
 
 import { motion, AnimatePresence } from 'framer-motion'
@@ -273,6 +274,15 @@ export function Sidebar({
             </AccordionGroup>
           )}
         </nav>
+
+        {/* ================= Profile ================= */}
+        <NavItem
+          href="/admin/profile"
+          icon={UserCircle}
+          label="Hồ sơ của tôi"
+          active={pathname === '/admin/profile'}
+          collapsed={collapsed}
+        />
 
         {/* BOTTOM AVATAR */}
         <motion.div

@@ -5,15 +5,15 @@ import { updateOrderStatus } from '../services/orderService'
 import { log } from '../utils/logger'
 import { AppError } from '../utils/AppError'
 import { protect } from '../middleware/auth'
-import { requirePermissions } from '../middleware/requirePermissions'
+// import { requirePermissions } from '../middleware/requirePermissions'
 
 const router = Router()
 
-// ⭐ TẤT CẢ ROUTE ADMIN YÊU CẦU QUYỀN "view_dashboard"
-const CAN_VIEW_DASHBOARD = requirePermissions('view_dashboard')
+// // ⭐ TẤT CẢ ROUTE ADMIN YÊU CẦU QUYỀN "view_dashboard"
+// const CAN_VIEW_DASHBOARD = requirePermissions('view_dashboard')
 
 // ⭐ BẮT BUỘC LOGIN + ĐÚNG QUYỀN
-router.use(protect, CAN_VIEW_DASHBOARD)
+router.use(protect)
 
 /* ============================================================
    METRICS

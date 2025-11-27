@@ -5,11 +5,19 @@ import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/src/store/authStore'
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
+import { toast } from 'sonner'
 
 export function Header() {
   const router = useRouter()
+
   const user = useAuthStore((s) => s.user)
   const logout = useAuthStore((s) => s.logout)
+
+  const handleLogout = () => {
+    logout()
+    toast.success('Đã đăng xuất!')
+    router.push('/admin/login')
+  }
 
   return (
     <header
@@ -22,19 +30,19 @@ export function Header() {
       )}
     >
       <div className="flex items-center justify-end w-full gap-4">
-        {/* Notifications */}
+        {/* Notifications Btn */}
         <button className="p-2 rounded-lg hover:bg-white/40 dark:hover:bg-white/10 transition-colors">
           <Bell className="w-5 h-5 text-gray-700 dark:text-gray-300" />
         </button>
 
-        {/* User Info */}
+        {/* User Avatar + Info */}
         <div className="flex items-center gap-3">
           <Image
-            src="/avatar.webp"
+            src={user?.avatar || '/avatar.webp'}
             alt="avatar"
             width={32}
             height={32}
-            className="rounded-full border border-white/40 shadow-sm"
+            className="rounded-full border border-white/40 shadow-sm object-cover"
           />
 
           <div className="text-sm leading-tight hidden md:block">
@@ -45,10 +53,7 @@ export function Header() {
 
         {/* Logout */}
         <button
-          onClick={() => {
-            logout()
-            router.push('/admin/login')
-          }}
+          onClick={handleLogout}
           className="flex items-center gap-1 text-sm text-gray-700 dark:text-gray-200 hover:opacity-60 transition"
         >
           <LogOut className="w-4 h-4" />

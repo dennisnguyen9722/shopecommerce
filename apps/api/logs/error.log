@@ -1054,3 +1054,14 @@
 [2025-11-27 11:06:15] error: GET /admin/products?search=&category=all&stock=all&sort=newest&page=1&limit=10 - Không có quyền truy cập
 [2025-11-27 11:06:19] error: GET /admin/categories - Không có quyền truy cập
 [2025-11-27 11:06:19] error: GET /admin/products?search=&category=all&stock=all&sort=newest&page=1&limit=10 - Không có quyền truy cập
+[2025-11-27 14:17:16] error: GET /auth/profile/me - Token không hợp lệ hoặc đã hết hạn
+[2025-11-27 14:17:16] error: GET /auth/profile/me - Token không hợp lệ hoặc đã hết hạn
+[2025-11-27 14:17:47] error: GET /auth/profile/me - Token không hợp lệ hoặc đã hết hạn
+[2025-11-27 14:17:47] error: GET /auth/profile/me - Token không hợp lệ hoặc đã hết hạn
+[2025-11-27 14:18:19] error: GET /auth/profile/me - Token không hợp lệ hoặc đã hết hạn
+[2025-11-27 14:18:43] error: GET /auth/profile/me - Token không hợp lệ hoặc đã hết hạn
+[2025-11-27 14:18:43] error: GET /auth/profile/me - Token không hợp lệ hoặc đã hết hạn
+[2025-11-27 14:28:32] error: GET /auth/profile/me - Token không hợp lệ hoặc đã hết hạn
+[2025-11-27 14:28:32] error: GET /auth/profile/me - Token không hợp lệ hoặc đã hết hạn
+[2025-11-27 14:34:36] error: GET /auth/profile/me - Token không hợp lệ hoặc đã hết hạn
+[2025-11-27 15:43:22] error: POST /auth/login - Không tìm thấy người dùng

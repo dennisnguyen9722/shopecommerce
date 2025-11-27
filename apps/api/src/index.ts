@@ -29,6 +29,7 @@ import locationsRoutes from './routes/locations'
 import uploadsRoutes from './routes/uploads'
 import rolesRoutes from './routes/roles'
 import usersRoutes from './routes/users'
+import profileRoutes from './routes/profile'
 
 // MIDDLEWARE
 import { errorHandler } from './middleware/errorHandler'
@@ -74,6 +75,7 @@ app.use('/admin/users', usersRoutes)
 app.use('/admin/shipping-rules', shippingRulesRoutes)
 app.use('/admin/locations', locationsRoutes)
 app.use('/admin/notifications', notificationsRoutes)
+app.use('/admin/profile', profileRoutes)
 
 // BLOG MODULE
 app.use('/admin/blog/posts', posts)

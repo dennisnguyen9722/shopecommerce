@@ -6,7 +6,9 @@ interface AuthState {
   user: any | null
   isAuthenticated: boolean
   _hasHydrated: boolean
+
   setAuth: (token: string, user: any) => void
+  updateUser: (data: any) => void
   logout: () => void
   setHasHydrated: (state: boolean) => void
 }
@@ -19,6 +21,7 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       _hasHydrated: false,
 
+      // Login và lưu user
       setAuth: (token, user) =>
         set({
           token,
@@ -26,6 +29,13 @@ export const useAuthStore = create<AuthState>()(
           isAuthenticated: true
         }),
 
+      // ⭐ Update user (avatar, name, email...) => Header tự update
+      updateUser: (data) =>
+        set((state) => ({
+          user: { ...state.user, ...data }
+        })),
+
+      // Logout
       logout: () =>
         set({
           token: null,
@@ -33,13 +43,13 @@ export const useAuthStore = create<AuthState>()(
           isAuthenticated: false
         }),
 
+      // Hydration flag
       setHasHydrated: (state) => set({ _hasHydrated: state })
     }),
 
     {
       name: 'auth-storage',
 
-      // Khi persist load xong → mark hydrated
       onRehydrateStorage: () => (state, error) => {
         if (error) {
           console.error('❌ Error during hydration', error)

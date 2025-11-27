@@ -7,6 +7,7 @@ export interface IUser extends Document {
   password: string
   role: mongoose.Types.ObjectId | null
   address?: string
+  avatar?: string
 
   matchPassword(enteredPassword: string): Promise<boolean>
 }
@@ -26,7 +27,8 @@ const UserSchema = new Schema<IUser>(
       default: null // user mới vẫn không có role → vẫn login được → admin gán role sau
     },
 
-    address: { type: String }
+    address: { type: String },
+    avatar: { type: String }
   },
   { timestamps: true }
 )
