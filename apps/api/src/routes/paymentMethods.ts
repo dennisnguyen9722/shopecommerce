@@ -1,31 +1,17 @@
 import express from 'express'
 import PaymentMethod from '../models/PaymentMethod'
-import { protect, adminOnly } from '../middleware/auth'
+import { protect } from '../middleware/auth'
+import { requirePermissions } from '../middleware/requirePermissions'
 
 const router = express.Router()
 
-router.use(protect, adminOnly)
-
-const DEFAULT_BANK_CONFIG = {
-  bankName: '',
-  accountName: '',
-  accountNumber: '',
-  branch: '',
-  instructions: '',
-  qrCodeUrl: ''
-}
-
-const DEFAULT_MOMO_CONFIG = {
-  phone: '',
-  accountName: '',
-  qrCodeUrl: '',
-  instructions: ''
-}
+// ⭐ Chỉ cần login + có quyền manage_payment
+const CAN_MANAGE = requirePermissions('manage_payment')
 
 // ---------------------------
 // REORDER
 // ---------------------------
-router.put('/reorder', async (req, res) => {
+router.put('/reorder', protect, CAN_MANAGE, async (req, res) => {
   const { orderedKeys } = req.body
 
   if (!Array.isArray(orderedKeys)) {
@@ -45,19 +31,34 @@ router.put('/reorder', async (req, res) => {
 // ---------------------------
 // GET ALL
 // ---------------------------
-router.get('/', async (_req, res) => {
+router.get('/', protect, CAN_MANAGE, async (_req, res) => {
   const list = await PaymentMethod.find().sort({ sortOrder: 1 })
   res.json(list)
 })
 
+const DEFAULT_BANK_CONFIG = {
+  bankName: '',
+  accountName: '',
+  accountNumber: '',
+  branch: '',
+  instructions: '',
+  qrCodeUrl: ''
+}
+
+const DEFAULT_MOMO_CONFIG = {
+  phone: '',
+  accountName: '',
+  qrCodeUrl: '',
+  instructions: ''
+}
+
 // ---------------------------
-// UPDATE (Bank + Momo merge config)
+// UPDATE
 // ---------------------------
-router.put('/:key', async (req, res) => {
+router.put('/:key', protect, CAN_MANAGE, async (req, res) => {
   const { key } = req.params
   let updates = req.body
 
-  // ---- BANK MERGE ----
   if (key === 'bank') {
     updates.config = {
       ...DEFAULT_BANK_CONFIG,
@@ -65,7 +66,6 @@ router.put('/:key', async (req, res) => {
     }
   }
 
-  // ---- MOMO MERGE ----
   if (key === 'momo') {
     updates.config = {
       ...DEFAULT_MOMO_CONFIG,
@@ -85,7 +85,7 @@ router.put('/:key', async (req, res) => {
 // ---------------------------
 // TOGGLE
 // ---------------------------
-router.patch('/:key/toggle', async (req, res) => {
+router.patch('/:key/toggle', protect, CAN_MANAGE, async (req, res) => {
   const method = await PaymentMethod.findOne({ key: req.params.key })
   if (!method) return res.status(404).json({ error: 'Not found' })
 

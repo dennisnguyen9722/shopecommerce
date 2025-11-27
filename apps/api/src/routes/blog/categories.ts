@@ -1,21 +1,34 @@
 import express from 'express'
-import { protect, adminOnly } from '../../middleware/auth'
 import BlogCategory from '../../models/BlogCategory'
+import { protect } from '../../middleware/auth'
+import { requirePermissions } from '../../middleware/requirePermissions'
 
 const router = express.Router()
 
-// Tất cả route blog category đều cần admin
-router.use(protect, adminOnly)
+// ⭐ Quyền quản lý danh mục bài viết
+const CAN_MANAGE_BLOG_CATEGORIES = requirePermissions('manage_blog_categories')
 
-// GET: danh sách category
+// Tất cả routes trong file đều yêu cầu login + quyền
+router.use(protect, CAN_MANAGE_BLOG_CATEGORIES)
+
+/* ==========================================
+   GET ALL CATEGORIES
+========================================== */
 router.get('/', async (_req, res) => {
   const categories = await BlogCategory.find().sort({ createdAt: -1 })
   res.json(categories)
 })
 
-// POST: tạo category mới
+/* ==========================================
+   CREATE CATEGORY
+========================================== */
 router.post('/', async (req, res) => {
   const { name, slug } = req.body
+
+  const existed = await BlogCategory.findOne({ slug })
+  if (existed) {
+    return res.status(400).json({ error: 'Slug đã tồn tại' })
+  }
 
   const created = await BlogCategory.create({
     name,
@@ -25,18 +38,22 @@ router.post('/', async (req, res) => {
   res.status(201).json(created)
 })
 
-// GET: chi tiết 1 category theo id
+/* ==========================================
+   GET A CATEGORY
+========================================== */
 router.get('/:id', async (req, res) => {
   const cat = await BlogCategory.findById(req.params.id)
 
   if (!cat) {
-    return res.status(404).json({ message: 'Không tìm thấy danh mục' })
+    return res.status(404).json({ error: 'Không tìm thấy danh mục' })
   }
 
   res.json(cat)
 })
 
-// PUT: cập nhật category
+/* ==========================================
+   UPDATE CATEGORY
+========================================== */
 router.put('/:id', async (req, res) => {
   const updated = await BlogCategory.findByIdAndUpdate(
     req.params.id,
@@ -45,18 +62,20 @@ router.put('/:id', async (req, res) => {
   )
 
   if (!updated) {
-    return res.status(404).json({ message: 'Không tìm thấy danh mục' })
+    return res.status(404).json({ error: 'Không tìm thấy danh mục' })
   }
 
   res.json(updated)
 })
 
-// DELETE: xoá category
+/* ==========================================
+   DELETE CATEGORY
+========================================== */
 router.delete('/:id', async (req, res) => {
   const deleted = await BlogCategory.findByIdAndDelete(req.params.id)
 
   if (!deleted) {
-    return res.status(404).json({ message: 'Không tìm thấy danh mục' })
+    return res.status(404).json({ error: 'Không tìm thấy danh mục' })
   }
 
   res.json({ ok: true })

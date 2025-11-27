@@ -5,35 +5,31 @@ import Role from '../models/Role'
 export function requirePermissions(...requiredPermissions: string[]) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const userId = (req as any).user?._id
+      const userId = (req as any).user?.id
+      if (!userId) return res.status(401).json({ error: 'Unauthorized' })
 
-      if (!userId) {
-        return res.status(401).json({ error: 'Unauthorized' })
-      }
-
-      // Load user
       const user = await User.findById(userId).populate('role')
       if (!user) return res.status(401).json({ error: 'User not found' })
 
-      // Nếu user không có role → không có quyền gì
       if (!user.role) {
         return res.status(403).json({ error: 'Không có quyền truy cập' })
       }
 
       const role = user.role as any
-      const userPermissions: string[] = role.permissions || []
 
-      // Nếu role là Super Admin (isSystem = true) → full quyền
-      if (role.isSystem) {
-        return next()
-      }
+      // ⭐ Normalize FE permissions → BE permissions
+      const fix = (p: string) => p.replace(/_/g, '.').toLowerCase()
 
-      // Check từng permission được yêu cầu
-      const hasAll = requiredPermissions.every((p) =>
-        userPermissions.includes(p)
-      )
+      const userPermissions: string[] = (role.permissions || []).map(fix)
+      const required = requiredPermissions.map(fix)
 
-      if (!hasAll) {
+      // ⭐ SUPER ADMIN
+      if (role.isSystem) return next()
+
+      // ⭐ ANY required permission is enough
+      const allowed = required.some((p) => userPermissions.includes(p))
+
+      if (!allowed) {
         return res.status(403).json({
           error: 'Bạn không có quyền thực hiện hành động này',
           missing: requiredPermissions

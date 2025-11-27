@@ -1,14 +1,17 @@
 import express from 'express'
-import { protect, adminOnly } from '../middleware/auth'
 import ShippingRule from '../models/ShippingRule'
+import { protect } from '../middleware/auth'
+import { requirePermissions } from '../middleware/requirePermissions'
 
 const router = express.Router()
-router.use(protect, adminOnly)
+
+// ⭐ chỉ cần login + có quyền manage_shipping
+const CAN_MANAGE = requirePermissions('manage_shipping')
 
 /**
  * GET all
  */
-router.get('/', async (_req, res) => {
+router.get('/', protect, CAN_MANAGE, async (_req, res) => {
   const rules = await ShippingRule.find().sort({ order: 1, createdAt: -1 })
   res.json(rules)
 })
@@ -16,7 +19,7 @@ router.get('/', async (_req, res) => {
 /**
  * CREATE
  */
-router.post('/', async (req, res) => {
+router.post('/', protect, CAN_MANAGE, async (req, res) => {
   const {
     type,
     name,
@@ -81,7 +84,7 @@ router.post('/', async (req, res) => {
   res.status(201).json(rule)
 })
 
-router.put('/reorder', async (req, res) => {
+router.put('/reorder', protect, CAN_MANAGE, async (req, res) => {
   const { orderedIds } = req.body
 
   if (!Array.isArray(orderedIds)) {
@@ -98,7 +101,7 @@ router.put('/reorder', async (req, res) => {
 /**
  * UPDATE
  */
-router.put('/:id', async (req, res) => {
+router.put('/:id', protect, CAN_MANAGE, async (req, res) => {
   const {
     type,
     name,
@@ -111,7 +114,7 @@ router.put('/:id', async (req, res) => {
     districts
   } = req.body
 
-  // VALIDATION
+  // VALIDATION y như trên
   if (type === 'location_based') {
     if (!areas || areas.length === 0) {
       return res.status(400).json({ error: 'areas is required' })
@@ -160,7 +163,7 @@ router.put('/:id', async (req, res) => {
 /**
  * DELETE
  */
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', protect, CAN_MANAGE, async (req, res) => {
   const deleted = await ShippingRule.findByIdAndDelete(req.params.id)
   if (!deleted) return res.status(404).json({ error: 'Rule not found' })
   res.json({ ok: true })

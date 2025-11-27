@@ -1,13 +1,14 @@
 import express from 'express'
 import Category from '../models/Category'
-import { protect, adminOnly } from '../middleware/auth'
+import { protect } from '../middleware/auth'
+import { requirePermissions } from '../middleware/requirePermissions'
 
 const router = express.Router()
 
-// Tất cả routes dưới đây đều yêu cầu admin
-router.use(protect, adminOnly)
+// 🔥 chỉ 1 quyền duy nhất
+const CAN_MANAGE = requirePermissions('manage_categories')
 
-// Helper tạo slug từ tên
+// Helper tạo slug
 const toSlug = (name: string) =>
   name
     .toLowerCase()
@@ -16,24 +17,22 @@ const toSlug = (name: string) =>
     .replace(/\s+/g, '-')
 
 // ======================================================================
-// GET /admin/categories
-//  -> List categories + search + filter + pagination + sort (chuẩn Shopify)
+// GET /admin/categories (list)
 // ======================================================================
-router.get('/', async (req, res) => {
+router.get('/', protect, CAN_MANAGE, async (req, res) => {
   try {
     const {
       page = '1',
       limit = '20',
       search = '',
-      status = 'all', // all | active | inactive
-      sort = 'newest' // newest | oldest | name-asc | name-desc
+      status = 'all',
+      sort = 'newest'
     } = req.query as any
 
     const pageNum = Number(page) || 1
     const limitNum = Number(limit) || 20
     const skip = (pageNum - 1) * limitNum
 
-    // FILTER
     const filter: any = {}
 
     if (status === 'active') filter.isActive = true
@@ -47,7 +46,6 @@ router.get('/', async (req, res) => {
       ]
     }
 
-    // SORT
     const sortOption: any = {
       newest: { createdAt: -1 },
       oldest: { createdAt: 1 },
@@ -55,7 +53,6 @@ router.get('/', async (req, res) => {
       'name-desc': { name: -1 }
     }[sort as string] || { createdAt: -1 }
 
-    // QUERY song song
     const [items, total] = await Promise.all([
       Category.find(filter).sort(sortOption).skip(skip).limit(limitNum).lean(),
       Category.countDocuments(filter)
@@ -76,10 +73,9 @@ router.get('/', async (req, res) => {
 })
 
 // ======================================================================
-// GET /admin/categories/tree
-//  -> Trả về cây danh mục lồng nhau (parent/children) giống Shopify
+// GET TREE
 // ======================================================================
-router.get('/tree', async (_req, res) => {
+router.get('/tree', protect, CAN_MANAGE, async (_req, res) => {
   try {
     const cats = await Category.find({}).lean()
 
@@ -108,10 +104,9 @@ router.get('/tree', async (_req, res) => {
 })
 
 // ======================================================================
-// GET /admin/categories/:id
-//  -> Lấy chi tiết 1 danh mục
+// GET DETAIL
 // ======================================================================
-router.get('/:id', async (req, res) => {
+router.get('/:id', protect, CAN_MANAGE, async (req, res) => {
   try {
     const item = await Category.findById(req.params.id).lean()
     if (!item) return res.status(404).json({ error: 'Not found' })
@@ -123,10 +118,9 @@ router.get('/:id', async (req, res) => {
 })
 
 // ======================================================================
-// POST /admin/categories
-//  -> Tạo mới danh mục
+// CREATE CATEGORY
 // ======================================================================
-router.post('/', async (req, res) => {
+router.post('/', protect, CAN_MANAGE, async (req, res) => {
   try {
     const { name, slug, description, parent, isActive } = req.body
 
@@ -137,7 +131,6 @@ router.post('/', async (req, res) => {
     const finalSlug =
       slug && String(slug).trim() !== '' ? slug : toSlug(String(name))
 
-    // Slug phải unique
     const existed = await Category.findOne({ slug: finalSlug })
     if (existed) {
       return res.status(400).json({ error: 'Slug đã tồn tại' })
@@ -158,14 +151,12 @@ router.post('/', async (req, res) => {
 })
 
 // ======================================================================
-// PUT /admin/categories/:id
-//  -> Cập nhật danh mục
+// UPDATE CATEGORY
 // ======================================================================
-router.put('/:id', async (req, res) => {
+router.put('/:id', protect, CAN_MANAGE, async (req, res) => {
   try {
     const { name, slug, description, parent, isActive } = req.body
 
-    // Không cho parent là chính nó
     if (parent && parent === req.params.id) {
       return res
         .status(400)
@@ -181,7 +172,6 @@ router.put('/:id', async (req, res) => {
       finalSlug = toSlug(String(name))
     }
 
-    // Slug unique, trừ chính nó
     const existed = await Category.findOne({
       slug: finalSlug,
       _id: { $ne: req.params.id }
@@ -209,10 +199,9 @@ router.put('/:id', async (req, res) => {
 })
 
 // ======================================================================
-// DELETE /admin/categories/:id
-//  -> Xoá danh mục (chặn xoá nếu đang có danh mục con)
+// DELETE CATEGORY
 // ======================================================================
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', protect, CAN_MANAGE, async (req, res) => {
   try {
     const hasChildren = await Category.findOne({ parent: req.params.id })
     if (hasChildren) {
@@ -228,7 +217,10 @@ router.delete('/:id', async (req, res) => {
   }
 })
 
-router.post('/bulk-delete', async (req, res) => {
+// ======================================================================
+// BULK DELETE
+// ======================================================================
+router.post('/bulk-delete', protect, CAN_MANAGE, async (req, res) => {
   const { ids } = req.body
 
   if (!ids || !Array.isArray(ids)) {

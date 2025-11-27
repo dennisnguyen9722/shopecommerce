@@ -1,44 +1,52 @@
-// apps/api/src/routes/products.ts
 import express from 'express'
 import multer from 'multer'
 import Product from '../models/Product'
 import { uploadStream } from '../utils/cloudinary'
-import { protect, adminOnly } from '../middleware/auth'
+import { protect } from '../middleware/auth'
+import { requirePermissions } from '../middleware/requirePermissions'
 import StockLog from '../models/StockLog'
 
 const router = express.Router()
 
-// Upload memory
+// Upload config
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 5 * 1024 * 1024 }
 })
 
-router.use(protect, adminOnly)
+const CAN_MANAGE = requirePermissions('manage_products')
 
-// =============================
-// UPLOAD IMAGE
-// =============================
-router.post('/upload', upload.array('images'), async (req, res) => {
-  try {
-    const files = req.files as Express.Multer.File[]
+/* ------------------------------------------
+   UPLOAD IMAGES
+---------------------------------------------*/
+router.post(
+  '/upload',
+  protect,
+  CAN_MANAGE,
+  upload.array('images'),
+  async (req, res) => {
+    try {
+      const files = req.files as Express.Multer.File[]
 
-    if (!files || files.length === 0) {
-      return res.status(400).json({ error: 'No files uploaded' })
+      if (!files || files.length === 0) {
+        return res.status(400).json({ error: 'No files uploaded' })
+      }
+
+      const results = await Promise.all(
+        files.map((f) => uploadStream(f.buffer))
+      )
+
+      res.json({ images: results })
+    } catch (err: any) {
+      res.status(500).json({ error: err.message })
     }
-
-    const results = await Promise.all(files.map((f) => uploadStream(f.buffer)))
-
-    res.json({ images: results })
-  } catch (err: any) {
-    res.status(500).json({ error: err.message })
   }
-})
+)
 
-// =============================
-// CREATE PRODUCT
-// =============================
-router.post('/', async (req, res) => {
+/* ------------------------------------------
+   CREATE PRODUCT
+---------------------------------------------*/
+router.post('/', protect, CAN_MANAGE, async (req, res) => {
   try {
     const body = req.body
 
@@ -76,42 +84,54 @@ router.post('/', async (req, res) => {
   }
 })
 
-// =============================
-// LIST PRODUCT (with discount info)
-// =============================
-router.get('/', async (req, res) => {
+/* ------------------------------------------
+   LIST PRODUCTS
+---------------------------------------------*/
+router.get('/', protect, CAN_MANAGE, async (req, res) => {
   try {
-    const items = await Product.find()
-      .populate('category', 'name') // ⭐ add category
-      .sort({ createdAt: -1 })
+    const {
+      search = '',
+      category = 'all',
+      stock = 'all',
+      sort = 'newest',
+      page = 1,
+      limit = 10
+    } = req.query
+
+    const query: any = {}
+
+    if (search) {
+      query.name = { $regex: search as string, $options: 'i' }
+    }
+
+    if (category !== 'all') {
+      query.category = category
+    }
+
+    if (stock === 'in') query.stock = { $gt: 0 }
+    if (stock === 'out') query.stock = { $lte: 0 }
+
+    const skip = (Number(page) - 1) * Number(limit)
+
+    const items = await Product.find(query)
+      .populate('category', 'name')
+      .sort({ createdAt: sort === 'oldest' ? 1 : -1 })
+      .skip(skip)
+      .limit(Number(limit))
       .lean()
 
-    const formatted = items.map((p) => {
-      const price = p.price
-      const comparePrice = p.comparePrice ?? 0
+    const total = await Product.countDocuments(query)
 
-      const hasDiscount = comparePrice > price
-      const discountPercent = hasDiscount
-        ? Math.round(((comparePrice - price) / comparePrice) * 100)
-        : 0
-
-      return {
-        ...p,
-        hasDiscount,
-        discountPercent
-      }
-    })
-
-    res.json({ items: formatted })
+    res.json({ items, total })
   } catch (err: any) {
     res.status(500).json({ error: 'Internal error' })
   }
 })
 
-// =============================
-// DETAIL
-// =============================
-router.get('/:id', async (req, res) => {
+/* ------------------------------------------
+   DETAIL
+---------------------------------------------*/
+router.get('/:id', protect, CAN_MANAGE, async (req, res) => {
   try {
     const item = await Product.findById(req.params.id).lean()
     if (!item) return res.status(404).json({ error: 'Not found' })
@@ -122,10 +142,10 @@ router.get('/:id', async (req, res) => {
   }
 })
 
-// =============================
-// UPDATE PRODUCT
-// =============================
-router.put('/:id', async (req, res) => {
+/* ------------------------------------------
+   UPDATE PRODUCT
+---------------------------------------------*/
+router.put('/:id', protect, CAN_MANAGE, async (req, res) => {
   try {
     const update: any = { ...req.body }
 
@@ -149,10 +169,10 @@ router.put('/:id', async (req, res) => {
   }
 })
 
-// =============================
-// DELETE PRODUCT
-// =============================
-router.delete('/:id', async (req, res) => {
+/* ------------------------------------------
+   DELETE PRODUCT
+---------------------------------------------*/
+router.delete('/:id', protect, CAN_MANAGE, async (req, res) => {
   try {
     await Product.findByIdAndDelete(req.params.id)
     res.json({ ok: true })
@@ -161,7 +181,10 @@ router.delete('/:id', async (req, res) => {
   }
 })
 
-router.post('/bulk-delete', async (req, res) => {
+/* ------------------------------------------
+   BULK DELETE
+---------------------------------------------*/
+router.post('/bulk-delete', protect, CAN_MANAGE, async (req, res) => {
   const { ids } = req.body
 
   if (!ids || !Array.isArray(ids)) {
@@ -173,11 +196,10 @@ router.post('/bulk-delete', async (req, res) => {
   res.json({ ok: true })
 })
 
-// ----------------------------------------
-// ADJUST STOCK MANUALLY (ADMIN)
-// POST /admin/products/:id/adjust-stock
-// ----------------------------------------
-router.post('/:id/adjust-stock', async (req, res) => {
+/* ------------------------------------------
+   ADJUST STOCK
+---------------------------------------------*/
+router.post('/:id/adjust-stock', protect, CAN_MANAGE, async (req, res) => {
   try {
     const { change, note } = req.body
 
@@ -187,9 +209,8 @@ router.post('/:id/adjust-stock', async (req, res) => {
     }
 
     const product = await Product.findById(req.params.id)
-    if (!product) {
+    if (!product)
       return res.status(404).json({ error: 'Không tìm thấy sản phẩm' })
-    }
 
     const oldStock = product.stock || 0
     const newStock = oldStock + diff
@@ -204,7 +225,7 @@ router.post('/:id/adjust-stock', async (req, res) => {
       newStock,
       type: 'adjust',
       note,
-      admin: (req as any).user?._id
+      admin: (req as any).user?.id
     })
 
     res.json({ ok: true, stock: newStock })
@@ -213,11 +234,10 @@ router.post('/:id/adjust-stock', async (req, res) => {
   }
 })
 
-// ----------------------------------------
-// GET STOCK LOG OF A PRODUCT
-// GET /admin/products/:id/stock-logs
-// ----------------------------------------
-router.get('/:id/stock-logs', async (req, res) => {
+/* ------------------------------------------
+   GET STOCK LOGS
+---------------------------------------------*/
+router.get('/:id/stock-logs', protect, CAN_MANAGE, async (req, res) => {
   try {
     const logs = await StockLog.find({ product: req.params.id })
       .sort({ createdAt: -1 })

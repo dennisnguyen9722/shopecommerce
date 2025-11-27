@@ -1,24 +1,19 @@
 'use client'
-console.log('🔥 LOGIN PAGE RENDERED!!!')
 
 import { useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuthStore } from '@/src/store/authStore'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import api from '@/src/lib/api'
 import { setCookie } from 'cookies-next'
-
-// ⭐ ADD THIS
-import { getFirstAccessibleRoute } from '@/src/utils/getFirstRoute'
+import { getFirstRoute } from '@/src/utils/getFirstRoute'
 
 export default function LoginPage() {
   const router = useRouter()
   const params = useSearchParams()
   const setAuth = useAuthStore((s) => s.setAuth)
-
-  const from = params.get('from')
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -27,31 +22,29 @@ export default function LoginPage() {
 
   async function handleLogin() {
     try {
-      setLoading(true)
       setErr('')
+      setLoading(true)
 
-      const { data } = await api.post('/auth/login', {
-        email,
-        password
-      })
+      const { data } = await api.post('/auth/login', { email, password })
 
-      // Lưu token + user vào zustand
+      // Lưu token zustand
       setAuth(data.token, data.user)
 
-      // Lưu token vào cookie để middleware dùng
+      // Lưu cookie cho middleware
       setCookie('token', data.token, {
         path: '/',
         maxAge: 60 * 60 * 24 * 7
       })
 
-      // ⭐ LẤY DANH SÁCH QUYỀN → TÌM TRANG ĐẦU TIÊN USER ĐƯỢC VÀO
-      const perms = data.user.permissions || []
-      const firstRoute = getFirstAccessibleRoute(perms)
+      // CHỜ ZUSTAND CẬP NHẬT
+      setTimeout(() => {
+        const firstRoute = getFirstRoute(data.user)
+        console.log('➡ redirect to:', firstRoute)
 
-      // ⭐ điều hướng về route phù hợp
-      router.push(firstRoute)
-    } catch (error: any) {
-      setErr(error.response?.data?.message || 'Đăng nhập thất bại')
+        router.push(firstRoute)
+      }, 50)
+    } catch (err: any) {
+      setErr(err.response?.data?.message || 'Đăng nhập thất bại')
     } finally {
       setLoading(false)
     }
@@ -65,16 +58,10 @@ export default function LoginPage() {
         </CardHeader>
 
         <CardContent className="space-y-4">
-          {from === 'admin' && (
-            <p className="text-yellow-600 bg-yellow-100 border border-yellow-300 p-2 rounded text-sm text-center">
-              Bạn cần đăng nhập để tiếp tục.
-            </p>
-          )}
-
           <Input
             placeholder="Nhập email"
-            autoComplete="off"
             value={email}
+            autoComplete="off"
             onChange={(e) => setEmail(e.target.value)}
           />
 

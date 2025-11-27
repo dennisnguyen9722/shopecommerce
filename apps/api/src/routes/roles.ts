@@ -1,10 +1,14 @@
 import express from 'express'
 import Role from '../models/Role'
-import { protect, adminOnly } from '../middleware/auth'
+import { protect } from '../middleware/auth'
+import { requirePermissions } from '../middleware/requirePermissions'
 
 const router = express.Router()
 
-router.use(protect, adminOnly)
+// ⭐ Role management = cần quyền manage_roles
+const CAN_MANAGE_ROLES = requirePermissions('manage_roles')
+
+router.use(protect, CAN_MANAGE_ROLES)
 
 /* ================================
    GET ALL ROLES
@@ -30,7 +34,6 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   const { name, description, permissions } = req.body
 
-  // Không cho tạo trùng tên
   const exists = await Role.findOne({ name })
   if (exists) {
     return res.status(400).json({ error: 'Tên role đã tồn tại' })

@@ -1,16 +1,21 @@
 import express from 'express'
 import User from '../models/User'
 import Role from '../models/Role'
-import { protect, adminOnly } from '../middleware/auth'
+import { protect } from '../middleware/auth'
+import { requirePermissions } from '../middleware/requirePermissions'
 
 const router = express.Router()
 
-router.use(protect, adminOnly)
+// ⭐ Quyền quản lý tài khoản (Users)
+const CAN_MANAGE_USERS = requirePermissions('manage_users')
+
+// Áp dụng cho tất cả route trong file
+router.use(protect, CAN_MANAGE_USERS)
 
 /* ================================
-   GET ALL USERS (for admin)
+   GET ALL USERS
 ================================ */
-router.get('/', async (req, res) => {
+router.get('/', async (_req, res) => {
   const users = await User.find()
     .populate('role', 'name permissions')
     .sort({ createdAt: -1 })
@@ -18,8 +23,16 @@ router.get('/', async (req, res) => {
   res.json(users)
 })
 
+/* ================================
+   CREATE USER
+================================ */
 router.post('/', async (req, res) => {
   const { name, email, password, roleId } = req.body
+
+  const existed = await User.findOne({ email })
+  if (existed) {
+    return res.status(400).json({ error: 'Email đã tồn tại' })
+  }
 
   const user = await User.create({
     name,
@@ -32,17 +45,15 @@ router.post('/', async (req, res) => {
 })
 
 /* ================================
-   ASSIGN ROLE TO USER
+   ASSIGN ROLE
    PUT /admin/users/:id/role
 ================================ */
 router.put('/:id/role', async (req, res) => {
   const { roleId } = req.body
 
-  // Check user exists
   const user = await User.findById(req.params.id)
   if (!user) return res.status(404).json({ error: 'User không tồn tại' })
 
-  // Check role exists
   const role = await Role.findById(roleId)
   if (!role) return res.status(404).json({ error: 'Role không tồn tại' })
 
@@ -61,8 +72,7 @@ router.put('/:id/role', async (req, res) => {
 })
 
 /* ================================
-   REMOVE USER ROLE
-   DELETE /admin/users/:id/role
+   REMOVE ROLE
 ================================ */
 router.delete('/:id/role', async (req, res) => {
   const user = await User.findById(req.params.id)

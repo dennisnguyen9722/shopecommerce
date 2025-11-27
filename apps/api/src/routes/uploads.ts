@@ -1,11 +1,15 @@
 import express from 'express'
 import multer from 'multer'
 import { uploadStream } from '../utils/cloudinary'
-import { protect, adminOnly } from '../middleware/auth'
+import { protect } from '../middleware/auth'
+import { requirePermissions } from '../middleware/requirePermissions'
 
 const router = express.Router()
 
-router.use(protect, adminOnly)
+// ⭐ Quyền để upload QR (thuộc Payment settings)
+const CAN_UPLOAD_QR = requirePermissions('manage_payment')
+
+router.use(protect, CAN_UPLOAD_QR)
 
 // Dùng lại memoryStorage
 const upload = multer({
@@ -28,7 +32,7 @@ router.post('/qr', upload.single('file'), async (req, res) => {
     const uploaded = await uploadStream(file.buffer, 'ecommerce/payment/qr')
 
     res.json({
-      url: uploaded.url, // dùng url (secure_url)
+      url: uploaded.url,
       publicId: uploaded.public_id
     })
   } catch (err: any) {

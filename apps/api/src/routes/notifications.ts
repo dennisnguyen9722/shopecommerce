@@ -1,11 +1,16 @@
 import express from 'express'
 import Notification from '../models/Notification'
-import { protect, adminOnly } from '../middleware/auth'
+import { protect } from '../middleware/auth'
+import { requirePermissions } from '../middleware/requirePermissions'
 import { io } from '../index'
 
 const router = express.Router()
 
-router.use(protect, adminOnly)
+// ⭐ Quyền cần để quản lý thông báo
+const CAN_MANAGE = requirePermissions('manage_notifications')
+
+// ⭐ Bắt buộc login + có quyền
+router.use(protect, CAN_MANAGE)
 
 /* ============================================================
    GET /admin/notifications
@@ -45,7 +50,7 @@ router.post('/', async (req, res) => {
       read: false
     })
 
-    // 🔥 Emit realtime tới client
+    // Emit realtime
     io.emit('notification:new', notif)
 
     res.json(notif)

@@ -4,16 +4,24 @@ import User from '../models/User'
 import { updateOrderStatus } from '../services/orderService'
 import { log } from '../utils/logger'
 import { AppError } from '../utils/AppError'
-import { protect, adminOnly } from '../middleware/auth'
+import { protect } from '../middleware/auth'
+import { requirePermissions } from '../middleware/requirePermissions'
 
 const router = Router()
 
-router.use(protect, adminOnly)
+// ⭐ TẤT CẢ ROUTE ADMIN YÊU CẦU QUYỀN "view_dashboard"
+const CAN_VIEW_DASHBOARD = requirePermissions('view_dashboard')
 
+// ⭐ BẮT BUỘC LOGIN + ĐÚNG QUYỀN
+router.use(protect, CAN_VIEW_DASHBOARD)
+
+/* ============================================================
+   METRICS
+============================================================ */
 router.get('/metrics', async (req, res) => {
   try {
     const since = new Date()
-    since.setDate(since.getDate() - 30) // 30 ngày gần đây
+    since.setDate(since.getDate() - 30)
 
     const revenueAgg = await Order.aggregate([
       { $match: { createdAt: { $gte: since }, status: { $ne: 'cancelled' } } },
@@ -40,10 +48,13 @@ router.get('/metrics', async (req, res) => {
   }
 })
 
+/* ============================================================
+   REVENUE CHART
+============================================================ */
 router.get('/revenue', async (req, res) => {
   try {
     const since = new Date()
-    since.setDate(since.getDate() - 60) // 60 ngày gần đây (để có dữ liệu so sánh)
+    since.setDate(since.getDate() - 60)
 
     const data = await Order.aggregate([
       { $match: { createdAt: { $gte: since }, status: { $ne: 'cancelled' } } },
@@ -58,7 +69,6 @@ router.get('/revenue', async (req, res) => {
       { $sort: { _id: 1 } }
     ])
 
-    // Tính tổng 30 ngày gần nhất và kỳ trước
     const now = new Date()
     const recentStart = new Date(now)
     recentStart.setDate(now.getDate() - 30)
@@ -88,6 +98,9 @@ router.get('/revenue', async (req, res) => {
   }
 })
 
+/* ============================================================
+   ORDERS STATS
+============================================================ */
 router.get('/orders-stats', async (req, res) => {
   try {
     const since = new Date()
@@ -113,6 +126,9 @@ router.get('/orders-stats', async (req, res) => {
   }
 })
 
+/* ============================================================
+   CUSTOMER STATS
+============================================================ */
 router.get('/customers-stats', async (req, res) => {
   try {
     const since = new Date()
@@ -138,9 +154,11 @@ router.get('/customers-stats', async (req, res) => {
   }
 })
 
+/* ============================================================
+   NOTIFICATIONS MOCK
+============================================================ */
 router.get('/notifications', async (req, res) => {
   try {
-    // Mô phỏng dữ liệu tạm (sau này bạn có thể lấy từ DB)
     const notifications = [
       {
         id: 1,
@@ -169,10 +187,14 @@ router.get('/notifications', async (req, res) => {
   }
 })
 
+/* ============================================================
+   LIST ORDERS
+============================================================ */
 router.get('/orders', async (req, res) => {
   try {
     const { status } = req.query
     const filter: any = {}
+
     if (status && status !== 'all') {
       filter.status = status
     }
@@ -182,7 +204,6 @@ router.get('/orders', async (req, res) => {
       .limit(20)
       .lean()
 
-    // Giả lập thông tin khách hàng
     const users = await User.find().lean()
     const getUser = (id: any) =>
       users[Math.floor(Math.random() * users.length)] || {
@@ -201,6 +222,9 @@ router.get('/orders', async (req, res) => {
   }
 })
 
+/* ============================================================
+   UPDATE ORDER STATUS
+============================================================ */
 router.patch('/orders/:id/status', async (req, res) => {
   try {
     const { id } = req.params
@@ -214,6 +238,9 @@ router.patch('/orders/:id/status', async (req, res) => {
   }
 })
 
+/* ============================================================
+   ORDER DETAILS
+============================================================ */
 router.get('/orders/:id', async (req, res) => {
   try {
     const { id } = req.params
@@ -221,7 +248,6 @@ router.get('/orders/:id', async (req, res) => {
     const order = await Order.findById(id).lean()
     if (!order) return res.status(404).json({ error: 'Order not found' })
 
-    // Mock data sản phẩm (sau này có thể join từ Product)
     const mockItems = [
       { name: 'Áo thun trắng', quantity: 2, price: 250000 },
       { name: 'Quần kaki', quantity: 1, price: 700000 }
@@ -244,6 +270,9 @@ router.get('/orders/:id', async (req, res) => {
   }
 })
 
+/* ============================================================
+   OVERVIEW
+============================================================ */
 router.get('/overview', async (req, res) => {
   try {
     const totalOrders = await Order.countDocuments()
@@ -273,6 +302,9 @@ router.get('/overview', async (req, res) => {
   }
 })
 
+/* ============================================================
+   TEST ERROR
+============================================================ */
 router.get('/test-error', async (req, res) => {
   log.info('Testing error route')
   throw new AppError('Đây là lỗi giả lập', 400)

@@ -1,22 +1,49 @@
-import { PERMISSIONS } from './permissions'
-
-export const PERMISSION_ROUTES: Record<string, string> = {
-  [PERMISSIONS.VIEW_DASHBOARD]: '/admin/overview',
-  [PERMISSIONS.MANAGE_ORDERS]: '/admin/orders',
-  [PERMISSIONS.MANAGE_PRODUCTS]: '/admin/products',
-  [PERMISSIONS.MANAGE_CATEGORIES]: '/admin/categories',
-  [PERMISSIONS.MANAGE_CUSTOMERS]: '/admin/customers',
-  [PERMISSIONS.MANAGE_BANNERS]: '/admin/banners',
-
-  [PERMISSIONS.MANAGE_BLOG_POSTS]: '/admin/blog/posts',
-  [PERMISSIONS.MANAGE_BLOG_CATEGORIES]: '/admin/blog/categories',
-  [PERMISSIONS.MANAGE_BLOG_TAGS]: '/admin/blog/tags',
-
-  [PERMISSIONS.MANAGE_PAYMENT]: '/admin/settings/payment',
-  [PERMISSIONS.MANAGE_SHIPPING]: '/admin/settings/shipping',
-
-  [PERMISSIONS.MANAGE_USERS]: '/admin/settings/users',
-  [PERMISSIONS.MANAGE_ROLES]: '/admin/settings/roles',
-
-  [PERMISSIONS.VIEW_ANALYTICS]: '/admin/overview'
-}
+export const PERMISSION_ROUTES = [
+  {
+    perms: [
+      'products.read',
+      'products.create',
+      'products.update',
+      'products.delete'
+    ],
+    route: '/admin/products'
+  },
+  {
+    perms: [
+      'categories.read',
+      'categories.create',
+      'categories.update',
+      'categories.delete'
+    ],
+    route: '/admin/categories'
+  },
+  {
+    perms: [
+      'customers.read',
+      'customers.create',
+      'customers.update',
+      'customers.delete'
+    ],
+    route: '/admin/customers'
+  },
+  {
+    perms: ['orders.read', 'orders.update'],
+    route: '/admin/orders'
+  },
+  {
+    perms: ['banners.manage'],
+    route: '/admin/banners'
+  },
+  {
+    perms: ['roles.manage'],
+    route: '/admin/settings/roles'
+  },
+  {
+    perms: ['users.manage'],
+    route: '/admin/settings/users'
+  },
+  {
+    perms: ['dashboard.view'],
+    route: '/admin/overview'
+  }
+]

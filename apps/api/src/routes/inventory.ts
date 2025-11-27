@@ -1,10 +1,14 @@
 import express from 'express'
 import Product from '../models/Product'
-import { protect, adminOnly } from '../middleware/auth'
+import { protect } from '../middleware/auth'
+import { requirePermissions } from '../middleware/requirePermissions'
 
 const router = express.Router()
 
-router.use(protect, adminOnly)
+// ⭐ Inventory cần quyền xem sản phẩm
+const CAN_READ_INVENTORY = requirePermissions('products.read')
+
+router.use(protect, CAN_READ_INVENTORY)
 
 /**
  * GET /admin/inventory/list

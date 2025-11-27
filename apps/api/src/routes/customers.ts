@@ -1,13 +1,17 @@
 import express from 'express'
 import Customer from '../models/Customer'
 import CustomerAddress from '../models/CustomerAddress'
-import { protect, adminOnly } from '../middleware/auth'
+import { protect } from '../middleware/auth'
+import { requirePermissions } from '../middleware/requirePermissions'
 
 const router = express.Router()
 
-const { faker } = require('@faker-js/faker')
+// ⭐ Chỉ cần quyền manage_customers
+const CAN_CUSTOMERS = requirePermissions('manage_customers')
 
-router.use(protect, adminOnly)
+router.use(protect, CAN_CUSTOMERS)
+
+const { faker } = require('@faker-js/faker')
 
 const segments = {
   vip: { totalSpent: { $gte: 5_000_000 } },
@@ -105,7 +109,7 @@ router.get('/:id', async (req, res) => {
   }
 })
 
-// PUT /admin/customers/:id  (update info + status)
+// PUT /admin/customers/:id
 router.put('/:id', async (req, res) => {
   try {
     const { name, email, phone, notes, tags, status } = req.body
@@ -129,7 +133,7 @@ router.put('/:id', async (req, res) => {
   }
 })
 
-// PUT /admin/customers/:id/status  (soft delete / block / ...)
+// PUT /admin/customers/:id/status
 router.put('/:id/status', async (req, res) => {
   try {
     const { status } = req.body
@@ -144,7 +148,7 @@ router.put('/:id/status', async (req, res) => {
   }
 })
 
-// "DELETE" = soft delete -> set status = deactivated
+// DELETE (soft delete)
 router.delete('/:id', async (req, res) => {
   try {
     const updated = await Customer.findByIdAndUpdate(
@@ -209,11 +213,9 @@ router.delete('/:id/addresses/:addressId', async (req, res) => {
   }
 })
 
-// SEED /admin/customers/seed  -> tạo demo data
-// POST /admin/customers/seed
+// Seed
 router.post('/seed', async (req, res) => {
   try {
-    // Xoá sạch trước
     await Customer.deleteMany({})
     await CustomerAddress.deleteMany({})
 
@@ -234,7 +236,6 @@ router.post('/seed', async (req, res) => {
         createdAt: faker.date.recent({ days: 180 })
       })
 
-      // Tạo 1–3 địa chỉ
       const addrCount = faker.number.int({ min: 1, max: 3 })
 
       for (let j = 0; j < addrCount; j++) {

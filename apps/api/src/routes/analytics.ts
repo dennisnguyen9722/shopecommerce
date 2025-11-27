@@ -2,18 +2,20 @@ import express from 'express'
 import Order from '../models/Order'
 import Customer from '../models/Customer'
 import Product from '../models/Product'
-import { protect, adminOnly } from '../middleware/auth'
+import { protect } from '../middleware/auth'
+import { requirePermissions } from '../middleware/requirePermissions'
 import { PipelineStage } from 'mongoose'
 
 const router = express.Router()
 
-router.use(protect, adminOnly)
+// ⭐ Chỉ cần login + có quyền view_analytics
+const CAN_VIEW = requirePermissions('view_analytics')
 
-/* ============================================================
-   A1. Revenue summary (today / month / total)
-   GET /admin/analytics/revenue-summary
-============================================================ */
-router.get('/revenue-summary', async (_req, res) => {
+// ============================================================
+// A1. Revenue summary
+// GET /admin/analytics/revenue-summary
+// ============================================================
+router.get('/revenue-summary', protect, CAN_VIEW, async (_req, res) => {
   try {
     const now = new Date()
 
@@ -46,11 +48,11 @@ router.get('/revenue-summary', async (_req, res) => {
   }
 })
 
-/* ============================================================
-   A2. Revenue chart (daily revenue)
-   GET /admin/analytics/revenue-chart?days=30
-============================================================ */
-router.get('/revenue-chart', async (req, res) => {
+// ============================================================
+// A2. Revenue chart
+// GET /admin/analytics/revenue-chart?days=30
+// ============================================================
+router.get('/revenue-chart', protect, CAN_VIEW, async (req, res) => {
   try {
     const days = Number(req.query.days || 30)
     const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000)
@@ -74,11 +76,11 @@ router.get('/revenue-chart', async (req, res) => {
   }
 })
 
-/* ============================================================
-   A3. Best-selling products
-   GET /admin/analytics/best-products?limit=5&days=30
-============================================================ */
-router.get('/best-products', async (req, res) => {
+// ============================================================
+// A3. Best-selling products
+// GET /admin/analytics/best-products
+// ============================================================
+router.get('/best-products', protect, CAN_VIEW, async (req, res) => {
   try {
     const limitNum = Number(req.query.limit || 5)
     const days = Number(req.query.days || 30)
@@ -124,11 +126,10 @@ router.get('/best-products', async (req, res) => {
   }
 })
 
-/* ============================================================
-   A4. Customer Lifetime Value (Top customers)
-   GET /admin/analytics/top-customers?limit=5
-============================================================ */
-router.get('/top-customers', async (req, res) => {
+// ============================================================
+// A4. Top customers
+// ============================================================
+router.get('/top-customers', protect, CAN_VIEW, async (req, res) => {
   try {
     const limitNum = Number(req.query.limit || 5)
 
@@ -143,11 +144,10 @@ router.get('/top-customers', async (req, res) => {
   }
 })
 
-/* ============================================================
-   A5. Customer Purchase Frequency (order count grouped)
-   GET /admin/analytics/purchase-frequency
-============================================================ */
-router.get('/purchase-frequency', async (_req, res) => {
+// ============================================================
+// A5. Purchase frequency
+// ============================================================
+router.get('/purchase-frequency', protect, CAN_VIEW, async (_req, res) => {
   try {
     const pipeline: PipelineStage[] = [
       {
@@ -166,26 +166,20 @@ router.get('/purchase-frequency', async (_req, res) => {
   }
 })
 
-/* ============================================================
-   A6. Inventory Overview
-   GET /admin/analytics/inventory-overview
-   → Tổng số sản phẩm, số biến thể, low-stock (<5), hết hàng (=0)
-============================================================ */
-
-router.get('/inventory-overview', async (_req, res) => {
+// ============================================================
+// A6. Inventory overview
+// ============================================================
+router.get('/inventory-overview', protect, CAN_VIEW, async (_req, res) => {
   try {
     const totalProducts = await Product.countDocuments()
     const outOfStock = await Product.countDocuments({ stock: 0 })
     const lowStock = await Product.countDocuments({ stock: { $gt: 0, $lt: 5 } })
 
-    // Nếu bạn có biến thể (variants), tùy model mà tính:
-    const totalVariants = 0 // hoặc Product.aggregate([...])
-
     res.json({
       totalProducts,
       lowStock,
       outOfStock,
-      totalVariants
+      totalVariants: 0
     })
   } catch (err: any) {
     res.status(500).json({ error: err.message })

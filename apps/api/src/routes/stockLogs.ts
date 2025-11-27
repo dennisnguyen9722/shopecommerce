@@ -1,14 +1,20 @@
 import express from 'express'
-import { protect, adminOnly } from '../middleware/auth'
+import { protect } from '../middleware/auth'
+import { requirePermissions } from '../middleware/requirePermissions'
 import StockLog from '../models/StockLog'
 import Product from '../models/Product'
 
 const router = express.Router()
 
-router.use(protect, adminOnly)
+// ⭐ Người có quyền manage_products hoặc products.read mới xem được stock logs
+const CAN_READ_STOCK = requirePermissions('products.read')
 
+// ⭐ Bắt buộc login + quyền
+router.use(protect, CAN_READ_STOCK)
+
+// ======================================================
 // GET /admin/stock-logs
-// ?page=1&limit=20&type=adjust|import|return|bulk|manual&product=productId&q=search&from=2024-01-01&to=2024-02-01
+// ======================================================
 router.get('/', async (req, res) => {
   const {
     page = 1,
@@ -45,14 +51,17 @@ router.get('/', async (req, res) => {
     }
   }
 
-  // Nếu có q: search theo note hoặc product name/slug
-  let productIds: string[] | undefined
+  // Search theo q
   if (q && q.trim() !== '') {
     const regex = new RegExp(q.trim(), 'i')
+
+    // search theo product name/slug
     const matchedProducts = await Product.find({
       $or: [{ name: regex }, { slug: regex }]
     }).select('_id')
-    productIds = matchedProducts.map((p) => p._id.toString())
+
+    const productIds = matchedProducts.map((p) => p._id)
+
     query.$or = [{ note: regex }, { product: { $in: productIds } }]
   }
 

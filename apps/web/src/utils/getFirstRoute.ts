@@ -1,12 +1,18 @@
-import { PERMISSION_ROUTES } from '@/src/constants/role-routes'
+import { PERMISSION_ROUTES } from '../constants/role-routes'
 
-export function getFirstAccessibleRoute(permissions: string[]): string {
-  for (const p of permissions) {
-    if (PERMISSION_ROUTES[p]) {
-      return PERMISSION_ROUTES[p]
+export function getFirstRoute(user: any) {
+  if (!user) return '/admin/login'
+
+  // SUPER ADMIN
+  if (user.role?.isSystem) return '/admin/overview'
+
+  const perms: string[] = user.permissions || []
+
+  for (const item of PERMISSION_ROUTES) {
+    if (item.perms.some((p) => perms.includes(p))) {
+      return item.route
     }
   }
 
-  // fallback khi không có gì → cho vào trang login
-  return '/admin/login'
+  return '/admin/overview' // fallback
 }

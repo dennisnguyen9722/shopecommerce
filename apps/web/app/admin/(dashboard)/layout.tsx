@@ -12,17 +12,24 @@ export default function AdminDashboardLayout({
   const [sidebarWidth, setSidebarWidth] = useState(260)
 
   return (
-    <div className="w-full min-h-screen flex">
-      {/* SIDEBAR */}
-      <Sidebar onWidthChange={(w) => setSidebarWidth(w)} />
+    <div className="w-full min-h-screen flex bg-[#f8f9fc]">
+      {/* SIDEBAR FIXED */}
+      <aside
+        className="fixed left-0 top-0 h-screen z-30"
+        style={{ width: sidebarWidth }}
+      >
+        <Sidebar onWidthChange={(w) => setSidebarWidth(w)} />
+      </aside>
 
-      {/* MAIN CONTENT AREA */}
+      {/* MAIN CONTENT */}
       <main
-        className="flex-1 transition-all duration-300"
+        className="flex-1 min-h-screen transition-all"
         style={{ marginLeft: sidebarWidth }}
       >
         {/* HEADER */}
-        <Header />
+        <div className="sticky top-0 z-20 bg-white">
+          <Header />
+        </div>
 
         {/* PAGE CONTENT */}
         <div className="p-6">{children}</div>
