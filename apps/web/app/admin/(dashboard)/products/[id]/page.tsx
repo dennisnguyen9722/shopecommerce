@@ -27,6 +27,8 @@ import InventoryLog from '@/src/components/admin/InventoryLog'
 import GlassCard from '@/src/components/admin/GlassCard'
 import Editor from '@/src/components/editor/Editor'
 
+import { ToggleLeft, ToggleRight } from 'lucide-react'
+
 export default function EditProductPage({
   params
 }: {
@@ -83,7 +85,9 @@ export default function EditProductPage({
       comparePrice: data.comparePrice || 0,
       category: catId || 'none',
       stock: data.stock || 0,
-      images: data.images || []
+      images: data.images || [],
+      isFeatured: data.isFeatured || false,
+      isPublished: data.isPublished ?? true
     })
   }, [data, reset])
 
@@ -134,6 +138,7 @@ export default function EditProductPage({
           </Button>
         </div>
       </div>
+
       {/* GLASSCARD: THÔNG TIN CHUNG */}
       <GlassCard>
         <div className="border-b border-white/20 pb-4 mb-4">
@@ -144,16 +149,19 @@ export default function EditProductPage({
         </div>
 
         <div className="space-y-4">
+          {/* NAME */}
           <div className="space-y-2">
             <Label>Tên sản phẩm</Label>
             <Input {...register('name')} placeholder="Nhập tên sản phẩm" />
           </div>
 
+          {/* SLUG */}
           <div className="space-y-2 max-w-md">
             <Label>Slug</Label>
             <Input {...register('slug')} placeholder="san-pham" />
           </div>
 
+          {/* CATEGORY */}
           <div className="space-y-2 max-w-sm">
             <Label>Danh mục</Label>
             <Controller
@@ -180,9 +188,57 @@ export default function EditProductPage({
               )}
             />
           </div>
+
+          {/* NEW: PUBLISH & FEATURED */}
+          <div className="grid grid-cols-2 max-w-md gap-6 pt-4">
+            <div className="space-y-2">
+              <Label>Công khai (isPublished)</Label>
+              <Controller
+                control={control}
+                name="isPublished"
+                render={({ field }) => (
+                  <button
+                    type="button"
+                    onClick={() => field.onChange(!field.value)}
+                    className="flex items-center gap-2"
+                  >
+                    {field.value ? (
+                      <ToggleRight className="w-6 h-6 text-green-500" />
+                    ) : (
+                      <ToggleLeft className="w-6 h-6 text-gray-400" />
+                    )}
+                    <span>{field.value ? 'Đang hiển thị' : 'Đang ẩn'}</span>
+                  </button>
+                )}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Nổi bật (isFeatured)</Label>
+              <Controller
+                control={control}
+                name="isFeatured"
+                render={({ field }) => (
+                  <button
+                    type="button"
+                    onClick={() => field.onChange(!field.value)}
+                    className="flex items-center gap-2"
+                  >
+                    {field.value ? (
+                      <ToggleRight className="w-6 h-6 text-yellow-500" />
+                    ) : (
+                      <ToggleLeft className="w-6 h-6 text-gray-400" />
+                    )}
+                    <span>{field.value ? 'Nổi bật' : 'Không nổi bật'}</span>
+                  </button>
+                )}
+              />
+            </div>
+          </div>
         </div>
       </GlassCard>
-      {/* GLASSCARD: HÌNH ẢNH */}
+
+      {/* IMAGES */}
       <GlassCard>
         <div className="border-b border-white/20 pb-4 mb-4">
           <h2 className="text-lg font-semibold">Hình ảnh</h2>
@@ -202,7 +258,8 @@ export default function EditProductPage({
           )}
         />
       </GlassCard>
-      {/* GLASSCARD: GIÁ & TỒN KHO */}
+
+      {/* PRICE */}
       <GlassCard>
         <div className="border-b border-white/20 pb-4 mb-4">
           <h2 className="text-lg font-semibold">Giá & Tồn kho</h2>
@@ -246,7 +303,8 @@ export default function EditProductPage({
           <Input type="number" {...register('stock')} disabled />
         </div>
       </GlassCard>
-      {/* GLASSCARD: MÔ TẢ CHI TIẾT */}
+
+      {/* DESCRIPTION */}
       <GlassCard>
         <div className="border-b border-white/20 pb-4 mb-4">
           <h2 className="text-lg font-semibold">Mô tả chi tiết</h2>
@@ -263,8 +321,10 @@ export default function EditProductPage({
           )}
         />
       </GlassCard>
-      {/* GLASSCARD: INVENTORY LOG */}
+
+      {/* INVENTORY LOG */}
       <InventoryLog productId={id} />
+
       {/* MODAL ADJUST STOCK */}
       <AdjustStockModal
         productId={id}

@@ -16,8 +16,13 @@ import {
   TableRow
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
-// import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { Plus } from 'lucide-react'
+import {
+  Plus,
+  CheckCircle,
+  XCircle,
+  ToggleLeft,
+  ToggleRight
+} from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import {
   Select,
@@ -28,6 +33,7 @@ import {
 } from '@/components/ui/select'
 import ConfirmDeleteDialog from '@/src/components/admin/ConfirmDeleteDialog'
 import GlassCard from '@/src/components/admin/GlassCard'
+import { toast } from 'sonner'
 
 // ===============================================
 // UTILS
@@ -35,6 +41,11 @@ import GlassCard from '@/src/components/admin/GlassCard'
 const formatCurrency = (n: number | undefined) => {
   if (typeof n !== 'number') return '-'
   return n.toLocaleString('vi-VN') + ' ₫'
+}
+
+const getDiscountPercent = (price: number, comparePrice: number) => {
+  if (!comparePrice || comparePrice <= price) return 0
+  return Math.round(((comparePrice - price) / comparePrice) * 100)
 }
 
 export default function ProductsPage() {
@@ -90,21 +101,17 @@ export default function ProductsPage() {
   })
 
   const categories = catData || []
+
   if (isLoading)
     return <div className="p-6">Đang tải danh sách sản phẩm...</div>
   if (isError)
     return <div className="p-6 text-red-600">Lỗi tải danh sách sản phẩm.</div>
 
   // ===============================================
-  // SAFETY FALLBACK — FIX RUNTIME CRASH
+  // SAFETY
   // ===============================================
   const items = data.items || []
-
-  const pagination = data.pagination || {
-    page,
-    pages: 1,
-    total: items.length
-  }
+  const pagination = data.pagination || { page, pages: 1, total: items.length }
 
   // ===============================================
   // BULK SELECT
@@ -116,19 +123,50 @@ export default function ProductsPage() {
   }
 
   const selectAll = () => {
-    if (selected.length === items.length) {
-      setSelected([])
-    } else {
-      setSelected(items.map((x: any) => x._id))
-    }
+    if (selected.length === items.length) setSelected([])
+    else setSelected(items.map((x: any) => x._id))
   }
 
   const bulkDelete = async () => {
-    await api.post('/admin/products/bulk-delete', { ids: selected })
+    try {
+      await api.post('/admin/products/bulk-delete', { ids: selected })
+      toast.success('Đã xoá sản phẩm đã chọn')
+      setSelected([])
+      setPage(1)
+      refetch()
+    } catch (e) {
+      toast.error('Lỗi xoá sản phẩm')
+    }
+  }
 
-    setSelected([])
-    setPage(1)
-    refetch()
+  // ===============================================
+  // ⭐ FEATURED TOGGLE
+  // ===============================================
+  const toggleFeatured = async (id: string, current: boolean) => {
+    try {
+      await api.patch(`/admin/products/${id}/featured`, {
+        isFeatured: !current
+      })
+      toast.success('Cập nhật nổi bật thành công')
+      refetch()
+    } catch (e: any) {
+      toast.error(e?.response?.data?.error || 'Lỗi cập nhật nổi bật')
+    }
+  }
+
+  // ===============================================
+  // ⭐ PUBLISH TOGGLE
+  // ===============================================
+  const togglePublish = async (id: string, current: boolean) => {
+    try {
+      await api.patch(`/admin/products/${id}/publish`, {
+        isPublished: !current
+      })
+      toast.success('Cập nhật trạng thái công khai thành công')
+      refetch()
+    } catch (e: any) {
+      toast.error('Lỗi cập nhật trạng thái')
+    }
   }
 
   // ===============================================
@@ -144,10 +182,9 @@ export default function ProductsPage() {
         </Button>
       </div>
 
-      {/* FILTER BAR (Glass) */}
+      {/* FILTER BAR */}
       <GlassCard className="py-4">
         <div className="flex flex-col md:flex-row gap-4 md:items-center">
-          {/* SEARCH */}
           <Input
             placeholder="Tìm theo tên hoặc slug..."
             className="w-full md:w-64"
@@ -158,7 +195,7 @@ export default function ProductsPage() {
             }}
           />
 
-          {/* CATEGORY FILTER */}
+          {/* CATEGORY */}
           <Select
             value={categoryFilter}
             onValueChange={(v) => {
@@ -179,7 +216,7 @@ export default function ProductsPage() {
             </SelectContent>
           </Select>
 
-          {/* STOCK FILTER */}
+          {/* STOCK */}
           <Select
             value={stockFilter}
             onValueChange={(v) => {
@@ -220,7 +257,7 @@ export default function ProductsPage() {
         </div>
       </GlassCard>
 
-      {/* BULK BAR */}
+      {/* BULK DELETE BAR */}
       {selected.length > 0 && (
         <GlassCard className="border-red-200 bg-red-50/40 text-red-700 flex items-center justify-between p-3 rounded-xl">
           <div className="text-sm">
@@ -228,19 +265,15 @@ export default function ProductsPage() {
           </div>
 
           <ConfirmDeleteDialog
-            trigger={
-              <Button variant="destructive" disabled={selected.length === 0}>
-                Xoá đã chọn
-              </Button>
-            }
+            trigger={<Button variant="destructive">Xoá đã chọn</Button>}
             title={`Xoá ${selected.length} sản phẩm?`}
-            description="Các sản phẩm đã chọn sẽ bị xoá vĩnh viễn và không thể khôi phục."
+            description="Hành động này không thể hoàn tác."
             onConfirm={bulkDelete}
           />
         </GlassCard>
       )}
 
-      {/* TABLE (Glass) */}
+      {/* TABLE */}
       <GlassCard>
         <div className="border-b border-white/20 pb-4 mb-4">
           <h2 className="text-lg font-semibold">Danh sách sản phẩm</h2>
@@ -261,87 +294,130 @@ export default function ProductsPage() {
               <TableHead>Danh mục</TableHead>
               <TableHead>Giá</TableHead>
               <TableHead>Giảm</TableHead>
+              <TableHead>Nổi bật</TableHead>
+              <TableHead>Công khai</TableHead>
               <TableHead>Tồn kho</TableHead>
               <TableHead className="text-right">Thao tác</TableHead>
             </TableRow>
           </TableHeader>
 
           <TableBody>
-            {items.map((product: any) => (
-              <TableRow key={product._id}>
-                <TableCell>
-                  <input
-                    type="checkbox"
-                    checked={selected.includes(product._id)}
-                    onChange={() => toggleSelect(product._id)}
-                  />
-                </TableCell>
+            {items.map((product: any) => {
+              const discountPercent = getDiscountPercent(
+                product.price,
+                product.comparePrice
+              )
 
-                <TableCell>
-                  {product.images?.[0]?.url ? (
-                    <Image
-                      src={product.images[0].url}
-                      alt={product.name}
-                      width={60}
-                      height={60}
-                      className="rounded-md object-cover"
+              return (
+                <TableRow key={product._id}>
+                  <TableCell>
+                    <input
+                      type="checkbox"
+                      checked={selected.includes(product._id)}
+                      onChange={() => toggleSelect(product._id)}
                     />
-                  ) : (
-                    <div className="w-[60px] h-[60px] bg-gray-100 rounded-md flex items-center justify-center text-xs text-gray-400">
-                      No image
+                  </TableCell>
+
+                  <TableCell>
+                    {product.images?.[0]?.url ? (
+                      <Image
+                        src={product.images[0].url}
+                        alt={product.name}
+                        width={60}
+                        height={60}
+                        className="rounded-md object-cover"
+                      />
+                    ) : (
+                      <div className="w-[60px] h-[60px] bg-gray-100 rounded-md flex items-center justify-center text-xs text-gray-400">
+                        No image
+                      </div>
+                    )}
+                  </TableCell>
+
+                  <TableCell className="max-w-60">
+                    <div className="font-medium line-clamp-2">
+                      {product.name}
                     </div>
-                  )}
-                </TableCell>
+                    <div className="text-xs text-gray-400">
+                      /products/{product.slug}
+                    </div>
+                  </TableCell>
 
-                <TableCell className="max-w-60">
-                  <div className="font-medium line-clamp-2">{product.name}</div>
-                  <div className="text-xs text-gray-400">
-                    /products/{product.slug}
-                  </div>
-                </TableCell>
+                  <TableCell>{product.category?.name || '—'}</TableCell>
 
-                <TableCell>{product.category?.name || '—'}</TableCell>
+                  <TableCell>
+                    {product.comparePrice > product.price ? (
+                      <div className="flex flex-col">
+                        <span className="text-red-600 font-semibold">
+                          {formatCurrency(product.price)}
+                        </span>
+                        <span className="text-gray-400 line-through text-xs">
+                          {formatCurrency(product.comparePrice)}
+                        </span>
+                      </div>
+                    ) : (
+                      <span>{formatCurrency(product.price)}</span>
+                    )}
+                  </TableCell>
 
-                <TableCell>
-                  {product.hasDiscount ? (
-                    <div className="flex flex-col">
+                  <TableCell>
+                    {discountPercent > 0 ? (
                       <span className="text-red-600 font-semibold">
-                        {formatCurrency(product.price)}
+                        -{discountPercent}%
                       </span>
-                      <span className="text-gray-400 line-through text-xs">
-                        {formatCurrency(product.comparePrice)}
-                      </span>
-                    </div>
-                  ) : (
-                    <span>{formatCurrency(product.price)}</span>
-                  )}
-                </TableCell>
+                    ) : (
+                      <span className="text-gray-400">—</span>
+                    )}
+                  </TableCell>
 
-                <TableCell>
-                  {product.hasDiscount ? (
-                    <span className="text-red-600 font-medium">
-                      -{product.discountPercent}%
-                    </span>
-                  ) : (
-                    <span className="text-gray-400">—</span>
-                  )}
-                </TableCell>
+                  {/* FEATURED */}
+                  <TableCell>
+                    <button
+                      onClick={() =>
+                        toggleFeatured(product._id, product.isFeatured)
+                      }
+                      className="flex items-center"
+                    >
+                      {product.isFeatured ? (
+                        <ToggleRight className="w-6 h-6 text-yellow-500" />
+                      ) : (
+                        <ToggleLeft className="w-6 h-6 text-gray-400" />
+                      )}
+                    </button>
+                  </TableCell>
 
-                <TableCell>{product.stock}</TableCell>
+                  {/* PUBLISH */}
+                  <TableCell>
+                    <button
+                      onClick={() =>
+                        togglePublish(product._id, product.isPublished)
+                      }
+                      className="flex items-center"
+                    >
+                      {product.isPublished ? (
+                        <ToggleRight className="w-6 h-6 text-green-500" />
+                      ) : (
+                        <ToggleLeft className="w-6 h-6 text-gray-400" />
+                      )}
+                    </button>
+                  </TableCell>
 
-                <TableCell className="text-right">
-                  <Link href={`/admin/products/${product._id}`}>
-                    <Button variant="outline" size="sm">
-                      Sửa
-                    </Button>
-                  </Link>
-                </TableCell>
-              </TableRow>
-            ))}
+                  <TableCell>{product.stock}</TableCell>
+
+                  <TableCell className="text-right">
+                    <Link href={`/admin/products/${product._id}`}>
+                      <Button variant="outline" size="sm">
+                        Sửa
+                      </Button>
+                    </Link>
+                  </TableCell>
+                </TableRow>
+              )
+            })}
 
             {items.length === 0 && (
               <TableRow>
-                <TableCell colSpan={8} className="text-center py-6">
+                <TableCell colSpan={10} className="text-center py-6">
                   Không có sản phẩm nào khớp bộ lọc.
                 </TableCell>
               </TableRow>

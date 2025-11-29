@@ -85,7 +85,7 @@ router.post('/', protect, CAN_MANAGE, async (req, res) => {
 })
 
 /* ------------------------------------------
-   LIST PRODUCTS
+   LIST PRODUCTS — ADMIN
 ---------------------------------------------*/
 router.get('/', protect, CAN_MANAGE, async (req, res) => {
   try {
@@ -114,15 +114,22 @@ router.get('/', protect, CAN_MANAGE, async (req, res) => {
     const skip = (Number(page) - 1) * Number(limit)
 
     const items = await Product.find(query)
-      .populate('category', 'name')
+      .populate('category', 'name slug')
       .sort({ createdAt: sort === 'oldest' ? 1 : -1 })
       .skip(skip)
       .limit(Number(limit))
-      .lean()
+      .lean({ virtuals: true }) // ⭐ FIX QUAN TRỌNG
 
     const total = await Product.countDocuments(query)
 
-    res.json({ items, total })
+    res.json({
+      items,
+      pagination: {
+        page: Number(page),
+        pages: Math.ceil(total / Number(limit)),
+        total
+      }
+    })
   } catch (err: any) {
     res.status(500).json({ error: 'Internal error' })
   }
@@ -133,7 +140,10 @@ router.get('/', protect, CAN_MANAGE, async (req, res) => {
 ---------------------------------------------*/
 router.get('/:id', protect, CAN_MANAGE, async (req, res) => {
   try {
-    const item = await Product.findById(req.params.id).lean()
+    const item = await Product.findById(req.params.id)
+      .populate('category', 'name slug')
+      .lean({ virtuals: true }) // ⭐ THÊM
+
     if (!item) return res.status(404).json({ error: 'Not found' })
 
     res.json(item)
@@ -161,7 +171,59 @@ router.put('/:id', protect, CAN_MANAGE, async (req, res) => {
 
     const updated = await Product.findByIdAndUpdate(req.params.id, update, {
       new: true
-    }).lean()
+    })
+      .populate('category', 'name slug')
+      .lean({ virtuals: true }) // ⭐ THÊM
+
+    res.json(updated)
+  } catch (err: any) {
+    res.status(500).json({ error: err.message })
+  }
+})
+
+/* ------------------------------------------
+   ⭐⭐⭐ TOGGLE PUBLISH (Công khai / Ẩn)
+---------------------------------------------*/
+router.patch('/:id/publish', protect, CAN_MANAGE, async (req, res) => {
+  try {
+    const { isPublished } = req.body
+
+    const updated = await Product.findByIdAndUpdate(
+      req.params.id,
+      { isPublished: !!isPublished },
+      { new: true }
+    )
+      .populate('category', 'name slug')
+      .lean({ virtuals: true })
+
+    if (!updated) {
+      return res.status(404).json({ error: 'Product not found' })
+    }
+
+    res.json(updated)
+  } catch (err: any) {
+    res.status(500).json({ error: err.message })
+  }
+})
+
+/* ------------------------------------------
+   UPDATE FEATURED
+---------------------------------------------*/
+router.patch('/:id/featured', protect, CAN_MANAGE, async (req, res) => {
+  try {
+    const { isFeatured } = req.body
+
+    const updated = await Product.findByIdAndUpdate(
+      req.params.id,
+      { isFeatured },
+      { new: true }
+    )
+      .populate('category', 'name slug')
+      .lean({ virtuals: true })
+
+    if (!updated) {
+      return res.status(404).json({ error: 'Không tìm thấy sản phẩm' })
+    }
 
     res.json(updated)
   } catch (err: any) {

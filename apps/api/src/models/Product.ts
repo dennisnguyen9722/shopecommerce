@@ -20,7 +20,6 @@ const ProductSchema = new Schema(
   {
     name: { type: String, required: true },
 
-    // ❌ remove unique to prevent duplicate index definition
     slug: { type: String, required: true },
 
     description: String,
@@ -38,7 +37,8 @@ const ProductSchema = new Schema(
     images: [ImageSchema],
     variants: [VariantSchema],
 
-    isPublished: { type: Boolean, default: false }
+    isPublished: { type: Boolean, default: true },
+    isFeatured: { type: Boolean, default: false }
   },
   { timestamps: true }
 )

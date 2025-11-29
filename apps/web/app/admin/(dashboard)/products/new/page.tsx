@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-// import dynamic from 'next/dynamic'
 import api from '@/src/lib/api'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
@@ -23,10 +22,7 @@ import PriceInputShopifyPlus from '@/src/components/admin/PriceInput'
 import GlassCard from '@/src/components/admin/GlassCard'
 import Editor from '@/src/components/editor/Editor'
 
-// const RichTextEditor = dynamic(
-//   () => import('@/src/components/admin/RichTextEditor'),
-//   { ssr: false }
-// )
+import { ToggleLeft, ToggleRight } from 'lucide-react'
 
 type Category = {
   _id: string
@@ -49,6 +45,10 @@ export default function CreateProductPage() {
   const [description, setDescription] = useState('')
   const [images, setImages] = useState<{ url: string; public_id: string }[]>([])
   const [categoryId, setCategoryId] = useState<string>('')
+
+  // NEW
+  const [isPublished, setIsPublished] = useState(true)
+  const [isFeatured, setIsFeatured] = useState(false)
 
   // Auto-slug
   const handleName = (value: string) => {
@@ -84,7 +84,9 @@ export default function CreateProductPage() {
         stock,
         description,
         images,
-        category: categoryId || undefined
+        category: categoryId || undefined,
+        isPublished,
+        isFeatured
       })
       return res.data
     },
@@ -169,10 +171,45 @@ export default function CreateProductPage() {
               </SelectContent>
             </Select>
           </div>
+
+          {/* NEW PUBLISHED + FEATURED BLOCK */}
+          <div className="grid grid-cols-2 max-w-md gap-6 pt-4">
+            <div className="space-y-2">
+              <Label>Công khai (isPublished)</Label>
+              <button
+                type="button"
+                onClick={() => setIsPublished(!isPublished)}
+                className="flex items-center gap-2"
+              >
+                {isPublished ? (
+                  <ToggleRight className="w-6 h-6 text-green-500" />
+                ) : (
+                  <ToggleLeft className="w-6 h-6 text-gray-400" />
+                )}
+                <span>{isPublished ? 'Đang hiển thị' : 'Đang ẩn'}</span>
+              </button>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Nổi bật (isFeatured)</Label>
+              <button
+                type="button"
+                onClick={() => setIsFeatured(!isFeatured)}
+                className="flex items-center gap-2"
+              >
+                {isFeatured ? (
+                  <ToggleRight className="w-6 h-6 text-yellow-500" />
+                ) : (
+                  <ToggleLeft className="w-6 h-6 text-gray-400" />
+                )}
+                <span>{isFeatured ? 'Nổi bật' : 'Không nổi bật'}</span>
+              </button>
+            </div>
+          </div>
         </div>
       </GlassCard>
 
-      {/* GLASSCARD: HÌNH ẢNH */}
+      {/* HÌNH ẢNH */}
       <GlassCard>
         <div className="border-b border-white/20 pb-4 mb-4">
           <h2 className="text-lg font-semibold">Hình ảnh sản phẩm</h2>
@@ -184,7 +221,7 @@ export default function CreateProductPage() {
         <ImageUploader initial={[]} onChange={(imgs) => setImages(imgs)} />
       </GlassCard>
 
-      {/* GLASSCARD: GIÁ & TỒN KHO */}
+      {/* GIÁ & TỒN KHO */}
       <GlassCard>
         <div className="border-b border-white/20 pb-4 mb-4">
           <h2 className="text-lg font-semibold">Giá & Tồn kho</h2>
@@ -196,17 +233,14 @@ export default function CreateProductPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <Label>Giá bán</Label>
-            <PriceInputShopifyPlus
-              value={price}
-              onChange={(v) => setPrice(v)}
-            />
+            <PriceInputShopifyPlus value={price} onChange={setPrice} />
           </div>
 
           <div className="space-y-2">
             <Label>Giá gốc (compare price)</Label>
             <PriceInputShopifyPlus
               value={comparePrice}
-              onChange={(v) => setComparePrice(v)}
+              onChange={setComparePrice}
             />
           </div>
         </div>
@@ -222,7 +256,7 @@ export default function CreateProductPage() {
         </div>
       </GlassCard>
 
-      {/* GLASSCARD: MÔ TẢ CHI TIẾT */}
+      {/* MÔ TẢ CHI TIẾT */}
       <GlassCard>
         <div className="border-b border-white/20 pb-4 mb-4">
           <h2 className="text-lg font-semibold">Mô tả chi tiết</h2>

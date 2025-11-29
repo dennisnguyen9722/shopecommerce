@@ -31,6 +31,12 @@ import rolesRoutes from './routes/roles'
 import usersRoutes from './routes/users'
 import profileRoutes from './routes/profile'
 
+// PUBLIC API STORE FRONT
+import publicBanners from './routes/public/banners'
+import publicCategories from './routes/public/categories'
+import publicProducts from './routes/public/products'
+import publicBlog from './routes/public/blog'
+
 // MIDDLEWARE
 import { errorHandler } from './middleware/errorHandler'
 import { log } from './utils/logger'
@@ -84,6 +90,12 @@ app.use('/admin/blog/tags', tags)
 
 // UPLOAD ROUTES
 app.use('/uploads', uploadsRoutes)
+
+// PUBLIC API ROUTES
+app.use('/public/banners', publicBanners)
+app.use('/public/categories', publicCategories)
+app.use('/public/products', publicProducts)
+app.use('/public/blog', publicBlog)
 
 /* ----------------------------
    ERROR HANDLER
