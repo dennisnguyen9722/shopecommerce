@@ -122,7 +122,7 @@ router.get('/:id', protect, CAN_MANAGE, async (req, res) => {
 // ======================================================================
 router.post('/', protect, CAN_MANAGE, async (req, res) => {
   try {
-    const { name, slug, description, parent, isActive } = req.body
+    const { name, slug, description, parent, isActive, icon } = req.body
 
     if (!name || String(name).trim() === '') {
       return res.status(400).json({ error: 'Tên là bắt buộc' })
@@ -141,7 +141,10 @@ router.post('/', protect, CAN_MANAGE, async (req, res) => {
       slug: finalSlug,
       description,
       parent: parent && parent !== '' && parent !== 'none' ? parent : null,
-      isActive: typeof isActive === 'boolean' ? isActive : true
+      isActive: typeof isActive === 'boolean' ? isActive : true,
+
+      // ⭐ NEW: lưu icon (url + public_id)
+      icon: icon || null
     })
 
     res.status(201).json(created)
@@ -155,7 +158,7 @@ router.post('/', protect, CAN_MANAGE, async (req, res) => {
 // ======================================================================
 router.put('/:id', protect, CAN_MANAGE, async (req, res) => {
   try {
-    const { name, slug, description, parent, isActive } = req.body
+    const { name, slug, description, parent, isActive, icon } = req.body
 
     if (parent && parent === req.params.id) {
       return res
@@ -186,6 +189,11 @@ router.put('/:id', protect, CAN_MANAGE, async (req, res) => {
       description,
       parent: parent && parent !== '' && parent !== 'none' ? parent : null,
       isActive
+    }
+
+    // ⭐ NEW: cập nhật icon
+    if (icon !== undefined) {
+      update.icon = icon // {url, public_id} hoặc null
     }
 
     const updated = await Category.findByIdAndUpdate(req.params.id, update, {

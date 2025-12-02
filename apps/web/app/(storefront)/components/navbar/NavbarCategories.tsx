@@ -1,95 +1,61 @@
 'use client'
 
-import { useState } from 'react'
-import {
-  Menu,
-  Smartphone,
-  Laptop,
-  RefreshCcw,
-  Tablet,
-  Watch,
-  Home,
-  Headphones,
-  Wrench,
-  Tag,
-  Percent,
-  X
-} from 'lucide-react'
+import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import api from '@/src/lib/api'
 
-const categories = [
-  { name: 'Điện thoại', icon: Smartphone },
-  { name: 'Macbook', icon: Laptop },
-  { name: 'Máy cũ', icon: RefreshCcw },
-  { name: 'Máy tính bảng', icon: Tablet },
-  { name: 'Đồng hồ', icon: Watch },
-  { name: 'Nhà thông minh', icon: Home },
-  { name: 'Phụ kiện', icon: Headphones },
-  { name: 'Âm thanh', icon: Headphones },
-  { name: 'Sửa chữa', icon: Wrench },
-  { name: 'Deal hời', icon: Tag },
-  { name: 'Khuyến mãi', icon: Percent }
-]
+interface Category {
+  _id: string
+  name: string
+  slug: string
+  icon?: {
+    url: string
+    public_id: string
+  } | null
+}
 
 export default function NavbarCategories() {
-  const [open, setOpen] = useState(false)
+  const [categories, setCategories] = useState<Category[]>([])
+
+  useEffect(() => {
+    api.get('/public/categories').then((res) => {
+      setCategories(res.data || [])
+    })
+  }, [])
 
   return (
-    <div className="w-full backdrop-blur-xl bg-gray-50/80 border-b border-gray-200/50">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between py-3">
-          {/* LEFT: Menu Icon for mobile */}
-          <button
-            onClick={() => setOpen(!open)}
-            className="lg:hidden group relative p-3 backdrop-blur-md bg-white/60 border border-gray-200/50 rounded-xl hover:bg-orange-500 hover:border-orange-500 transition shadow-sm hover:shadow-md"
+    <nav className="w-full border-b bg-white shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-6 overflow-x-auto no-scrollbar">
+        {/* ALL PRODUCTS */}
+        <Link
+          href="/products"
+          className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-100 transition whitespace-nowrap"
+        >
+          <span className="text-sm font-medium">Tất cả sản phẩm</span>
+        </Link>
+
+        {/* CATEGORY LIST */}
+        {categories.map((cat) => (
+          <Link
+            key={cat._id}
+            href={`/category/${cat.slug}`}
+            className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-100 transition whitespace-nowrap"
           >
-            {open ? (
-              <X className="w-5 h-5 text-gray-700 group-hover:text-white" />
+            {/* ICON */}
+            {cat.icon?.url ? (
+              <img
+                src={cat.icon.url}
+                alt={cat.name}
+                className="w-6 h-6 object-contain"
+              />
             ) : (
-              <Menu className="w-5 h-5 text-gray-700 group-hover:text-white" />
+              <div className="w-6 h-6 bg-gray-200 rounded"></div>
             )}
-          </button>
 
-          {/* Desktop Items */}
-          <div className="hidden lg:flex items-center gap-6 flex-1">
-            {categories.map((item) => {
-              const Icon = item.icon
-              return (
-                <button
-                  key={item.name}
-                  className="group relative flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/60 backdrop-blur-sm transition text-sm whitespace-nowrap"
-                >
-                  <Icon
-                    className="w-[18px] h-[18px] text-gray-600 group-hover:text-orange-600 transition"
-                    strokeWidth={1.5}
-                  />
-                  <span className="text-gray-700 group-hover:text-orange-600 font-medium">
-                    {item.name}
-                  </span>
-                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-orange-400 to-orange-600 group-hover:w-full transition-all duration-300 rounded-full" />
-                </button>
-              )
-            })}
-          </div>
-        </div>
-
-        {/* Mobile Dropdown */}
-        {open && (
-          <div className="lg:hidden animate-fade-down backdrop-blur-xl bg-white/80 border-t border-gray-200 py-4 grid grid-cols-2 gap-4">
-            {categories.map((item) => {
-              const Icon = item.icon
-              return (
-                <button
-                  key={item.name}
-                  className="flex items-center gap-2 p-3 rounded-xl hover:bg-gray-100 transition text-sm"
-                >
-                  <Icon className="w-5 h-5 text-gray-700" />
-                  <span className="text-gray-700">{item.name}</span>
-                </button>
-              )
-            })}
-          </div>
-        )}
+            <span className="text-sm font-medium">{cat.name}</span>
+          </Link>
+        ))}
       </div>
-    </div>
+    </nav>
   )
 }

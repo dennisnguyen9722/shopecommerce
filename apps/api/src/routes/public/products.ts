@@ -3,14 +3,75 @@ import Product from '../../models/Product'
 
 const router = express.Router()
 
-// ==============================
-// ⚡ GET NEW PRODUCTS — phải đặt TRÊN slug
-// ==============================
+// ======================================================
+// ⭐ COMMON SELECT FIELDS
+// ======================================================
+const PRODUCT_FIELDS = `
+  _id
+  name
+  slug
+  description
+  price
+  comparePrice
+  discountPercent
+  hasDiscount
+  createdAt
+  images
+  category
+  variants
+  isNew
+  isHot
+  isFeatured
+  isPublished
+`
+
+// ======================================================
+// ⭐ HELPERS
+// ======================================================
+const applyFilters = (req: Request) => {
+  const filter: any = {
+    $or: [{ isPublished: true }, { isPublished: { $exists: false } }]
+  }
+
+  // lọc theo category
+  if (req.query.category) {
+    filter.category = req.query.category
+  }
+
+  // lọc theo khoảng giá
+  if (req.query.minPrice || req.query.maxPrice) {
+    filter.price = {}
+    if (req.query.minPrice) filter.price.$gte = Number(req.query.minPrice)
+    if (req.query.maxPrice) filter.price.$lte = Number(req.query.maxPrice)
+  }
+
+  return filter
+}
+
+const applySort = (sortQuery?: string): Record<string, 1 | -1> => {
+  switch (sortQuery) {
+    case 'price-asc':
+      return { price: 1 }
+    case 'price-desc':
+      return { price: -1 }
+    case 'oldest':
+      return { createdAt: 1 }
+    default:
+      // newest
+      return { createdAt: -1 }
+  }
+}
+
+// ======================================================
+// ⭐ NEW PRODUCTS — phải đặt TRÊN slug
+// ======================================================
 router.get('/new', async (_req, res) => {
   try {
     const products = await Product.find({ isPublished: true })
+      .populate('category', 'name slug _id') // ⭐ FIX _id
       .sort({ createdAt: -1 })
       .limit(10)
+      .lean()
 
     res.json(products)
   } catch (err) {
@@ -19,17 +80,44 @@ router.get('/new', async (_req, res) => {
   }
 })
 
-// ==============================
-// 💸 GET DISCOUNT PRODUCTS — TRƯỚC slug
-// ==============================
+// ======================================================
+// 🔍 SEARCH REALTIME
+// ======================================================
+router.get('/search', async (req: Request, res: Response) => {
+  try {
+    const query = String(req.query.query || '').trim()
+
+    if (!query) return res.json([])
+
+    const products = await Product.find({
+      name: { $regex: query, $options: 'i' },
+      $or: [{ isPublished: true }, { isPublished: { $exists: false } }]
+    })
+      .populate('category', 'name slug _id')
+      .limit(10)
+      .select('_id name slug images price comparePrice')
+      .lean()
+
+    res.json(products)
+  } catch (err) {
+    console.error('❌ [GET /public/products/search] ERROR:', err)
+    res.status(500).json({ error: 'Server error' })
+  }
+})
+
+// ======================================================
+// 💸 DISCOUNT PRODUCTS — TRƯỚC slug
+// ======================================================
 router.get('/discount', async (_req, res) => {
   try {
     const products = await Product.find({
       comparePrice: { $gt: 0 },
       $or: [{ isPublished: true }, { isPublished: { $exists: false } }]
     })
+      .populate('category', 'name slug _id') // ⭐ FIX _id
       .sort({ discountPercent: -1 })
       .limit(10)
+      .lean()
 
     res.json(products)
   } catch (err) {
@@ -38,30 +126,20 @@ router.get('/discount', async (_req, res) => {
   }
 })
 
-// ==============================
-// ⭐ GET FEATURED PRODUCTS
-// ==============================
+// ======================================================
+// ⭐ FEATURED PRODUCTS
+// ======================================================
 router.get('/featured', async (_req: Request, res: Response) => {
   try {
     const products = await Product.find({
       isFeatured: true,
       $or: [{ isPublished: true }, { isPublished: { $exists: false } }]
     })
+      .populate('category', 'name slug _id') // ⭐ FIX _id
+      .sort({ createdAt: -1 })
       .limit(8)
-      .sort({ createdAt: -1 }).select(`
-        _id 
-        name 
-        price 
-        comparePrice 
-        discountPercent 
-        hasDiscount 
-        createdAt 
-        slug 
-        images
-        isNew 
-        isHot
-        isFeatured
-      `)
+      .select(PRODUCT_FIELDS)
+      .lean()
 
     res.json(products)
   } catch (err) {
@@ -70,28 +148,21 @@ router.get('/featured', async (_req: Request, res: Response) => {
   }
 })
 
-// ==============================
+// ======================================================
 // ⚡ GET ALL PRODUCTS (GRID)
-// ==============================
-router.get('/', async (_req: Request, res: Response) => {
+// ======================================================
+router.get('/', async (req: Request, res: Response) => {
   try {
-    const products = await Product.find({
-      $or: [{ isPublished: true }, { isPublished: { $exists: false } }]
-    }).sort({ createdAt: -1 }).select(`
-        _id 
-        name 
-        price 
-        comparePrice 
-        discountPercent 
-        hasDiscount 
-        createdAt 
-        slug 
-        images 
-        category 
-        isNew 
-        isHot
-        isFeatured
-      `)
+    const filter = applyFilters(req)
+    const sortObj = applySort(String(req.query.sort || ''))
+    const limit = Number(req.query.limit) || 50
+
+    const products = await Product.find(filter)
+      .populate('category', 'name slug _id') // ⭐ FIX _id HERE
+      .sort(sortObj)
+      .limit(limit)
+      .select(PRODUCT_FIELDS)
+      .lean()
 
     res.json(products)
   } catch (err) {
@@ -100,31 +171,18 @@ router.get('/', async (_req: Request, res: Response) => {
   }
 })
 
-// ==============================
-// 🔍 GET PRODUCT DETAIL — PHẢI CUỐI CÙNG
-// ==============================
+// ======================================================
+// 🔍 GET PRODUCT DETAIL — luôn đặt cuối
+// ======================================================
 router.get('/:slug', async (req: Request, res: Response) => {
   try {
     const product = await Product.findOne({
       slug: req.params.slug,
       $or: [{ isPublished: true }, { isPublished: { $exists: false } }]
-    }).select(`
-      _id 
-      name 
-      description 
-      price 
-      comparePrice 
-      discountPercent 
-      hasDiscount 
-      createdAt 
-      slug 
-      images 
-      category 
-      variants 
-      isNew 
-      isHot
-      isFeatured
-    `)
+    })
+      .populate('category', 'name slug _id') // ⭐ FIX _id HERE
+      .select(PRODUCT_FIELDS)
+      .lean()
 
     if (!product) {
       return res.status(404).json({ error: 'Product not found' })

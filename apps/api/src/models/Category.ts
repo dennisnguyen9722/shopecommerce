@@ -6,6 +6,13 @@ export interface ICategory extends Document {
   description?: string
   parent: mongoose.Types.ObjectId | null
   isActive: boolean
+
+  // ⭐ thêm icon
+  icon?: {
+    url: string
+    public_id: string
+  } | null
+
   createdAt: Date
   updatedAt: Date
 }
@@ -14,7 +21,6 @@ const CategorySchema = new Schema(
   {
     name: { type: String, required: true },
 
-    // ❌ remove unique/index to avoid duplicate definition
     slug: { type: String, required: true },
 
     description: String,
@@ -25,19 +31,25 @@ const CategorySchema = new Schema(
       default: null
     },
 
-    isActive: { type: Boolean, default: true }
+    isActive: { type: Boolean, default: true },
+
+    // ⭐ FIELD ICON – hỗ trợ upload Cloudinary
+    icon: {
+      url: { type: String, default: null },
+      public_id: { type: String, default: null }
+    }
   },
   { timestamps: true }
 )
 
 /* --------------------------------------------------------
-| INDEXES (CLEAN – ONLY DECLARED ONCE)
-|--------------------------------------------------------*/
+| INDEXES (KHÔNG ĐỤNG VÀO, VẪN GIỮ NGUYÊN)
+--------------------------------------------------------- */
 
-// Text search chỉ áp dụng cho name (KHÔNG ĐƯỢC include slug!)
+// Text search
 CategorySchema.index({ name: 'text' })
 
-// Unique slug index (ONLY this one!)
+// Unique slug
 CategorySchema.index({ slug: 1 }, { unique: true })
 
 // Query filters

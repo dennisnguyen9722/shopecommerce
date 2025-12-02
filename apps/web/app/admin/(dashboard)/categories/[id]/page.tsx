@@ -20,6 +20,8 @@ import {
   SelectValue
 } from '@/components/ui/select'
 
+import ImageUploader from '@/src/components/admin/ImageUploader'
+
 export default function EditCategoryPage({
   params
 }: {
@@ -31,8 +33,14 @@ export default function EditCategoryPage({
 
   const [name, setName] = useState('')
   const [slug, setSlug] = useState('')
+  const [description, setDescription] = useState('')
   const [status, setStatus] = useState<'active' | 'inactive'>('active')
   const [parent, setParent] = useState('none')
+
+  // ⭐ ICON FIELD
+  const [icon, setIcon] = useState<{ url: string; public_id: string } | null>(
+    null
+  )
 
   // FETCH CATEGORY
   const { data, isLoading } = useQuery({
@@ -45,20 +53,29 @@ export default function EditCategoryPage({
 
   useEffect(() => {
     if (!data) return
+
     setName(data.name)
     setSlug(data.slug)
+    setDescription(data.description || '')
     setStatus(data.isActive ? 'active' : 'inactive')
     setParent(data.parent || 'none')
+
+    // ⭐ Load icon
+    if (data.icon) setIcon(data.icon)
   }, [data])
 
+  // UPDATE CATEGORY
   const mut = useMutation({
     mutationFn: async () => {
       const res = await api.put(`/admin/categories/${id}`, {
         name,
         slug,
+        description,
+        parent: parent === 'none' ? null : parent,
         isActive: status === 'active',
-        parent: parent === 'none' ? null : parent
+        icon: icon ? { url: icon.url, public_id: icon.public_id } : null
       })
+
       return res.data
     },
     onSuccess: () => {
@@ -93,6 +110,7 @@ export default function EditCategoryPage({
 
       {/* FORM */}
       <GlassCard className="p-6 space-y-6">
+        {/* TÊN */}
         <div className="space-y-2">
           <Label>Tên danh mục</Label>
           <Input
@@ -102,6 +120,7 @@ export default function EditCategoryPage({
           />
         </div>
 
+        {/* SLUG */}
         <div className="space-y-2">
           <Label>Slug</Label>
           <Input
@@ -111,6 +130,17 @@ export default function EditCategoryPage({
           />
         </div>
 
+        {/* DESCRIPTION */}
+        <div className="space-y-2">
+          <Label>Mô tả</Label>
+          <Input
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Mô tả danh mục"
+          />
+        </div>
+
+        {/* STATUS */}
         <div className="space-y-2">
           <Label>Trạng thái</Label>
           <Select
@@ -127,6 +157,7 @@ export default function EditCategoryPage({
           </Select>
         </div>
 
+        {/* PARENT */}
         <div className="space-y-2">
           <Label>Danh mục cha</Label>
           <Select value={parent} onValueChange={(v) => setParent(v)}>
@@ -135,9 +166,32 @@ export default function EditCategoryPage({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="none">Không có</SelectItem>
-              {/* Bạn có thể map danh mục cha vào đây */}
+              {/* TODO: render danh mục cha */}
             </SelectContent>
           </Select>
+        </div>
+
+        {/* ⭐ ICON UPLOAD */}
+        <div className="space-y-3">
+          <Label>Icon danh mục</Label>
+
+          <ImageUploader
+            initial={icon ? [icon] : []}
+            onChange={(imgs) => setIcon(imgs[0] || null)}
+          />
+
+          {icon && (
+            <div className="flex items-center gap-4 mt-2">
+              <img
+                src={icon.url}
+                alt="icon"
+                className="w-12 h-12 object-contain rounded"
+              />
+              <Button variant="outline" size="sm" onClick={() => setIcon(null)}>
+                Xoá icon
+              </Button>
+            </div>
+          )}
         </div>
       </GlassCard>
     </div>

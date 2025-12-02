@@ -11,8 +11,7 @@ import {
   Home,
   Headphones,
   Wrench,
-  Tag,
-  Sparkles
+  Tag
 } from 'lucide-react'
 
 export type Category = {
@@ -237,7 +236,7 @@ export default function CategoryGrid({
               return (
                 <Link
                   key={p._id}
-                  href={`/product/${p.slug}`}
+                  href={`/products/${p.slug}`}
                   className="
                     group relative rounded-3xl overflow-hidden
                     bg-white border border-gray-200
@@ -266,7 +265,7 @@ export default function CategoryGrid({
                   </div>
 
                   {/* HÌNH ẢNH */}
-                  <div className="relative w-full aspect-square rounded-2xl bg-gray-50 overflow-hidden mb-3">
+                  <div className="relative w-full aspect-square rounded-2xl overflow-hidden mb-3">
                     {img ? (
                       <Image
                         src={img}

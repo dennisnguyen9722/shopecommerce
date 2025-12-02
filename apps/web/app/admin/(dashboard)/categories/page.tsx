@@ -33,6 +33,11 @@ interface Category {
   slug: string
   isActive: boolean
   parent?: string | null
+  // ⭐ icon field (optional)
+  icon?: {
+    url: string
+    public_id: string
+  } | null
 }
 
 interface ApiResponse {
@@ -70,7 +75,7 @@ export default function CategoriesPage() {
     }
   })
 
-  const items = data?.items || []
+  const items: Category[] = data?.items || []
   const pagination = data?.pagination || {
     page,
     pages: 1,
@@ -217,6 +222,7 @@ export default function CategoriesPage() {
                 />
               </TableHead>
 
+              <TableHead>Icon</TableHead>
               <TableHead>Tên</TableHead>
               <TableHead>Slug</TableHead>
               <TableHead>Trạng thái</TableHead>
@@ -234,6 +240,21 @@ export default function CategoriesPage() {
                     checked={selected.includes(cat._id)}
                     onChange={() => toggleSelect(cat._id)}
                   />
+                </TableCell>
+
+                {/* ICON */}
+                <TableCell>
+                  {cat.icon?.url ? (
+                    <img
+                      src={cat.icon.url}
+                      alt={`${cat.name} icon`}
+                      className="w-10 h-10 object-contain rounded-md bg-white p-1 border"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 flex items-center justify-center text-xs text-gray-400 bg-gray-100 rounded-md">
+                      —
+                    </div>
+                  )}
                 </TableCell>
 
                 <TableCell className="font-medium">{cat.name}</TableCell>
@@ -278,7 +299,7 @@ export default function CategoriesPage() {
       {/* PAGINATION */}
       <div className="flex justify-between text-sm text-muted-foreground">
         <div>
-          Trang {pagination?.page} / {pagination?.pages}
+          Trang {pagination.page} / {pagination.pages}
         </div>
 
         <div className="flex gap-2">
