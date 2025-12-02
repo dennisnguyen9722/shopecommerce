@@ -12,28 +12,62 @@ import PurchaseFrequencyWidget from '@/src/components/admin/PurchaseFrequencyWid
 export default function AdminOverviewPage() {
   return (
     <ReactQueryProvider>
-      <main className="p-6 space-y-6">
-        <h1 className="text-2xl font-bold">Admin — Tổng quan</h1>
+      {/* Hero Section with Gradient */}
+      <div>
+        {/* Animated Background Circles */}
+        <div className="absolute top-0 left-0 w-96 h-96 bg-orange-200/30 rounded-full blur-3xl animate-float" />
+        <div
+          className="absolute bottom-0 right-0 w-96 h-96 bg-pink-200/30 rounded-full blur-3xl animate-float"
+          style={{ animationDelay: '1s' }}
+        />
 
-        {/* KPIs */}
-        <MetricsPanel />
+        <main className="relative p-6 lg:p-8 space-y-8">
+          {/* Header */}
+          <div className="space-y-2">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
+              Dashboard Overview
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400">
+              Chào mừng trở lại! Đây là tổng quan về hoạt động kinh doanh của
+              bạn
+            </p>
+          </div>
 
-        {/* ⭐ Inventory Overview thêm vào đây */}
-        <InventoryOverviewWidget />
+          {/* KPIs - Metrics Panel */}
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <MetricsPanel />
+          </div>
 
-        {/* Biểu đồ doanh thu */}
-        <RevenueChart />
+          {/* Inventory Overview */}
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100">
+            <InventoryOverviewWidget />
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <BestSellingProductsWidget />
-          <TopCustomersWidget />
-        </div>
+          {/* Revenue Chart - Featured
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-150">
+            <RevenueChart />
+          </div> */}
 
-        <PurchaseFrequencyWidget />
+          {/* Grid Layout - Best Selling & Top Customers */}
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
+            <BestSellingProductsWidget />
+            <TopCustomersWidget />
+          </div>
 
-        {/* Tabs: đơn hàng / khách hàng */}
-        <DashboardTabs />
-      </main>
+          {/* Purchase Frequency */}
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-250">
+            <PurchaseFrequencyWidget />
+          </div>
+
+          {/* Dashboard Tabs - Orders/Customers
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
+            <DashboardTabs />
+          </div> */}
+
+          {/* Bottom Spacing */}
+          <div className="h-8" />
+        </main>
+      </div>
     </ReactQueryProvider>
   )
 }

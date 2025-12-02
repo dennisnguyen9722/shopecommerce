@@ -1,11 +1,12 @@
 'use client'
 
-import { Bell, LogOut } from 'lucide-react'
+import { LogOut } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/src/store/authStore'
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
+import NotificationBell from './NotificationBell'
 
 export function Header() {
   const router = useRouter()
@@ -30,10 +31,8 @@ export function Header() {
       )}
     >
       <div className="flex items-center justify-end w-full gap-4">
-        {/* Notifications Btn */}
-        <button className="p-2 rounded-lg hover:bg-white/40 dark:hover:bg-white/10 transition-colors">
-          <Bell className="w-5 h-5 text-gray-700 dark:text-gray-300" />
-        </button>
+        {/* ⭐ THAY THẾ BUTTON CŨ BẰNG COMPONENT MỚI */}
+        <NotificationBell />
 
         {/* User Avatar + Info */}
         <div className="flex items-center gap-3">

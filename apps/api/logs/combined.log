@@ -2156,3 +2156,224 @@
 [2025-12-01 15:15:29] info: 🚀 API running + Socket.IO on http://localhost:4000
 [2025-12-01 15:29:26] info: 📦 MongoDB connected
 [2025-12-01 15:29:26] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 09:14:14] info: 📦 MongoDB connected
+[2025-12-02 09:14:14] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 09:23:56] info: 📦 MongoDB connected
+[2025-12-02 09:23:56] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 09:24:09] info: 📦 MongoDB connected
+[2025-12-02 09:24:09] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 09:30:52] info: 📦 MongoDB connected
+[2025-12-02 09:30:52] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 10:11:19] error: GET /admin/orders - Không có token hoặc token không hợp lệ
+[2025-12-02 10:12:00] error: GET /admin/orders - Không có token hoặc token không hợp lệ
+[2025-12-02 10:14:30] info: 📦 MongoDB connected
+[2025-12-02 10:14:30] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 10:15:08] error: GET /admin/orders - Không có token hoặc token không hợp lệ
+[2025-12-02 10:22:44] info: 📦 MongoDB connected
+[2025-12-02 10:22:44] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 10:45:04] error: GET /admin/orders - Không có token hoặc token không hợp lệ
+[2025-12-02 11:10:28] info: 📦 MongoDB connected
+[2025-12-02 11:10:28] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 11:11:14] info: 📦 MongoDB connected
+[2025-12-02 11:11:14] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 11:11:29] info: 📦 MongoDB connected
+[2025-12-02 11:11:29] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 11:14:53] info: 📦 MongoDB connected
+[2025-12-02 11:14:53] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 11:17:43] info: 📦 MongoDB connected
+[2025-12-02 11:17:43] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 11:18:45] info: 📦 MongoDB connected
+[2025-12-02 11:18:45] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 11:27:45] info: 📦 MongoDB connected
+[2025-12-02 11:27:45] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 11:53:58] info: 📦 MongoDB connected
+[2025-12-02 11:53:58] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 11:54:04] info: 📦 MongoDB connected
+[2025-12-02 11:54:04] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 11:55:48] info: 📦 MongoDB connected
+[2025-12-02 11:55:48] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 13:44:13] info: 📦 MongoDB connected
+[2025-12-02 13:44:14] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 13:46:47] info: 📦 MongoDB connected
+[2025-12-02 13:46:47] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 13:51:08] info: 📦 MongoDB connected
+[2025-12-02 13:51:08] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 13:53:22] info: 📦 MongoDB connected
+[2025-12-02 13:53:22] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 13:59:48] info: 📦 MongoDB connected
+[2025-12-02 13:59:48] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 14:01:55] info: 📦 MongoDB connected
+[2025-12-02 14:01:55] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 14:02:02] info: 📦 MongoDB connected
+[2025-12-02 14:02:02] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 14:05:02] info: 📦 MongoDB connected
+[2025-12-02 14:05:02] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 14:05:09] info: 📦 MongoDB connected
+[2025-12-02 14:05:09] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 14:14:55] info: 📦 MongoDB connected
+[2025-12-02 14:14:55] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 14:21:39] info: 📦 MongoDB connected
+[2025-12-02 14:21:39] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 14:23:51] info: 📦 MongoDB connected
+[2025-12-02 14:23:51] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 14:39:14] info: 📦 MongoDB connected
+[2025-12-02 14:39:14] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 14:41:08] info: 📦 MongoDB connected
+[2025-12-02 14:41:08] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 14:41:18] info: 📦 MongoDB connected
+[2025-12-02 14:41:18] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 14:48:42] info: 📦 MongoDB connected
+[2025-12-02 14:48:42] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 15:15:32] info: 🔌 Admin connected: Feh4ddLaqxHSfZSsAAAB
+[2025-12-02 15:23:25] info: 📦 MongoDB connected
+[2025-12-02 15:23:25] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 15:24:15] info: 🔌 Admin connected: qdfVZLyZMp9lPn-NAAAB
+[2025-12-02 15:24:16] info: 🔌 Admin connected: PYIRDRz95TTj1C0HAAAD
+[2025-12-02 15:28:28] info: 📦 MongoDB connected
+[2025-12-02 15:28:28] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 15:28:29] info: 🔌 Admin connected: Fnw8adcdJTLeELb6AAAB
+[2025-12-02 15:28:31] info: 🔌 Admin connected: JTDZdIpvCgOHznACAAAD
+[2025-12-02 15:28:33] info: 🔌 Admin connected: Z59POjTJwnHHx22RAAAF
+[2025-12-02 15:28:34] info: 🔌 Admin connected: UreHEvWsgjaB_ciJAAAH
+[2025-12-02 15:29:43] info: 🔌 Admin connected: dz0DzJ7anvNf4bQWAAAJ
+[2025-12-02 15:29:44] info: 🔌 Admin connected: N2sPYBSmesuPHpk8AAAL
+[2025-12-02 15:31:33] error: GET /admin/notifications - Không có token hoặc token không hợp lệ
+[2025-12-02 15:32:26] info: 📦 MongoDB connected
+[2025-12-02 15:32:26] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 15:32:27] info: 🔌 Admin connected: wK3czOUk2xiCc2BQAAAB
+[2025-12-02 15:32:28] info: 🔌 Admin connected: rFANmEzxMGLDdsVsAAAD
+[2025-12-02 15:32:28] info: 🔌 Admin connected: fD1oqriZN7qCi8IPAAAF
+[2025-12-02 15:32:30] info: 🔌 Admin connected: j6_-UOPRx_2wwF-LAAAH
+[2025-12-02 15:32:55] info: 📦 MongoDB connected
+[2025-12-02 15:32:55] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 15:32:55] info: 🔌 Admin connected: 7k5Y3Z1cj6stfqhzAAAB
+[2025-12-02 15:32:57] info: 🔌 Admin connected: nfu9VMR7uNkS2bv0AAAD
+[2025-12-02 15:32:57] info: 🔌 Admin connected: sWXjUJh988XahUVXAAAF
+[2025-12-02 15:32:57] info: 🔌 Admin connected: tyvsJ_l0W3zI_zFtAAAH
+[2025-12-02 15:33:05] info: 🔌 Admin connected: 1k35ofMVmBhytF1YAAAJ
+[2025-12-02 15:33:06] info: 🔌 Admin connected: nxgk0Q-opj7GcXPvAAAL
+[2025-12-02 15:35:45] info: 📦 MongoDB connected
+[2025-12-02 15:35:45] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 15:35:45] info: 🔌 Admin connected: Hie_RYxkw9Er4EobAAAB
+[2025-12-02 15:35:47] info: 🔌 Admin connected: FPfHDHWOqoq1CTtMAAAD
+[2025-12-02 15:35:47] info: 🔌 Admin connected: QWhRgTT9_PcKUZsLAAAF
+[2025-12-02 15:35:47] info: 🔌 Admin connected: qqrdJXVXqCcb8hzqAAAH
+[2025-12-02 15:35:47] info: 🔌 Admin connected: aMaY--yQjMbtX6R-AAAJ
+[2025-12-02 15:37:27] info: 📦 MongoDB connected
+[2025-12-02 15:37:27] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 15:37:28] info: 🔌 Admin connected: woDFsJA-1_dfPToPAAAB
+[2025-12-02 15:37:28] info: 🔌 Admin connected: hPx2kBpddWkDjwr7AAAD
+[2025-12-02 15:37:29] info: 🔌 Admin connected: 6zcWRB6Qv5pn818OAAAF
+[2025-12-02 15:37:30] info: 🔌 Admin connected: Erh1YYLR7QkesIavAAAH
+[2025-12-02 15:37:30] info: 🔌 Admin connected: JSVHN9z1EtENQAHGAAAJ
+[2025-12-02 15:39:28] info: 📦 MongoDB connected
+[2025-12-02 15:39:28] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 15:39:30] info: 🔌 Admin connected: RwWUJKL34ZUEBBpMAAAB
+[2025-12-02 15:39:30] info: 🔌 Admin connected: 7l3o09piITQsyMC4AAAD
+[2025-12-02 15:39:32] info: 🔌 Admin connected: 70nG6wfr-HZ02e9RAAAF
+[2025-12-02 15:39:32] info: 🔌 Admin connected: EnxIEeUQBtVkeHZRAAAH
+[2025-12-02 15:39:33] info: 🔌 Admin connected: mZIqk0vQOFgw8xuWAAAJ
+[2025-12-02 15:40:04] info: 📦 MongoDB connected
+[2025-12-02 15:40:04] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 15:40:04] info: 🔌 Admin connected: tRLXHlpRLD7BKphGAAAB
+[2025-12-02 15:40:04] info: 🔌 Admin connected: sWEh5R3DSIk2mQ8MAAAD
+[2025-12-02 15:40:06] info: 🔌 Admin connected: 1ow17wR11r7HEdnHAAAF
+[2025-12-02 15:40:06] info: 🔌 Admin connected: 20fm_K-PIkABBbj5AAAH
+[2025-12-02 15:40:06] info: 🔌 Admin connected: gr9MxYCQyQlPtQzBAAAJ
+[2025-12-02 15:40:43] info: 📦 MongoDB connected
+[2025-12-02 15:40:43] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 15:40:43] info: 🔌 Admin connected: qD7ZvbIAmJXGe567AAAB
+[2025-12-02 15:40:43] info: 🔌 Admin connected: iPX-aCtW35Iy0xzgAAAD
+[2025-12-02 15:40:45] info: 🔌 Admin connected: _HL64iWzP9cv2V2bAAAF
+[2025-12-02 15:40:45] info: 🔌 Admin connected: GQ1rsvavVTxjPhDjAAAH
+[2025-12-02 15:40:46] info: 🔌 Admin connected: PhP3UCsOVVy7eeWeAAAJ
+[2025-12-02 15:42:06] info: 📦 MongoDB connected
+[2025-12-02 15:42:06] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 15:42:06] info: 🔌 Admin connected: tp7zann3jg1XcKtBAAAB
+[2025-12-02 15:42:06] info: 🔌 Admin connected: 8P8fs6NlfI5A5sxYAAAD
+[2025-12-02 15:42:07] info: 🔌 Admin connected: F02I_gU4Q6DZT9E-AAAF
+[2025-12-02 15:42:07] info: 🔌 Admin connected: eLRjuFNLWXlETICKAAAH
+[2025-12-02 15:42:08] info: 🔌 Admin connected: COfg_U-P6pqtyKv3AAAJ
+[2025-12-02 15:42:09] info: 🔌 Admin connected: hSmcF5fSqex_HK_MAAAL
+[2025-12-02 15:42:10] info: 🔌 Admin connected: iq1UBeCmSVsAZ7XiAAAN
+[2025-12-02 15:47:07] info: 🔌 Admin connected: bvGTBKIZpV1kjKp5AAAP
+[2025-12-02 15:47:08] info: 🔌 Admin connected: MR9S1DAQFQ1ckr08AAAR
+[2025-12-02 15:52:28] info: 🔌 Admin connected: SGhBTYzCElvkaYcyAAAT
+[2025-12-02 15:52:29] info: 🔌 Admin connected: HWsJqodADZ4LCaG0AAAV
+[2025-12-02 15:57:02] info: 🔌 Admin connected: 8HK5GYHviaFrXG9vAAAX
+[2025-12-02 15:57:02] info: 🔌 Admin connected: iArNFmJcmFrkjuClAAAZ
+[2025-12-02 15:59:29] info: 🔌 Admin connected: bjD1jne8YaR81jaxAAAb
+[2025-12-02 15:59:29] info: 🔌 Admin connected: CjUrgCCzppjq7qSOAAAd
+[2025-12-02 16:01:13] info: 📦 MongoDB connected
+[2025-12-02 16:01:13] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 16:01:13] info: 🔌 Admin connected: V1gnKNKcb19-XbA1AAAB
+[2025-12-02 16:01:14] info: 🔌 Admin connected: xVNcFsZdtwFFZWJAAAAD
+[2025-12-02 16:01:14] info: 🔌 Admin connected: ohc5blLv6VkJ1b7NAAAF
+[2025-12-02 16:01:14] info: 🔌 Admin connected: 2PZzNo5ByzQbXVl5AAAH
+[2025-12-02 16:01:15] info: 🔌 Admin connected: Hh9Ej8XiynSEv5QcAAAJ
+[2025-12-02 16:01:15] info: 🔌 Admin connected: RfdRdROryLrhb7cUAAAL
+[2025-12-02 16:01:15] info: 🔌 Admin connected: lmhL4bEVO45KYuG9AAAN
+[2025-12-02 16:01:15] info: 🔌 Admin connected: ZcY7zhu8XhKekwDRAAAP
+[2025-12-02 16:01:15] info: 🔌 Admin connected: vI4bqnUcJvWLN89oAAAR
+[2025-12-02 16:01:16] info: 🔌 Admin connected: _Am0RMmi8kZ3HidhAAAT
+[2025-12-02 16:01:32] info: 🔌 Admin connected: HFAI-g63ApjtRqTVAAAV
+[2025-12-02 16:01:32] info: 🔌 Admin connected: dQ2l9WIlg8QJAEmRAAAX
+[2025-12-02 16:04:49] info: 🔌 Admin connected: zxnvDoMx69NqxViyAAAZ
+[2025-12-02 16:04:50] info: 🔌 Admin connected: DOThnJWMF02VZo_wAAAb
+[2025-12-02 16:16:56] info: 📦 MongoDB connected
+[2025-12-02 16:16:56] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 16:17:14] info: 🔌 Admin connected: WrGTZw3KWQ-yIjaDAAAB
+[2025-12-02 16:17:14] info: 🔌 Admin connected: gpFcL0835XlaNUtFAAAD
+[2025-12-02 16:25:56] info: 📦 MongoDB connected
+[2025-12-02 16:25:56] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 16:25:57] info: 🔌 Admin connected: LbkMait-vviyuq9_AAAB
+[2025-12-02 16:25:58] info: 🔌 Admin connected: Gl3s0ARJGb8MgmsNAAAD
+[2025-12-02 16:28:49] info: 📦 MongoDB connected
+[2025-12-02 16:28:49] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 16:28:51] info: 🔌 Admin connected: Ncx27vuNvz9Wif2rAAAB
+[2025-12-02 16:28:52] info: 🔌 Admin connected: 5n2ziA7Xlj9EYFDMAAAD
+[2025-12-02 16:29:05] info: 🔌 Admin connected: IqFZ_k4rkh2MMaclAAAF
+[2025-12-02 16:33:52] info: 📦 MongoDB connected
+[2025-12-02 16:33:52] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 16:33:53] info: 🔌 Admin connected: 641K1xWh0_74osm6AAAB
+[2025-12-02 16:33:55] info: 🔌 Admin connected: ExkGyOJgdINxyrQ6AAAD
+[2025-12-02 16:33:55] info: 🔌 Admin connected: 15kMp96SoDgXnQW_AAAF
+[2025-12-02 16:33:56] info: 🔌 Admin connected: Bf6eCtmouRBzloVaAAAH
+[2025-12-02 16:36:33] info: 🔌 Admin connected: ViI7t_MoXSzKgegEAAAJ
+[2025-12-02 16:36:33] info: 🔌 Admin connected: fNltNbRtVAwZP7rPAAAL
+[2025-12-02 16:37:04] info: 🔌 Admin connected: LDh--eZvQsOWSFbGAAAN
+[2025-12-02 16:37:05] info: 🔌 Admin connected: nQalK00qI9cYbL0TAAAP
+[2025-12-02 16:41:04] info: 📦 MongoDB connected
+[2025-12-02 16:41:04] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 16:41:06] info: 🔌 Admin connected: SDwPv75pRQzMOm2mAAAB
+[2025-12-02 16:41:06] info: 🔌 Admin connected: KXcwfA02Vmn0gy-_AAAD
+[2025-12-02 16:41:06] info: 🔌 Admin connected: JjfXGWEGKB5Nt87bAAAF
+[2025-12-02 16:41:06] info: 🔌 Admin connected: 7GNvHuG8cgz9bZj4AAAH
+[2025-12-02 16:41:07] info: 🔌 Admin connected: w5ITl50lSfqhOOw7AAAJ
+[2025-12-02 16:41:17] info: 📦 MongoDB connected
+[2025-12-02 16:41:17] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 16:41:18] info: 🔌 Admin connected: b4XR7cMG_6kT0eVnAAAB
+[2025-12-02 16:41:19] info: 🔌 Admin connected: c0-VjGI5LKWorQWKAAAD
+[2025-12-02 16:41:19] info: 🔌 Admin connected: ZUK1nQ_C5OakZSgoAAAG
+[2025-12-02 16:41:19] info: 🔌 Admin connected: Y21QsF2IzUh75DDKAAAH
+[2025-12-02 16:41:20] info: 🔌 Admin connected: u2zEB04yrqvphh7kAAAJ
+[2025-12-02 16:41:38] info: 🔌 Admin connected: nkPwouymNWpX_BBFAAAL
+[2025-12-02 16:41:38] info: 🔌 Admin connected: I2KVoV21vYrYifSGAAAN
+[2025-12-02 16:51:41] info: 📦 MongoDB connected
+[2025-12-02 16:51:41] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 16:51:42] info: 🔌 Admin connected: SPZsddU_mjisMnQGAAAB
+[2025-12-02 16:51:43] info: 🔌 Admin connected: eD-wCU1QzIwpByjPAAAD
+[2025-12-02 16:51:43] info: 🔌 Admin connected: wkoX6h0XNLkHYJXWAAAF
+[2025-12-02 16:51:43] info: 🔌 Admin connected: uxpvLNpvEqkVk9bnAAAH
+[2025-12-02 16:51:43] info: 🔌 Admin connected: JpvZI9w2E1wj1SQ-AAAJ
+[2025-12-02 16:51:44] info: 🔌 Admin connected: uju0fUy6n2ko61RwAAAL
+[2025-12-02 16:51:57] info: 📦 MongoDB connected
+[2025-12-02 16:51:57] info: 🚀 API running + Socket.IO on http://localhost:4000
+[2025-12-02 16:51:58] info: 🔌 Admin connected: Zc8NsQTmT8CNVzWhAAAB
+[2025-12-02 16:51:58] info: 🔌 Admin connected: ZVmmx6nUUjW-_MjXAAAD
+[2025-12-02 16:51:59] info: 🔌 Admin connected: 00HJceahV8mV0TiuAAAF
+[2025-12-02 16:51:59] info: 🔌 Admin connected: UOHMFy4D0ViBqojBAAAH
+[2025-12-02 16:51:59] info: 🔌 Admin connected: CD6oeSp6i-on3GV3AAAJ
+[2025-12-02 16:52:00] info: 🔌 Admin connected: 2piVsMQmtWnP1kiTAAAL
+[2025-12-02 16:52:09] info: 🔌 Admin connected: Yvn1s3_t-q_zauq2AAAN
+[2025-12-02 16:52:09] info: 🔌 Admin connected: iiisJo5Enulmgwk7AAAP

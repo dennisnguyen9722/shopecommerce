@@ -1,97 +1,70 @@
 import express from 'express'
 import Notification from '../models/Notification'
-import { protect } from '../middleware/auth'
-import { requirePermissions } from '../middleware/requirePermissions'
-import { io } from '../index'
 
 const router = express.Router()
 
-// ⭐ Quyền cần để quản lý thông báo
-const CAN_MANAGE = requirePermissions('manage_notifications')
-
-// ⭐ Bắt buộc login + có quyền
-router.use(protect, CAN_MANAGE)
-
-/* ============================================================
-   GET /admin/notifications
-   → Lấy tất cả thông báo
-============================================================ */
-router.get('/', async (_req, res) => {
+// GET ALL NOTIFICATIONS
+router.get('/', async (req, res) => {
   try {
-    const items = await Notification.find().sort({ createdAt: -1 }).lean()
-    res.json(items)
-  } catch (err: any) {
-    res.status(500).json({ error: err.message })
+    const notifications = await Notification.find()
+      .sort({ createdAt: -1 })
+      .limit(50)
+      .lean()
+
+    res.json(notifications) // ✅ Trả về array trực tiếp
+  } catch (err) {
+    console.error('❌ [GET /admin/notifications] ERROR:', err)
+    res.status(500).json({ error: 'Server error' })
   }
 })
 
-/* ============================================================
-   GET /admin/notifications/unread-count
-============================================================ */
-router.get('/unread-count', async (_req, res) => {
+// GET UNREAD COUNT
+router.get('/unread-count', async (req, res) => {
   try {
-    const count = await Notification.countDocuments({ read: false })
-    res.json({ unread: count })
-  } catch (err: any) {
-    res.status(500).json({ error: err.message })
+    const unread = await Notification.countDocuments({ isRead: false })
+
+    res.json({ unread })
+  } catch (err) {
+    console.error('❌ [GET /admin/notifications/unread-count] ERROR:', err)
+    res.status(500).json({ error: 'Server error' })
   }
 })
 
-/* ============================================================
-   POST /admin/notifications
-   → Tạo thông báo mới
-============================================================ */
-router.post('/', async (req, res) => {
-  try {
-    const notif = await Notification.create({
-      title: req.body.title,
-      message: req.body.message,
-      type: req.body.type || 'info',
-      read: false
-    })
-
-    // Emit realtime
-    io.emit('notification:new', notif)
-
-    res.json(notif)
-  } catch (err: any) {
-    res.status(500).json({ error: err.message })
-  }
-})
-
-/* ============================================================
-   PUT /admin/notifications/:id/read
-   → Đánh dấu đã đọc
-============================================================ */
+// MARK AS READ
 router.put('/:id/read', async (req, res) => {
   try {
-    const updated = await Notification.findByIdAndUpdate(
+    const notification = await Notification.findByIdAndUpdate(
       req.params.id,
-      { read: true },
+      { isRead: true },
       { new: true }
     )
 
-    io.emit('notification:update')
+    if (!notification) {
+      return res.status(404).json({ error: 'Notification not found' })
+    }
 
-    res.json(updated)
-  } catch (err: any) {
-    res.status(500).json({ error: err.message })
+    res.json({ success: true, notification })
+  } catch (err) {
+    console.error('❌ [PUT /admin/notifications/:id/read] ERROR:', err)
+    res.status(500).json({ error: 'Server error' })
   }
 })
 
-/* ============================================================
-   PUT /admin/notifications/read-all
-   → Đánh dấu tất cả đã đọc
-============================================================ */
-router.put('/read-all', async (_req, res) => {
+// MARK ALL AS READ
+router.put('/read-all', async (req, res) => {
   try {
-    await Notification.updateMany({}, { read: true })
+    const result = await Notification.updateMany(
+      { isRead: false },
+      { isRead: true }
+    )
 
-    io.emit('notification:update')
-
-    res.json({ ok: true })
-  } catch (err: any) {
-    res.status(500).json({ error: err.message })
+    res.json({
+      success: true,
+      modified: result.modifiedCount
+    })
+  } catch (err) {
+    console.error('❌ [PUT /admin/notifications/read-all] ERROR:', err)
+    res.status(500).json({ error: 'Server error' })
   }
 })
 

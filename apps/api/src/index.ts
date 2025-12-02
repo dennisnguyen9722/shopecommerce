@@ -12,6 +12,8 @@ import { Server as SocketIOServer } from 'socket.io'
 // ROUTES
 import adminRoutes from './routes/admin'
 import authRoutes from './routes/auth'
+
+// ADMIN RESOURCES
 import productsRoutes from './routes/products'
 import categoriesRoutes from './routes/categories'
 import stockLogsRoutes from './routes/stockLogs'
@@ -30,12 +32,17 @@ import uploadsRoutes from './routes/uploads'
 import rolesRoutes from './routes/roles'
 import usersRoutes from './routes/users'
 import profileRoutes from './routes/profile'
+import metricsRoutes from './routes/metrics'
 
-// PUBLIC API STORE FRONT
+// 🔥 NEW — ADMIN ORDERS API
+import ordersRouter from './routes/admin/orders'
+
+// PUBLIC STORE FRONT
 import publicBanners from './routes/public/banners'
 import publicCategories from './routes/public/categories'
 import publicProducts from './routes/public/products'
 import publicBlog from './routes/public/blog'
+import publicOrders from './routes/public/orders'
 
 // MIDDLEWARE
 import { errorHandler } from './middleware/errorHandler'
@@ -64,6 +71,8 @@ io.on('connection', (socket) => {
 /* ----------------------------
    ROUTES
 ----------------------------- */
+
+// BASE ADMIN AUTH
 app.use('/admin', adminRoutes)
 app.use('/auth', authRoutes)
 
@@ -82,6 +91,10 @@ app.use('/admin/shipping-rules', shippingRulesRoutes)
 app.use('/admin/locations', locationsRoutes)
 app.use('/admin/notifications', notificationsRoutes)
 app.use('/admin/profile', profileRoutes)
+app.use('/admin/metrics', metricsRoutes)
+
+// ⭐ NEW: ADMIN ORDERS
+app.use('/admin/orders', ordersRouter)
 
 // BLOG MODULE
 app.use('/admin/blog/posts', posts)
@@ -96,6 +109,7 @@ app.use('/public/banners', publicBanners)
 app.use('/public/categories', publicCategories)
 app.use('/public/products', publicProducts)
 app.use('/public/blog', publicBlog)
+app.use('/public/orders', publicOrders)
 
 /* ----------------------------
    ERROR HANDLER

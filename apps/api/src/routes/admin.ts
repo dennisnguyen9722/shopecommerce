@@ -5,14 +5,10 @@ import { updateOrderStatus } from '../services/orderService'
 import { log } from '../utils/logger'
 import { AppError } from '../utils/AppError'
 import { protect } from '../middleware/auth'
-// import { requirePermissions } from '../middleware/requirePermissions'
 
 const router = Router()
 
-// // ⭐ TẤT CẢ ROUTE ADMIN YÊU CẦU QUYỀN "view_dashboard"
-// const CAN_VIEW_DASHBOARD = requirePermissions('view_dashboard')
-
-// ⭐ BẮT BUỘC LOGIN + ĐÚNG QUYỀN
+// ⭐ BẮT BUỘC LOGIN
 router.use(protect)
 
 /* ============================================================
@@ -26,7 +22,11 @@ router.get('/metrics', async (req, res) => {
     const revenueAgg = await Order.aggregate([
       { $match: { createdAt: { $gte: since }, status: { $ne: 'cancelled' } } },
       {
-        $group: { _id: null, revenue: { $sum: '$total' }, orders: { $sum: 1 } }
+        $group: {
+          _id: null,
+          revenue: { $sum: '$totalPrice' },
+          orders: { $sum: 1 }
+        }
       }
     ])
 
@@ -63,7 +63,7 @@ router.get('/revenue', async (req, res) => {
           _id: {
             $dateToString: { format: '%Y-%m-%d', date: '$createdAt' }
           },
-          totalRevenue: { $sum: '$total' }
+          totalRevenue: { $sum: '$totalPrice' }
         }
       },
       { $sort: { _id: 1 } }
@@ -155,37 +155,9 @@ router.get('/customers-stats', async (req, res) => {
 })
 
 /* ============================================================
-   NOTIFICATIONS MOCK
+   ❌ XÓA MOCK NOTIFICATIONS - Dùng route thật từ notifications.ts
 ============================================================ */
-router.get('/notifications', async (req, res) => {
-  try {
-    const notifications = [
-      {
-        id: 1,
-        type: 'order',
-        message: 'Đơn hàng #1025 - 2.350.000₫',
-        time: '5 phút trước'
-      },
-      {
-        id: 2,
-        type: 'stock',
-        message: 'Sản phẩm "Áo thun trắng" sắp hết hàng (3 tồn)',
-        time: '10 phút trước'
-      },
-      {
-        id: 3,
-        type: 'review',
-        message: 'Đánh giá mới từ Huy Nguyễn: “Rất tốt!”',
-        time: '15 phút trước'
-      }
-    ]
-
-    res.json({ notifications })
-  } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: 'Internal server error' })
-  }
-})
+// ❌ ĐÃ XÓA: router.get('/notifications', ...)
 
 /* ============================================================
    LIST ORDERS
@@ -201,21 +173,10 @@ router.get('/orders', async (req, res) => {
 
     const orders = await Order.find(filter)
       .sort({ createdAt: -1 })
-      .limit(20)
+      .limit(100)
       .lean()
 
-    const users = await User.find().lean()
-    const getUser = (id: any) =>
-      users[Math.floor(Math.random() * users.length)] || {
-        name: 'Khách hàng ẩn danh'
-      }
-
-    const data = orders.map((order) => ({
-      ...order,
-      customer: getUser(order.userId)
-    }))
-
-    res.json({ orders: data })
+    res.json({ orders })
   } catch (err) {
     console.error(err)
     res.status(500).json({ error: 'Internal server error' })
@@ -245,27 +206,15 @@ router.get('/orders/:id', async (req, res) => {
   try {
     const { id } = req.params
 
-    const order = await Order.findById(id).lean()
-    if (!order) return res.status(404).json({ error: 'Order not found' })
+    const order = (await Order.findById(id).lean()) as any
 
-    const mockItems = [
-      { name: 'Áo thun trắng', quantity: 2, price: 250000 },
-      { name: 'Quần kaki', quantity: 1, price: 700000 }
-    ]
+    if (!order) {
+      return res.status(404).json({ error: 'Order not found' })
+    }
 
-    const customer = await User.findOne().lean()
-
-    res.json({
-      ...order,
-      items: mockItems,
-      customer: customer || {
-        name: 'Khách hàng ẩn danh',
-        email: 'unknown@example.com',
-        address: 'Chưa cập nhật'
-      }
-    })
+    res.json(order)
   } catch (err) {
-    console.error(err)
+    console.error('❌ [GET /admin/orders/:id] Error:', err)
     res.status(500).json({ error: 'Internal server error' })
   }
 })
@@ -280,7 +229,7 @@ router.get('/overview', async (req, res) => {
 
     const revenueAgg = await Order.aggregate([
       { $match: { status: { $ne: 'cancelled' } } },
-      { $group: { _id: null, totalRevenue: { $sum: '$total' } } }
+      { $group: { _id: null, totalRevenue: { $sum: '$totalPrice' } } }
     ])
 
     const last30 = new Date()

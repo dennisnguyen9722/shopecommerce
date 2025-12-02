@@ -7,8 +7,8 @@ export function useOrderDetail(id?: string) {
     queryFn: async () => {
       if (!id) return null
       const { data } = await api.get(`/admin/orders/${id}`)
-      return data
+      return data // KHÔNG data.order nữa
     },
-    enabled: !!id // chỉ fetch khi có id
+    enabled: !!id
   })
 }

@@ -1,60 +1,38 @@
-import mongoose, { Schema, Document, Model } from 'mongoose'
-
-export type NotificationType =
-  | 'order' // Đơn hàng mới, thanh toán, hủy...
-  | 'inventory' // Sắp hết hàng, hết hàng
-  | 'customer' // Đánh giá mới, khách đăng ký mới
-  | 'system' // Thông báo hệ thống
-
-export type NotificationLevel = 'info' | 'success' | 'warning' | 'error'
+import mongoose, { Schema, Document } from 'mongoose'
 
 export interface INotification extends Document {
   title: string
-  message?: string
-  type: NotificationType
-  level: NotificationLevel
+  message: string
+  type: 'order' | 'info' | 'warning'
   isRead: boolean
-
-  // Meta để sau này link tới order / product / customer nếu muốn
-  meta?: {
-    orderId?: mongoose.Types.ObjectId
-    productId?: mongoose.Types.ObjectId
-    customerId?: mongoose.Types.ObjectId
-    link?: string
-    [key: string]: any
-  }
-
+  orderId?: mongoose.Types.ObjectId
   createdAt: Date
   updatedAt: Date
 }
 
-const NotificationSchema = new Schema<INotification>(
+const notificationSchema = new Schema<INotification>(
   {
-    title: { type: String, required: true },
-    message: { type: String },
-
+    title: {
+      type: String,
+      required: true
+    },
+    message: {
+      type: String,
+      required: true
+    },
     type: {
       type: String,
-      enum: ['order', 'inventory', 'customer', 'system'],
-      default: 'system',
-      index: true
-    },
-
-    level: {
-      type: String,
-      enum: ['info', 'success', 'warning', 'error'],
+      enum: ['order', 'info', 'warning'],
       default: 'info'
     },
-
     isRead: {
       type: Boolean,
-      default: false,
-      index: true
+      default: false
     },
-
-    meta: {
-      type: Schema.Types.Mixed,
-      default: {}
+    orderId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Order',
+      required: false
     }
   },
   {
@@ -62,9 +40,7 @@ const NotificationSchema = new Schema<INotification>(
   }
 )
 
-// Một vài index hữu ích
-NotificationSchema.index({ createdAt: -1 })
-NotificationSchema.index({ type: 1, isRead: 1 })
+// Index để query nhanh hơn
+notificationSchema.index({ isRead: 1, createdAt: -1 })
 
-export default (mongoose.models.Notification as Model<INotification>) ||
-  mongoose.model<INotification>('Notification', NotificationSchema)
+export default mongoose.model<INotification>('Notification', notificationSchema)

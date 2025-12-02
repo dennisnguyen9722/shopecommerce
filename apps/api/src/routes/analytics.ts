@@ -8,17 +8,14 @@ import { PipelineStage } from 'mongoose'
 
 const router = express.Router()
 
-// ⭐ Chỉ cần login + có quyền view_analytics
 const CAN_VIEW = requirePermissions('view_analytics')
 
-// ============================================================
-// A1. Revenue summary
-// GET /admin/analytics/revenue-summary
-// ============================================================
-router.get('/revenue-summary', protect, CAN_VIEW, async (_req, res) => {
+/* ============================================================
+   A1. Revenue summary
+============================================================ */
+router.get('/revenue-summary', protect, CAN_VIEW, async (req, res) => {
   try {
     const now = new Date()
-
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
     const startOfToday = new Date(
       now.getFullYear(),
@@ -27,14 +24,16 @@ router.get('/revenue-summary', protect, CAN_VIEW, async (_req, res) => {
     )
 
     const [total, month, today] = await Promise.all([
-      Order.aggregate([{ $group: { _id: null, total: { $sum: '$total' } } }]),
+      Order.aggregate([
+        { $group: { _id: null, total: { $sum: '$totalPrice' } } }
+      ]),
       Order.aggregate([
         { $match: { createdAt: { $gte: startOfMonth } } },
-        { $group: { _id: null, total: { $sum: '$total' } } }
+        { $group: { _id: null, total: { $sum: '$totalPrice' } } }
       ]),
       Order.aggregate([
         { $match: { createdAt: { $gte: startOfToday } } },
-        { $group: { _id: null, total: { $sum: '$total' } } }
+        { $group: { _id: null, total: { $sum: '$totalPrice' } } }
       ])
     ])
 
@@ -48,128 +47,103 @@ router.get('/revenue-summary', protect, CAN_VIEW, async (_req, res) => {
   }
 })
 
-// ============================================================
-// A2. Revenue chart
-// GET /admin/analytics/revenue-chart?days=30
-// ============================================================
+/* ============================================================
+   A2. Revenue chart
+============================================================ */
 router.get('/revenue-chart', protect, CAN_VIEW, async (req, res) => {
   try {
     const days = Number(req.query.days || 30)
     const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000)
 
-    const pipeline: PipelineStage[] = [
+    const data = await Order.aggregate([
       { $match: { createdAt: { $gte: since } } },
       {
         $group: {
           _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
-          total: { $sum: '$total' }
+          total: { $sum: '$totalPrice' }
         }
       },
       { $sort: { _id: 1 } }
-    ]
+    ])
 
-    const results = await Order.aggregate(pipeline)
-
-    res.json(results.map((r) => ({ date: r._id, total: r.total })))
+    res.json(data.map((d) => ({ date: d._id, total: d.total })))
   } catch (err: any) {
     res.status(500).json({ error: err.message })
   }
 })
 
-// ============================================================
-// A3. Best-selling products
-// GET /admin/analytics/best-products
-// ============================================================
+/* ============================================================
+   A3. Best-selling products
+============================================================ */
 router.get('/best-products', protect, CAN_VIEW, async (req, res) => {
   try {
     const limitNum = Number(req.query.limit || 5)
     const days = Number(req.query.days || 30)
     const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000)
 
-    const pipeline: PipelineStage[] = [
+    const items = await Order.aggregate([
       { $match: { createdAt: { $gte: since } } },
       { $unwind: '$items' },
       {
         $group: {
-          _id: '$items.product',
-          quantitySold: { $sum: '$items.quantity' },
+          _id: '$items.productId',
+          name: { $first: '$items.name' },
+          image: { $first: '$items.image' },
+          totalSold: { $sum: '$items.quantity' },
           revenue: { $sum: { $multiply: ['$items.quantity', '$items.price'] } }
         }
       },
-      { $sort: { quantitySold: -1 } },
-      { $limit: limitNum },
-      {
-        $lookup: {
-          from: 'products',
-          localField: '_id',
-          foreignField: '_id',
-          as: 'product'
-        }
-      },
-      { $unwind: '$product' },
-      {
-        $project: {
-          productId: '$product._id',
-          name: '$product.name',
-          sku: '$product.sku',
-          image: { $arrayElemAt: ['$product.images', 0] },
-          quantitySold: 1,
-          revenue: 1
-        }
-      }
-    ]
+      { $sort: { totalSold: -1 } },
+      { $limit: limitNum }
+    ])
 
-    const items = await Order.aggregate(pipeline)
     res.json(items)
   } catch (err: any) {
     res.status(500).json({ error: err.message })
   }
 })
 
-// ============================================================
-// A4. Top customers
-// ============================================================
+/* ============================================================
+   A4. Top customers
+============================================================ */
 router.get('/top-customers', protect, CAN_VIEW, async (req, res) => {
   try {
-    const limitNum = Number(req.query.limit || 5)
-
     const customers = await Customer.find()
       .sort({ totalSpent: -1 })
-      .limit(limitNum)
+      .limit(5)
       .lean()
-
     res.json(customers)
   } catch (err: any) {
     res.status(500).json({ error: err.message })
   }
 })
 
-// ============================================================
-// A5. Purchase frequency
-// ============================================================
-router.get('/purchase-frequency', protect, CAN_VIEW, async (_req, res) => {
+/* ============================================================
+   A5. Purchase frequency
+============================================================ */
+router.get('/purchase-frequency', protect, CAN_VIEW, async (req, res) => {
   try {
-    const pipeline: PipelineStage[] = [
+    const data = await Order.aggregate([
       {
         $group: {
-          _id: '$customer',
+          _id: '$customerPhone',
+          customerName: { $first: '$customerName' },
           ordersCount: { $sum: 1 }
         }
       },
       { $sort: { ordersCount: -1 } }
-    ]
+    ])
 
-    const result = await Order.aggregate(pipeline)
-    res.json(result)
+    res.json(data)
   } catch (err: any) {
     res.status(500).json({ error: err.message })
   }
 })
 
-// ============================================================
-// A6. Inventory overview
-// ============================================================
-router.get('/inventory-overview', protect, CAN_VIEW, async (_req, res) => {
+/* ============================================================
+   A6. Inventory overview
+============================================================ */
+router.get('/inventory-overview', protect, CAN_VIEW, async (req, res) => {
   try {
     const totalProducts = await Product.countDocuments()
     const outOfStock = await Product.countDocuments({ stock: 0 })
@@ -177,9 +151,37 @@ router.get('/inventory-overview', protect, CAN_VIEW, async (_req, res) => {
 
     res.json({
       totalProducts,
-      lowStock,
       outOfStock,
+      lowStock,
       totalVariants: 0
+    })
+  } catch (err: any) {
+    res.status(500).json({ error: err.message })
+  }
+})
+
+// ============================================================
+// A7. New customers (unique phone numbers in last 30 days)
+// GET /admin/analytics/new-customers
+// ============================================================
+router.get('/new-customers', protect, CAN_VIEW, async (_req, res) => {
+  try {
+    const days = 30
+    const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000)
+
+    const pipeline: PipelineStage[] = [
+      { $match: { createdAt: { $gte: since } } },
+      {
+        $group: {
+          _id: '$customerPhone'
+        }
+      }
+    ]
+
+    const results = await Order.aggregate(pipeline)
+
+    res.json({
+      newCustomers: results.length
     })
   } catch (err: any) {
     res.status(500).json({ error: err.message })
