@@ -17,7 +17,6 @@ import authRoutes from './routes/auth'
 import productsRoutes from './routes/products'
 import categoriesRoutes from './routes/categories'
 import stockLogsRoutes from './routes/stockLogs'
-import customersRoutes from './routes/customers'
 import analyticsRoutes from './routes/analytics'
 import notificationsRoutes from './routes/notifications'
 import inventoryRoutes from './routes/inventory'
@@ -33,9 +32,15 @@ import rolesRoutes from './routes/roles'
 import usersRoutes from './routes/users'
 import profileRoutes from './routes/profile'
 import metricsRoutes from './routes/metrics'
+import customerAuthRoutes from './routes/customerAuth'
+import customersRoutes from './routes/customers'
 
-// 🔥 NEW — ADMIN ORDERS API
+// 🔥 NEW - ADMIN ORDERS API
 import ordersRouter from './routes/admin/orders'
+
+// 🆕 NEW - LOYALTY SYSTEM (ADMIN)
+import adminRewardsRoutes from './routes/admin/rewards'
+import adminPointsRoutes from './routes/admin/points'
 
 // PUBLIC STORE FRONT
 import publicBanners from './routes/public/banners'
@@ -43,6 +48,11 @@ import publicCategories from './routes/public/categories'
 import publicProducts from './routes/public/products'
 import publicBlog from './routes/public/blog'
 import publicOrders from './routes/public/orders'
+
+import publicAuthRoutes from './routes/public/auth'
+
+// 🆕 NEW - LOYALTY SYSTEM (PUBLIC)
+import publicLoyaltyRoutes from './routes/public/loyalty'
 
 // MIDDLEWARE
 import { errorHandler } from './middleware/errorHandler'
@@ -96,6 +106,10 @@ app.use('/admin/metrics', metricsRoutes)
 // ⭐ NEW: ADMIN ORDERS
 app.use('/admin/orders', ordersRouter)
 
+// 🆕 NEW: ADMIN LOYALTY SYSTEM
+app.use('/admin/rewards', adminRewardsRoutes)
+app.use('/admin/points', adminPointsRoutes)
+
 // BLOG MODULE
 app.use('/admin/blog/posts', posts)
 app.use('/admin/blog/categories', categories)
@@ -110,6 +124,12 @@ app.use('/public/categories', publicCategories)
 app.use('/public/products', publicProducts)
 app.use('/public/blog', publicBlog)
 app.use('/public/orders', publicOrders)
+app.use('/public/customer-auth', customerAuthRoutes)
+
+app.use('/public/auth', publicAuthRoutes)
+
+// 🆕 NEW: PUBLIC LOYALTY SYSTEM
+app.use('/public/loyalty', publicLoyaltyRoutes)
 
 /* ----------------------------
    ERROR HANDLER

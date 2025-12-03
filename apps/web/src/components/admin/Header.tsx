@@ -2,21 +2,23 @@
 
 import { LogOut } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useAuthStore } from '@/src/store/authStore'
+import { useAdminAuthStore } from '@/src/store/adminAuthStore' // ✅ Dùng store Admin
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
 import NotificationBell from './NotificationBell'
 
+// 👇 SỬA Ở ĐÂY: Dùng "export function" thay vì "export default"
 export function Header() {
   const router = useRouter()
 
-  const user = useAuthStore((s) => s.user)
-  const logout = useAuthStore((s) => s.logout)
+  // 👇 Lấy thông tin từ Admin Store
+  const admin = useAdminAuthStore((s) => s.admin)
+  const logoutAdmin = useAdminAuthStore((s) => s.logoutAdmin)
 
   const handleLogout = () => {
-    logout()
-    toast.success('Đã đăng xuất!')
+    logoutAdmin()
+    toast.success('Đã đăng xuất Admin!')
     router.push('/admin/login')
   }
 
@@ -31,13 +33,13 @@ export function Header() {
       )}
     >
       <div className="flex items-center justify-end w-full gap-4">
-        {/* ⭐ THAY THẾ BUTTON CŨ BẰNG COMPONENT MỚI */}
+        {/* Notification */}
         <NotificationBell />
 
         {/* User Avatar + Info */}
         <div className="flex items-center gap-3">
           <Image
-            src={user?.avatar || '/avatar.webp'}
+            src={admin?.avatar || '/avatar.webp'}
             alt="avatar"
             width={32}
             height={32}
@@ -45,8 +47,10 @@ export function Header() {
           />
 
           <div className="text-sm leading-tight hidden md:block">
-            <div className="font-semibold">{user?.name || 'Admin'}</div>
-            <div className="text-xs text-gray-500">Administrator</div>
+            <div className="font-semibold">
+              {admin?.name || 'Administrator'}
+            </div>
+            <div className="text-xs text-gray-500">{admin?.email}</div>
           </div>
         </div>
 

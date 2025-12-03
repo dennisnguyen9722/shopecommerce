@@ -1,17 +1,23 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 'use client'
 
-import {
-  Search,
-  MapPin,
-  Phone,
-  ShoppingCart,
-  User,
-  FileText,
-  Heart
-} from 'lucide-react'
+import { Search, MapPin, ShoppingCart, Heart, LogOut, Gift } from 'lucide-react'
 import Link from 'next/link'
 import { useWishlist } from '@/app/contexts/WishlistContext'
 import { useCart } from '@/app/contexts/CartContext'
+import { useAuthStore } from '@/src/store/authStore'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import { useEffect, useState } from 'react'
+import { loyaltyApi } from '@/src/services/loyalty' // 👈 Import API Loyalty
 
 interface NavbarTopProps {
   scrolled: boolean
@@ -20,6 +26,38 @@ interface NavbarTopProps {
 export default function NavbarTop({ scrolled }: NavbarTopProps) {
   const { wishlistCount } = useWishlist()
   const { cartCount } = useCart()
+
+  // Lấy state và hàm update từ store
+  const { user, isAuthenticated, logout, updateUser, token } = useAuthStore()
+
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+
+  // ⭐ UPDATE LOGIC ĐỒNG BỘ ĐIỂM
+  useEffect(() => {
+    const syncLoyaltyData = async () => {
+      // 🛑 QUAN TRỌNG: Chỉ gọi khi CÓ TOKEN thực sự (tránh gọi lúc vừa login xong store chưa kịp lưu)
+      if (isAuthenticated && token) {
+        try {
+          const data = await loyaltyApi.getDashboard()
+
+          if (data && data.customer) {
+            updateUser({
+              loyaltyPoints: data.customer.loyaltyPoints,
+              loyaltyTier: data.customer.loyaltyTier,
+              totalSpent: data.customer.totalSpent
+            })
+          }
+        } catch (error: any) {
+          // Chỉ log lỗi, KHÔNG logout tự động ở đây để tránh loop nếu mạng lag
+          console.error('Lỗi đồng bộ điểm thưởng:', error)
+        }
+      }
+    }
+
+    // Thêm token vào dependency để khi token thay đổi (vừa login xong) nó sẽ chạy lại
+    syncLoyaltyData()
+  }, [isAuthenticated, token])
 
   return (
     <div
@@ -42,24 +80,16 @@ export default function NavbarTop({ scrolled }: NavbarTopProps) {
             <div className="flex items-center gap-2">
               <span className="text-3xl">🎁</span>
               <div className="flex flex-col text-xs leading-tight">
-                <span className="font-semibold text-gray-800">Authorized</span>
-                <span className="font-semibold text-gray-600">Reseller</span>
+                <span className="font-semibold text-gray-800">Shop</span>
+                <span className="font-semibold text-gray-600">Loyalty</span>
               </div>
             </div>
           </Link>
 
-          {/* CENTER */}
-          <div className="flex items-center gap-3 flex-1 max-w-2xl">
-            {/* Location */}
-            <button className="hidden md:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 rounded-xl text-white text-sm font-medium transition shadow-md hover:shadow-lg">
-              <MapPin className="w-4 h-4" />
-              <span>Hồ Chí Minh</span>
-            </button>
-
-            {/* Search */}
+          {/* CENTER - SEARCH */}
+          <div className="flex items-center gap-3 flex-1 max-w-xl">
             <div className="flex-1 relative group">
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-orange-600 rounded-2xl blur opacity-0 group-hover:opacity-20 transition" />
-              <div className="relative backdrop-blur-md bg-white/60 border border-gray-200/50 rounded-2xl shadow-md hover:shadow-lg transition">
+              <div className="relative backdrop-blur-md bg-white/60 border border-gray-200/50 rounded-2xl shadow-sm hover:shadow-md transition">
                 <input
                   type="text"
                   placeholder="Tìm kiếm sản phẩm..."
@@ -72,51 +102,133 @@ export default function NavbarTop({ scrolled }: NavbarTopProps) {
             </div>
           </div>
 
-          {/* RIGHT */}
-          <div className="flex items-center gap-2">
-            {/* Hotline */}
-            <button className="hidden lg:flex group relative flex-col items-center gap-1 px-4 py-2 rounded-xl hover:bg-gray-100/80 backdrop-blur-sm transition">
-              <Phone className="w-5 h-5 text-gray-700 group-hover:text-orange-600 transition" />
-              <span className="text-xs text-gray-600 group-hover:text-orange-600 transition">
-                Hotline
-              </span>
-            </button>
-
+          {/* RIGHT - ACTIONS */}
+          <div className="flex items-center gap-3">
             {/* Wishlist */}
             <Link
               href="/wishlist"
-              className="group relative flex flex-col items-center gap-1 px-4 py-2 rounded-xl hover:bg-gray-100/80 backdrop-blur-sm transition"
+              className="relative p-2 hover:bg-gray-100 rounded-full transition"
             >
-              <div className="relative">
-                <Heart className="w-5 h-5 text-gray-700 group-hover:text-red-500 transition" />
-                {wishlistCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-md animate-pulse">
-                    {wishlistCount > 9 ? '9+' : wishlistCount}
-                  </span>
-                )}
-              </div>
-              <span className="text-xs text-gray-600 group-hover:text-red-500 transition">
-                Yêu thích
-              </span>
+              <Heart className="w-6 h-6 text-gray-700 hover:text-red-500 transition" />
+              {wishlistCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">
+                  {wishlistCount}
+                </span>
+              )}
             </Link>
 
-            {/* CART */}
+            {/* Cart */}
             <Link
               href="/cart"
-              className="group relative flex flex-col items-center gap-1 px-4 py-2 rounded-xl hover:bg-gray-100/80 backdrop-blur-sm transition"
+              className="relative p-2 hover:bg-gray-100 rounded-full transition"
             >
-              <div className="relative">
-                <ShoppingCart className="w-5 h-5 text-gray-700 group-hover:text-orange-600 transition" />
-                {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-md">
-                    {cartCount}
-                  </span>
-                )}
-              </div>
-              <span className="text-xs text-gray-600 group-hover:text-orange-600 transition">
-                Giỏ hàng
-              </span>
+              <ShoppingCart className="w-6 h-6 text-gray-700 hover:text-orange-600 transition" />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
             </Link>
+
+            {/* USER / LOGIN SECTION */}
+            {mounted && isAuthenticated && user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="relative h-10 w-10 rounded-full p-0 overflow-hidden border border-gray-200 hover:shadow-md transition"
+                  >
+                    <Avatar className="h-full w-full">
+                      <AvatarImage src={user.avatar} alt={user.name} />
+                      <AvatarFallback className="bg-orange-100 text-orange-600 font-bold">
+                        {user.name?.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  className="w-64 p-2"
+                  align="end"
+                  forceMount
+                >
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1 bg-gray-50 p-3 rounded-lg">
+                      <p className="text-sm font-bold text-gray-900 leading-none">
+                        {user.name}
+                      </p>
+                      <p className="text-xs leading-none text-gray-500">
+                        {user.email}
+                      </p>
+                      <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-200">
+                        <span className="text-[10px] font-bold bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full uppercase border border-yellow-200">
+                          {user.loyaltyTier || 'Member'}
+                        </span>
+                        {/* HIỂN THỊ ĐIỂM */}
+                        <span className="text-xs font-bold text-orange-600 flex items-center gap-1">
+                          {/* Dùng toán tử ?? để tránh hiện undefined */}
+                          {user.loyaltyPoints?.toLocaleString() ?? 0} điểm
+                        </span>
+                      </div>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+
+                  <DropdownMenuItem
+                    asChild
+                    className="cursor-pointer focus:bg-orange-50"
+                  >
+                    <Link
+                      href="/loyalty"
+                      className="flex items-center gap-2 py-2"
+                    >
+                      <div className="p-1 bg-indigo-100 text-indigo-600 rounded">
+                        <Gift size={16} />
+                      </div>
+                      <span className="font-medium">Điểm & Đổi quà</span>
+                    </Link>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    asChild
+                    className="cursor-pointer focus:bg-orange-50"
+                  >
+                    <Link
+                      href="/tracking"
+                      className="flex items-center gap-2 py-2"
+                    >
+                      <div className="p-1 bg-blue-100 text-blue-600 rounded">
+                        <MapPin size={16} />
+                      </div>
+                      <span className="font-medium">Theo dõi đơn hàng</span>
+                    </Link>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={logout}
+                    className="text-red-600 cursor-pointer focus:bg-red-50 py-2"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" /> Đăng xuất
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Link href="/login">
+                  <Button variant="ghost" size="sm" className="font-medium">
+                    Đăng nhập
+                  </Button>
+                </Link>
+                <Link href="/register">
+                  <Button
+                    size="sm"
+                    className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white shadow-md"
+                  >
+                    Đăng ký
+                  </Button>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>

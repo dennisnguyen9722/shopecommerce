@@ -1,19 +1,211 @@
 import express, { Request, Response } from 'express'
 import Order from '../../models/Order'
 import Notification from '../../models/Notification'
+import UserReward from '../../models/UserReward'
+import Reward from '../../models/Reward'
 import Customer from '../../models/Customer'
 import { io } from '../../index'
+import { updateCustomerStats } from '../../utils/updateCustomerStats'
+import { calculatePointsFromOrder } from '../../utils/loyaltyUtils'
 
 const router = express.Router()
 
-// Helper function
+// Helper function format tiền
 function formatCurrency(n: number) {
   return n.toLocaleString('vi-VN')
 }
 
-// ======================
-// CREATE ORDER (PUBLIC)
-// ======================
+// Định nghĩa Type cho Tier để tránh lỗi TypeScript
+type LoyaltyTier = 'bronze' | 'silver' | 'gold' | 'platinum'
+
+// ==================================================
+// ⭐ 1. VALIDATE VOUCHER (API kiểm tra mã)
+// ==================================================
+router.post('/validate-voucher', async (req: Request, res: Response) => {
+  console.log('🎯 HIT validate-voucher API') // Log check request
+
+  try {
+    const { voucherCode, subtotal, customerEmail } = req.body
+
+    // 1. Kiểm tra đầu vào
+    if (!voucherCode) {
+      return res.status(400).json({ error: 'Vui lòng nhập mã giảm giá' })
+    }
+
+    console.log('👉 Mã khách nhập:', voucherCode)
+
+    // 2. Tìm voucher trong DB
+    const userReward = await UserReward.findOne({
+      voucherCode: voucherCode.toUpperCase(),
+      status: 'active'
+    }).populate('rewardId')
+
+    // 🛑 QUAN TRỌNG: Nếu không thấy -> Trả về 400 (Bad Request) thay vì 404
+    if (!userReward) {
+      console.log('❌ Không tìm thấy mã trong DB')
+      return res
+        .status(400) // Sửa từ 404 thành 400 để UI hiển thị thông báo lỗi đẹp hơn
+        .json({ error: 'Mã giảm giá không tồn tại hoặc sai ký tự' })
+    }
+
+    // 3. Kiểm tra hạn sử dụng
+    // Nếu model UserReward chưa có method isValid(), dùng check thủ công này:
+    if (userReward.expiresAt && new Date() > new Date(userReward.expiresAt)) {
+      return res.status(400).json({ error: 'Mã giảm giá đã hết hạn sử dụng' })
+    }
+
+    const reward = userReward.rewardId as any
+
+    // 4. Kiểm tra quyền sở hữu (Nếu voucher của người khác)
+    if (customerEmail) {
+      const customer = await Customer.findOne({
+        email: customerEmail.toLowerCase()
+      })
+
+      // Nếu voucher đã gán cho user ID cụ thể, phải check xem có khớp không
+      if (
+        customer &&
+        userReward.customerId &&
+        userReward.customerId.toString() !== (customer as any)._id.toString()
+      ) {
+        return res
+          .status(403)
+          .json({ error: 'Mã giảm giá này không thuộc về tài khoản của bạn' })
+      }
+    }
+
+    // 5. Kiểm tra giá trị đơn hàng tối thiểu
+    if (reward.minOrderValue && subtotal < reward.minOrderValue) {
+      return res.status(400).json({
+        error: `Đơn hàng cần tối thiểu ${formatCurrency(
+          reward.minOrderValue
+        )}₫ để dùng mã này`
+      })
+    }
+
+    // 6. Tính toán số tiền giảm
+    let discountAmount = 0
+    if (reward.type === 'discount_percentage') {
+      // Giảm theo %
+      discountAmount = Math.floor((subtotal * Number(reward.value)) / 100)
+
+      // Kiểm tra giảm tối đa (nếu có)
+      if (reward.maxDiscountAmount) {
+        discountAmount = Math.min(discountAmount, reward.maxDiscountAmount)
+      }
+    } else if (reward.type === 'discount_fixed') {
+      // Giảm tiền mặt cố định
+      discountAmount = Number(reward.value)
+    }
+
+    console.log(`✅ Mã hợp lệ. Giảm: ${discountAmount}`)
+
+    // 7. Trả kết quả thành công
+    return res.json({
+      valid: true,
+      discountAmount,
+      code: userReward.voucherCode,
+      type: reward.type,
+      reward: {
+        name: reward.name,
+        value: reward.value
+      }
+    })
+  } catch (err: any) {
+    console.error('❌ [POST /validate-voucher] ERROR:', err)
+    return res.status(500).json({ error: 'Lỗi máy chủ, vui lòng thử lại sau' })
+  }
+})
+
+// ==================================================
+// ⭐ 2. PREVIEW ORDER (Xem trước điểm thưởng & giá)
+// ==================================================
+router.post('/preview', async (req: Request, res: Response) => {
+  try {
+    const { items, customerEmail, voucherCode } = req.body
+
+    // Tính tổng tiền hàng
+    const subtotal = items.reduce((sum: number, item: any) => {
+      return sum + item.price * item.quantity
+    }, 0)
+
+    let discount = 0
+    let shippingFee = 30000
+    let pointsWillEarn = 0
+    let tier: LoyaltyTier = 'bronze'
+    let voucherInfo = null
+
+    // Lấy thông tin khách hàng để tính điểm tích lũy
+    if (customerEmail) {
+      const customer = await Customer.findOne({
+        email: customerEmail.toLowerCase()
+      })
+
+      if (customer) {
+        tier = (customer.loyaltyTier as LoyaltyTier) || 'bronze'
+        pointsWillEarn = calculatePointsFromOrder(subtotal, tier)
+      }
+    }
+
+    // Tính lại Voucher (nếu có gửi kèm) để hiển thị preview
+    if (voucherCode) {
+      const userReward = await UserReward.findOne({
+        voucherCode: voucherCode.toUpperCase(),
+        status: 'active'
+      }).populate('rewardId')
+
+      const isExpired =
+        userReward?.expiresAt && new Date() > new Date(userReward.expiresAt)
+
+      if (userReward && !isExpired) {
+        const reward = userReward.rewardId as any
+
+        // Check điều kiện tối thiểu
+        if (!reward.minOrderValue || subtotal >= reward.minOrderValue) {
+          if (reward.type === 'discount_percentage') {
+            discount = Math.floor((subtotal * Number(reward.value)) / 100)
+            if (reward.maxDiscountAmount) {
+              discount = Math.min(discount, reward.maxDiscountAmount)
+            }
+          } else if (reward.type === 'discount_fixed') {
+            discount = Number(reward.value)
+          } else if (reward.type === 'free_shipping') {
+            shippingFee = 0
+          }
+
+          voucherInfo = {
+            name: reward.name,
+            type: reward.type,
+            discount
+          }
+        }
+      }
+    }
+
+    const total = subtotal + shippingFee - discount
+
+    return res.json({
+      subtotal,
+      shippingFee,
+      discount,
+      total,
+      pointsWillEarn,
+      tier,
+      voucherInfo,
+      message:
+        pointsWillEarn > 0
+          ? `Bạn sẽ nhận được ${pointsWillEarn} điểm khi hoàn thành đơn này`
+          : 'Đăng nhập để tích điểm'
+    })
+  } catch (err: any) {
+    console.error('❌ [POST /preview] ERROR:', err)
+    return res.status(500).json({ error: 'Server error' })
+  }
+})
+
+// ==================================================
+// ⭐ 3. CREATE ORDER (Tạo đơn hàng thật)
+// ==================================================
 router.post('/', async (req: Request, res: Response) => {
   try {
     const {
@@ -23,10 +215,73 @@ router.post('/', async (req: Request, res: Response) => {
       customerAddress,
       paymentMethod,
       items,
-      totalPrice
+      subtotal,
+      shippingFee = 30000,
+      voucherCode,
+      discount = 0 // Frontend gửi lên, nhưng Server PHẢI tính lại để bảo mật
     } = req.body
 
-    // 1️⃣ Tạo đơn hàng
+    let appliedVoucher = null
+    let finalDiscount = discount
+
+    // --- BẢO MẬT: Validate lại Voucher lần cuối trước khi tạo đơn ---
+    if (voucherCode) {
+      const userReward = await UserReward.findOne({
+        voucherCode: voucherCode.toUpperCase(),
+        status: 'active'
+      }).populate('rewardId')
+
+      const isExpired =
+        userReward?.expiresAt && new Date() > new Date(userReward.expiresAt)
+
+      // Nếu voucher không hợp lệ lúc bấm đặt hàng -> Báo lỗi ngay
+      if (!userReward || isExpired) {
+        return res
+          .status(400)
+          .json({ error: 'Mã voucher không hợp lệ hoặc đã hết hạn' })
+      }
+
+      const reward = userReward.rewardId as any
+
+      // Check quyền sở hữu
+      if (customerEmail) {
+        const customer = await Customer.findOne({
+          email: customerEmail.toLowerCase()
+        })
+        if (
+          customer &&
+          userReward.customerId &&
+          userReward.customerId.toString() !== (customer as any)._id.toString()
+        ) {
+          return res.status(403).json({ error: 'Voucher không thuộc về bạn' })
+        }
+      }
+
+      // Check giá trị tối thiểu
+      if (reward.minOrderValue && subtotal < reward.minOrderValue) {
+        return res.status(400).json({
+          error: `Đơn hàng chưa đạt tối thiểu ${formatCurrency(
+            reward.minOrderValue
+          )}₫`
+        })
+      }
+
+      // TÍNH LẠI DISCOUNT (Không tin tưởng số Frontend gửi lên)
+      if (reward.type === 'discount_percentage') {
+        finalDiscount = Math.floor((subtotal * Number(reward.value)) / 100)
+        if (reward.maxDiscountAmount) {
+          finalDiscount = Math.min(finalDiscount, reward.maxDiscountAmount)
+        }
+      } else if (reward.type === 'discount_fixed') {
+        finalDiscount = Number(reward.value)
+      }
+
+      appliedVoucher = userReward
+    }
+
+    const finalTotal = subtotal + shippingFee - finalDiscount
+
+    // 1️⃣ Lưu đơn hàng vào DB
     const order = await Order.create({
       customerName,
       customerEmail,
@@ -34,41 +289,39 @@ router.post('/', async (req: Request, res: Response) => {
       customerAddress,
       paymentMethod,
       items,
-      totalPrice
+      subtotal,
+      shippingFee,
+      discount: finalDiscount,
+      totalPrice: finalTotal,
+      voucherCode: voucherCode || null
     })
 
-    // 2️⃣ Tự động tạo / cập nhật khách hàng
-    try {
-      await Customer.findOneAndUpdate(
-        { email: customerEmail }, // Ưu tiên định danh email
-        {
-          $setOnInsert: {
-            name: customerName,
-            email: customerEmail,
-            phone: customerPhone,
-            status: 'active',
-            tags: []
-          },
-          $set: {
-            lastOrderDate: new Date()
-          },
-          $inc: {
-            ordersCount: 1,
-            totalSpent: totalPrice
-          }
-        },
-        { upsert: true, new: true }
+    // 2️⃣ Đánh dấu Voucher đã sử dụng
+    if (appliedVoucher) {
+      appliedVoucher.status = 'used'
+      appliedVoucher.usedAt = new Date()
+      appliedVoucher.usedInOrderId = order._id
+      await appliedVoucher.save()
+      console.log(
+        `✅ Voucher ${voucherCode} đã được sử dụng cho đơn ${order._id}`
       )
-    } catch (cusErr) {
-      console.error('❌ Error updating customer:', cusErr)
     }
 
-    // 3️⃣ Tạo Notification
+    // 3️⃣ Cập nhật thống kê khách hàng (Chi tiêu, số đơn)
+    if (customerEmail) {
+      try {
+        await updateCustomerStats(customerEmail)
+      } catch (cusErr) {
+        console.error('❌ Lỗi cập nhật stats khách hàng:', cusErr)
+      }
+    }
+
+    // 4️⃣ Bắn thông báo về Admin Dashboard (Socket.IO)
     try {
       const notification = await Notification.create({
         title: 'Đơn hàng mới',
-        message: `${customerName} vừa đặt đơn hàng ${formatCurrency(
-          totalPrice
+        message: `${customerName} vừa đặt đơn trị giá ${formatCurrency(
+          finalTotal
         )}₫`,
         type: 'order',
         orderId: order._id
@@ -83,28 +336,52 @@ router.post('/', async (req: Request, res: Response) => {
         createdAt: notification.createdAt
       })
     } catch (notifErr) {
-      console.error('❌ Error creating notification:', notifErr)
+      console.error('❌ Lỗi tạo thông báo:', notifErr)
     }
 
     return res.json(order)
   } catch (err) {
-    console.error('❌ [POST /public/orders] ERROR:', err)
+    console.error('❌ [POST /orders] ERROR:', err)
+    return res.status(500).json({ error: 'Không thể tạo đơn hàng' })
+  }
+})
+
+// ==================================================
+// 4. GET ORDER BY ID
+// ==================================================
+router.get('/:id', async (req: Request, res: Response) => {
+  try {
+    const order = await Order.findById(req.params.id)
+    if (!order)
+      return res.status(404).json({ error: 'Không tìm thấy đơn hàng' })
+    return res.json(order)
+  } catch (err) {
+    console.error('❌ [GET /:id] ERROR:', err)
     return res.status(500).json({ error: 'Server error' })
   }
 })
 
-// ======================
-// GET ORDER BY ID
-// ======================
-router.get('/:id', async (req: Request, res: Response) => {
+// ==================================================
+// 5. TRACK ORDER (Tra cứu đơn hàng)
+// ==================================================
+router.post('/track', async (req: Request, res: Response) => {
   try {
-    const order = await Order.findById(req.params.id)
-
-    if (!order) return res.status(404).json({ error: 'Order not found' })
-
+    const { email, orderNumber } = req.body
+    if (!email || !orderNumber) {
+      return res
+        .status(400)
+        .json({ error: 'Vui lòng nhập Email và Mã đơn hàng' })
+    }
+    const order = await Order.findOne({
+      customerEmail: email.toLowerCase(),
+      orderNumber
+    })
+    if (!order) {
+      return res.status(404).json({ error: 'Không tìm thấy đơn hàng phù hợp' })
+    }
     return res.json(order)
   } catch (err) {
-    console.error('❌ [GET /public/orders/:id] ERROR:', err)
+    console.error('❌ [POST /track] ERROR:', err)
     return res.status(500).json({ error: 'Server error' })
   }
 })

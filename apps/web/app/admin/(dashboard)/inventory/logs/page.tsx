@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import api from '@/src/lib/api'
 
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import {
   Table,
   TableBody,
@@ -27,6 +26,8 @@ import {
 import Link from 'next/link'
 import { format } from 'date-fns'
 import { vi } from 'date-fns/locale'
+import { History } from 'lucide-react'
+import GlassCard from '@/src/components/admin/GlassCard'
 
 type StockLog = {
   _id: string
@@ -70,6 +71,21 @@ function typeLabel(t: string) {
   }
 }
 
+function typeColor(t: string) {
+  switch (t) {
+    case 'import':
+      return 'bg-green-100 text-green-700 dark:bg-green-950/30 dark:text-green-400'
+    case 'return':
+      return 'bg-blue-100 text-blue-700 dark:bg-blue-950/30 dark:text-blue-400'
+    case 'bulk':
+      return 'bg-purple-100 text-purple-700 dark:bg-purple-950/30 dark:text-purple-400'
+    case 'manual':
+      return 'bg-orange-100 text-orange-700 dark:bg-orange-950/30 dark:text-orange-400'
+    default:
+      return 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400'
+  }
+}
+
 export default function StockLogsPage() {
   const [page, setPage] = useState(1)
   const [typeFilter, setTypeFilter] = useState('all')
@@ -103,7 +119,6 @@ export default function StockLogsPage() {
       params.set('from', from.toISOString().slice(0, 10))
     }
 
-    // 'all' thì không set from/to
     return params.toString()
   }
 
@@ -130,22 +145,30 @@ export default function StockLogsPage() {
 
   return (
     <div className="p-6 space-y-6">
+      {/* HEADER */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Lịch sử tồn kho</h1>
-          <p className="text-sm text-gray-500">
-            Theo dõi tất cả lần điều chỉnh, nhập/xuất tồn kho.
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
+            Lịch sử tồn kho
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
+            Theo dõi tất cả lần điều chỉnh, nhập/xuất tồn kho
           </p>
         </div>
 
         <Link href="/admin/inventory">
-          <Button variant="outline">Quay lại tồn kho</Button>
+          <Button
+            variant="outline"
+            className="hover:bg-orange-50 hover:text-orange-600 hover:border-orange-300"
+          >
+            Quay lại tồn kho
+          </Button>
         </Link>
       </div>
 
       {/* FILTER BAR */}
-      <Card>
-        <CardContent className="py-4 flex flex-col md:flex-row md:items-center gap-4">
+      <GlassCard className="py-4">
+        <div className="flex flex-col md:flex-row md:items-center gap-4">
           <Input
             placeholder="Tìm theo sản phẩm hoặc ghi chú..."
             className="w-full md:w-72"
@@ -193,141 +216,147 @@ export default function StockLogsPage() {
               <SelectItem value="all">Tất cả</SelectItem>
             </SelectContent>
           </Select>
-        </CardContent>
-      </Card>
+        </div>
+      </GlassCard>
 
       {/* TABLE */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Lịch sử điều chỉnh</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Thời gian</TableHead>
-                <TableHead>Sản phẩm</TableHead>
-                <TableHead>Thay đổi</TableHead>
-                <TableHead>Trước → Sau</TableHead>
-                <TableHead>Loại</TableHead>
-                <TableHead>Người thực hiện</TableHead>
-                <TableHead>Ghi chú</TableHead>
-              </TableRow>
-            </TableHeader>
+      <GlassCard>
+        <div className="border-b border-white/20 pb-4 mb-4">
+          <h2 className="text-lg font-semibold flex items-center gap-2">
+            <History className="w-5 h-5 text-orange-600" />
+            Lịch sử điều chỉnh
+          </h2>
+        </div>
 
-            <TableBody>
-              {items.map((log) => (
-                <TableRow key={log._id}>
-                  <TableCell className="whitespace-nowrap text-sm">
-                    {format(new Date(log.createdAt), 'HH:mm dd/MM/yyyy', {
-                      locale: vi
-                    })}
-                  </TableCell>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Thời gian</TableHead>
+              <TableHead>Sản phẩm</TableHead>
+              <TableHead>Thay đổi</TableHead>
+              <TableHead>Trước → Sau</TableHead>
+              <TableHead>Loại</TableHead>
+              <TableHead>Người thực hiện</TableHead>
+              <TableHead>Ghi chú</TableHead>
+            </TableRow>
+          </TableHeader>
 
-                  <TableCell className="max-w-[220px]">
-                    <div className="font-medium line-clamp-2">
-                      {log.product?.name || '—'}
+          <TableBody>
+            {items.map((log) => (
+              <TableRow key={log._id}>
+                <TableCell className="whitespace-nowrap text-sm">
+                  {format(new Date(log.createdAt), 'HH:mm dd/MM/yyyy', {
+                    locale: vi
+                  })}
+                </TableCell>
+
+                <TableCell className="max-w-[220px]">
+                  <div className="font-medium line-clamp-2">
+                    {log.product?.name || '—'}
+                  </div>
+                  {log.product && (
+                    <div className="text-xs text-gray-400">
+                      <Link
+                        href={`/admin/products/${log.product._id}`}
+                        className="hover:underline"
+                      >
+                        /products/{log.product.slug}
+                      </Link>
                     </div>
-                    {log.product && (
-                      <div className="text-xs text-gray-400">
-                        <Link
-                          href={`/admin/products/${log.product._id}`}
-                          className="hover:underline"
-                        >
-                          /products/{log.product.slug}
-                        </Link>
-                      </div>
-                    )}
-                  </TableCell>
+                  )}
+                </TableCell>
 
-                  <TableCell>
-                    <span
-                      className={
-                        log.change > 0
-                          ? 'text-green-600 font-semibold'
-                          : log.change < 0
-                          ? 'text-red-600 font-semibold'
-                          : 'text-gray-500'
-                      }
-                    >
-                      {log.change > 0 ? `+${log.change}` : log.change}
-                    </span>
-                  </TableCell>
-
-                  <TableCell>
-                    <span className="text-sm">
-                      {log.oldStock} →{' '}
-                      <span className="font-semibold">{log.newStock}</span>
-                    </span>
-                  </TableCell>
-
-                  <TableCell>
-                    <Badge variant="outline">{typeLabel(log.type)}</Badge>
-                  </TableCell>
-
-                  <TableCell>
-                    {log.admin ? (
-                      <div className="text-sm">
-                        <div>{log.admin.name || 'Admin'}</div>
-                        <div className="text-xs text-gray-400">
-                          {log.admin.email}
-                        </div>
-                      </div>
-                    ) : (
-                      <span className="text-xs text-gray-400 italic">
-                        Hệ thống
-                      </span>
-                    )}
-                  </TableCell>
-
-                  <TableCell className="max-w-[260px]">
-                    <span className="text-sm text-gray-700 line-clamp-2">
-                      {log.note || '—'}
-                    </span>
-                  </TableCell>
-                </TableRow>
-              ))}
-
-              {items.length === 0 && (
-                <TableRow>
-                  <TableCell
-                    colSpan={7}
-                    className="text-center py-8 text-gray-500"
+                <TableCell>
+                  <span
+                    className={
+                      log.change > 0
+                        ? 'text-green-600 dark:text-green-400 font-semibold'
+                        : log.change < 0
+                        ? 'text-red-600 dark:text-red-400 font-semibold'
+                        : 'text-gray-500'
+                    }
                   >
-                    Không có bản ghi nào khớp bộ lọc.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+                    {log.change > 0 ? `+${log.change}` : log.change}
+                  </span>
+                </TableCell>
 
-          {/* PAGINATION */}
-          <div className="flex justify-between items-center mt-4 text-sm text-gray-500">
-            <div>
-              Trang {currentPage}/{totalPages} · Tổng {data?.total ?? 0} bản ghi
-            </div>
+                <TableCell>
+                  <span className="text-sm">
+                    {log.oldStock} →{' '}
+                    <span className="font-semibold">{log.newStock}</span>
+                  </span>
+                </TableCell>
 
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={currentPage <= 1}
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-              >
-                ‹ Trước
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={currentPage >= totalPages}
-                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              >
-                Sau ›
-              </Button>
-            </div>
+                <TableCell>
+                  <Badge className={typeColor(log.type)}>
+                    {typeLabel(log.type)}
+                  </Badge>
+                </TableCell>
+
+                <TableCell>
+                  {log.admin ? (
+                    <div className="text-sm">
+                      <div className="font-medium">
+                        {log.admin.name || 'Admin'}
+                      </div>
+                      <div className="text-xs text-gray-400">
+                        {log.admin.email}
+                      </div>
+                    </div>
+                  ) : (
+                    <span className="text-xs text-gray-400 italic">
+                      Hệ thống
+                    </span>
+                  )}
+                </TableCell>
+
+                <TableCell className="max-w-[260px]">
+                  <span className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2">
+                    {log.note || '—'}
+                  </span>
+                </TableCell>
+              </TableRow>
+            ))}
+
+            {items.length === 0 && (
+              <TableRow>
+                <TableCell
+                  colSpan={7}
+                  className="text-center py-8 text-gray-500"
+                >
+                  Không có bản ghi nào khớp bộ lọc.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+
+        {/* PAGINATION */}
+        <div className="flex justify-between items-center mt-4 pt-4 border-t border-white/10 text-sm text-gray-600 dark:text-gray-400">
+          <div>
+            Trang {currentPage}/{totalPages} · Tổng {data?.total ?? 0} bản ghi
           </div>
-        </CardContent>
-      </Card>
+
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={currentPage <= 1}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+            >
+              ‹ Trước
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={currentPage >= totalPages}
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            >
+              Sau ›
+            </Button>
+          </div>
+        </div>
+      </GlassCard>
     </div>
   )
 }

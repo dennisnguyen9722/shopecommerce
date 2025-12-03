@@ -1,20 +1,19 @@
 import express from 'express'
 import Customer from '../models/Customer'
 import CustomerAddress from '../models/CustomerAddress'
+import Order from '../models/Order'
 import { protect } from '../middleware/auth'
 import { requirePermissions } from '../middleware/requirePermissions'
 
 const router = express.Router()
 
-// ⭐ Chỉ cần quyền manage_customers
 const CAN_CUSTOMERS = requirePermissions('manage_customers')
 
 router.use(protect, CAN_CUSTOMERS)
 
-const { faker } = require('@faker-js/faker')
-
 const segments = {
-  vip: { totalSpent: { $gte: 5_000_000 } },
+  vip: { totalSpent: { $gte: 10_000_000 } },
+  premium: { totalSpent: { $gte: 5_000_000 } },
   new: {
     createdAt: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) }
   },
@@ -25,6 +24,89 @@ const segments = {
   }
 } as const
 
+// 🆕 SYNC CUSTOMERS FROM ORDERS
+router.post('/sync-from-orders', async (req, res) => {
+  try {
+    const orders = await Order.find({})
+      .select(
+        'customerName customerEmail customerPhone totalPrice createdAt status'
+      )
+      .lean()
+
+    let created = 0
+    let updated = 0
+
+    // Nhóm orders theo email
+    const emailMap = new Map<string, any[]>()
+
+    for (const order of orders) {
+      if (!order.customerEmail) continue
+
+      const email = order.customerEmail.toLowerCase()
+      if (!emailMap.has(email)) {
+        emailMap.set(email, [])
+      }
+      emailMap.get(email)!.push(order)
+    }
+
+    // Xử lý từng email
+    for (const [email, customerOrders] of emailMap.entries()) {
+      const existing = await Customer.findOne({ email })
+
+      // Tính stats từ orders (không tính cancelled)
+      const validOrders = customerOrders.filter((o) => o.status !== 'cancelled')
+      const totalSpent = validOrders.reduce(
+        (sum, o) => sum + (o.totalPrice || 0),
+        0
+      )
+      const ordersCount = validOrders.length
+      const lastOrderDate =
+        validOrders.length > 0
+          ? new Date(
+              Math.max(
+                ...validOrders.map((o) => new Date(o.createdAt).getTime())
+              )
+            )
+          : null
+
+      // Tính loyalty points: 1 điểm = 1000đ
+      const loyaltyPoints = Math.floor(totalSpent / 1000)
+
+      if (existing) {
+        // Update
+        existing.totalSpent = totalSpent
+        existing.ordersCount = ordersCount
+        existing.lastOrderDate = lastOrderDate
+        existing.loyaltyPoints = loyaltyPoints
+
+        await existing.save()
+        updated++
+      } else {
+        // Create new
+        const firstOrder = customerOrders[0]
+
+        await Customer.create({
+          name: firstOrder.customerName || 'Guest',
+          email: email,
+          phone: firstOrder.customerPhone,
+          password: null,
+          totalSpent,
+          ordersCount,
+          lastOrderDate,
+          loyaltyPoints,
+          status: 'active'
+        })
+
+        created++
+      }
+    }
+
+    res.json({ created, updated })
+  } catch (err: any) {
+    res.status(500).json({ error: err.message })
+  }
+})
+
 // GET /admin/customers
 router.get('/', async (req, res) => {
   try {
@@ -34,7 +116,7 @@ router.get('/', async (req, res) => {
       search = '',
       segment = '',
       sort = 'newest',
-      status = 'all'
+      status = ''
     } = req.query as {
       page?: string
       limit?: string
@@ -59,7 +141,7 @@ router.get('/', async (req, res) => {
       ]
     }
 
-    if (status && status !== 'all') {
+    if (status && status !== 'all' && status !== '') {
       filter.status = status
     }
 
@@ -71,7 +153,8 @@ router.get('/', async (req, res) => {
       newest: { createdAt: -1 },
       oldest: { createdAt: 1 },
       totalSpent: { totalSpent: -1 },
-      orders: { ordersCount: -1 }
+      orders: { ordersCount: -1 },
+      points: { loyaltyPoints: -1 }
     }[sort || ''] || { createdAt: -1 }
 
     const [items, total] = await Promise.all([
@@ -99,11 +182,15 @@ router.get('/:id', async (req, res) => {
     const customer = await Customer.findById(req.params.id).lean()
     if (!customer) return res.status(404).json({ error: 'Not found' })
 
-    const addresses = await CustomerAddress.find({
-      customer: customer._id
-    }).lean()
+    const [addresses, orders] = await Promise.all([
+      CustomerAddress.find({ customer: customer._id }).lean(),
+      Order.find({ customerEmail: customer.email })
+        .sort({ createdAt: -1 })
+        .limit(20)
+        .lean()
+    ])
 
-    res.json({ customer, addresses })
+    res.json({ customer, addresses, orders })
   } catch (err: any) {
     res.status(500).json({ error: err.message })
   }
@@ -112,22 +199,38 @@ router.get('/:id', async (req, res) => {
 // PUT /admin/customers/:id
 router.put('/:id', async (req, res) => {
   try {
-    const { name, email, phone, notes, tags, status } = req.body
+    const {
+      name,
+      email,
+      phone,
+      notes,
+      tags,
+      status,
+      loyaltyPoints,
+      loyaltyTier
+    } = req.body
 
-    const updated = await Customer.findByIdAndUpdate(
-      req.params.id,
-      {
-        name,
-        email,
-        phone,
-        notes,
-        tags,
-        status
-      },
-      { new: true }
-    )
+    const customer = await Customer.findById(req.params.id)
+    if (!customer) return res.status(404).json({ error: 'Not found' })
 
-    res.json(updated)
+    customer.name = name || customer.name
+    customer.email = email || customer.email
+    customer.phone = phone || customer.phone
+    customer.notes = notes
+    customer.tags = tags || customer.tags
+    customer.status = status || customer.status
+
+    // Admin có thể override loyalty
+    if (loyaltyPoints !== undefined) {
+      customer.loyaltyPoints = loyaltyPoints
+    }
+    if (loyaltyTier !== undefined) {
+      customer.loyaltyTier = loyaltyTier
+    }
+
+    await customer.save()
+
+    res.json(customer)
   } catch (err: any) {
     res.status(500).json({ error: err.message })
   }
@@ -162,7 +265,7 @@ router.delete('/:id', async (req, res) => {
   }
 })
 
-// ADDRESS ROUTES
+// 🆕 ADDRESS ROUTES
 router.post('/:id/addresses', async (req, res) => {
   try {
     const address = await CustomerAddress.create({
@@ -208,57 +311,6 @@ router.delete('/:id/addresses/:addressId', async (req, res) => {
   try {
     await CustomerAddress.findByIdAndDelete(req.params.addressId)
     res.json({ ok: true })
-  } catch (err: any) {
-    res.status(500).json({ error: err.message })
-  }
-})
-
-// Seed
-router.post('/seed', async (req, res) => {
-  try {
-    await Customer.deleteMany({})
-    await CustomerAddress.deleteMany({})
-
-    const statuses = ['active', 'blocked', 'suspended', 'deactivated']
-
-    const customers = []
-
-    for (let i = 0; i < 20; i++) {
-      const customer = await Customer.create({
-        name: faker.person.fullName(),
-        email: faker.internet.email().toLowerCase(),
-        phone: faker.phone.number(),
-        notes: faker.lorem.sentence(),
-        tags: faker.helpers.arrayElements(['vip', 'new', 'loyal', 'hot'], 2),
-        status: faker.helpers.arrayElement(statuses),
-        totalSpent: faker.number.int({ min: 0, max: 20_000_000 }),
-        ordersCount: faker.number.int({ min: 0, max: 20 }),
-        createdAt: faker.date.recent({ days: 180 })
-      })
-
-      const addrCount = faker.number.int({ min: 1, max: 3 })
-
-      for (let j = 0; j < addrCount; j++) {
-        await CustomerAddress.create({
-          customer: customer._id,
-          fullName: customer.name,
-          phone: customer.phone,
-          addressLine1: faker.location.streetAddress(),
-          addressLine2: faker.location.secondaryAddress(),
-          ward: faker.location.city(),
-          district: faker.location.county(),
-          province: faker.location.state(),
-          isDefault: j === 0
-        })
-      }
-
-      customers.push(customer)
-    }
-
-    res.json({
-      message: 'Seeded 20 customers successfully',
-      count: customers.length
-    })
   } catch (err: any) {
     res.status(500).json({ error: err.message })
   }

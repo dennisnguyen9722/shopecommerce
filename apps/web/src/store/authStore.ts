@@ -1,14 +1,37 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
+// Định nghĩa lại Role cho chuẩn
+interface Role {
+  _id: string
+  name: string
+  isSystem?: boolean
+  permissions?: string[]
+}
+
+export interface User {
+  _id: string
+  name: string
+  email: string
+  // ⭐ FIX: role có thể là string (ID) hoặc Object (khi đã populate)
+  role?: string | Role
+  permissions?: string[] // Permissions riêng của user (nếu có)
+
+  loyaltyPoints: number
+  loyaltyTier: 'bronze' | 'silver' | 'gold' | 'platinum'
+  totalSpent: number
+  avatar?: string
+  [key: string]: any
+}
+
 interface AuthState {
   token: string | null
-  user: any | null
+  user: User | null
   isAuthenticated: boolean
   _hasHydrated: boolean
 
-  setAuth: (token: string, user: any) => void
-  updateUser: (data: any) => void
+  setAuth: (token: string, user: User) => void
+  updateUser: (data: Partial<User>) => void
   logout: () => void
   setHasHydrated: (state: boolean) => void
 }
@@ -20,42 +43,18 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       isAuthenticated: false,
       _hasHydrated: false,
-
-      // Login và lưu user
-      setAuth: (token, user) =>
-        set({
-          token,
-          user,
-          isAuthenticated: true
-        }),
-
-      // ⭐ Update user (avatar, name, email...) => Header tự update
+      setAuth: (token, user) => set({ token, user, isAuthenticated: true }),
       updateUser: (data) =>
         set((state) => ({
-          user: { ...state.user, ...data }
+          user: state.user ? { ...state.user, ...data } : null
         })),
-
-      // Logout
-      logout: () =>
-        set({
-          token: null,
-          user: null,
-          isAuthenticated: false
-        }),
-
-      // Hydration flag
+      logout: () => set({ token: null, user: null, isAuthenticated: false }),
       setHasHydrated: (state) => set({ _hasHydrated: state })
     }),
-
     {
       name: 'auth-storage',
-
       onRehydrateStorage: () => (state, error) => {
-        if (error) {
-          console.error('❌ Error during hydration', error)
-        } else {
-          state?.setHasHydrated(true)
-        }
+        if (!error) state?.setHasHydrated(true)
       }
     }
   )

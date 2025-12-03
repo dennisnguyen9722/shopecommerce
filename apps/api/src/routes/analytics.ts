@@ -106,13 +106,16 @@ router.get('/best-products', protect, CAN_VIEW, async (req, res) => {
 /* ============================================================
    A4. Top customers
 ============================================================ */
-router.get('/top-customers', protect, CAN_VIEW, async (req, res) => {
+// GET /admin/analytics/top-customers
+router.get('/top-customers', async (req, res) => {
   try {
-    const customers = await Customer.find()
-      .sort({ totalSpent: -1 })
-      .limit(5)
+    const topCustomers = await Customer.find({ status: 'active' })
+      .sort({ ordersCount: -1 })
+      .limit(10)
+      .select('name email ordersCount totalSpent loyaltyTier loyaltyPoints')
       .lean()
-    res.json(customers)
+
+    res.json(topCustomers)
   } catch (err: any) {
     res.status(500).json({ error: err.message })
   }

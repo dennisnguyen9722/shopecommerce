@@ -2,18 +2,21 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useAuthStore } from '@/src/store/authStore'
+// 👇 THAY ĐỔI 1: Import store riêng của Admin
+import { useAdminAuthStore } from '@/src/store/adminAuthStore'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import api from '@/src/lib/api'
 import { setCookie } from 'cookies-next'
-import { getFirstRoute } from '@/src/utils/getFirstRoute'
-import { toast } from 'sonner' // ⭐ THÊM IMPORT
+import { toast } from 'sonner'
+import { Loader2 } from 'lucide-react'
 
 export default function LoginPage() {
   const router = useRouter()
-  const setAuth = useAuthStore((s) => s.setAuth)
+
+  // 👇 THAY ĐỔI 2: Lấy hàm setAdminAuth từ store mới
+  const setAdminAuth = useAdminAuthStore((s) => s.setAdminAuth)
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -21,68 +24,105 @@ export default function LoginPage() {
   const [err, setErr] = useState('')
 
   async function handleLogin() {
+    if (!email || !password) {
+      setErr('Vui lòng nhập đầy đủ thông tin')
+      return
+    }
+
     try {
       setErr('')
       setLoading(true)
 
       const { data } = await api.post('/auth/login', { email, password })
+      const user = data.user
 
-      // Lưu token zustand
-      setAuth(data.token, data.user)
+      // 👇 THAY ĐỔI 3: Kiểm tra quyền Admin/System
+      // Nếu là user thường thì không cho vào trang Admin
+      if (
+        user.role === 'user' ||
+        (!user.role?.isSystem && user.role !== 'admin')
+      ) {
+        throw new Error('Tài khoản không có quyền truy cập Admin')
+      }
 
-      // Lưu cookie cho middleware
+      // 👇 THAY ĐỔI 4: Lưu vào Store Admin
+      setAdminAuth(data.token, user)
+
+      // Lưu cookie (Giữ nguyên để Middleware hoạt động)
       setCookie('token', data.token, {
         path: '/',
         maxAge: 60 * 60 * 24 * 7
       })
 
-      // ⭐ THÊM TOAST
-      toast.success('Đăng nhập thành công! 🎉')
+      toast.success('Xin chào Administrator! 🎉')
 
-      // CHỜ ZUSTAND CẬP NHẬT
+      // Chuyển hướng thẳng vào Dashboard
       setTimeout(() => {
-        const firstRoute = getFirstRoute(data.user)
-        console.log('➡ redirect to:', firstRoute)
-        router.push(firstRoute)
-      }, 50)
+        router.push('/admin/overview')
+      }, 100)
     } catch (err: any) {
-      const errorMsg = err.response?.data?.message || 'Đăng nhập thất bại'
+      console.error(err)
+      const errorMsg =
+        err.message || err.response?.data?.error || 'Đăng nhập thất bại'
       setErr(errorMsg)
-      toast.error(errorMsg) // ⭐ THÊM TOAST ERROR
+      toast.error(errorMsg)
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-muted">
-      <Card className="w-[360px]">
-        <CardHeader>
-          <CardTitle>Đăng nhập Admin</CardTitle>
+    <div className="flex items-center justify-center min-h-screen bg-muted/40 px-4">
+      <Card className="w-full max-w-[400px] shadow-lg">
+        <CardHeader className="text-center pb-2">
+          <div className="mx-auto w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mb-2 text-xl">
+            🔐
+          </div>
+          <CardTitle className="text-2xl">Đăng nhập Admin</CardTitle>
         </CardHeader>
 
-        <CardContent className="space-y-4">
-          <Input
-            placeholder="Nhập email"
-            value={email}
-            autoComplete="off"
-            onChange={(e) => setEmail(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleLogin()} // ⭐ BONUS: Enter để login
-          />
+        <CardContent className="space-y-4 pt-4">
+          <div className="space-y-2">
+            <Input
+              placeholder="Email quản trị"
+              value={email}
+              autoComplete="off"
+              onChange={(e) => setEmail(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
+              className="h-11"
+            />
+          </div>
 
-          <Input
-            type="password"
-            placeholder="Nhập mật khẩu"
-            autoComplete="new-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleLogin()} // ⭐ BONUS
-          />
+          <div className="space-y-2">
+            <Input
+              type="password"
+              placeholder="Mật khẩu"
+              autoComplete="new-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
+              className="h-11"
+            />
+          </div>
 
-          {err && <p className="text-red-500 text-sm text-center">{err}</p>}
+          {err && (
+            <div className="p-3 rounded bg-red-50 text-red-600 text-sm text-center border border-red-100">
+              {err}
+            </div>
+          )}
 
-          <Button className="w-full" onClick={handleLogin} disabled={loading}>
-            {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
+          <Button
+            className="w-full h-11 text-base font-medium"
+            onClick={handleLogin}
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Đang xử lý...
+              </>
+            ) : (
+              'Truy cập Dashboard'
+            )}
           </Button>
         </CardContent>
       </Card>

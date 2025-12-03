@@ -7,17 +7,17 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { toast } from 'sonner'
-import { useAuthStore } from '@/src/store/authStore'
+import { useAdminAuthStore } from '@/src/store/adminAuthStore' // 👈 Sửa import
 import api from '@/src/lib/api'
 
 export default function ProfilePage() {
   const [loading, setLoading] = useState(true)
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
 
-  const updateAuthUser = useAuthStore((s) => s.updateUser)
+  // 👇 Lấy hàm setAdminAuth từ Store Admin để update thông tin local
+  const { admin, setAdminAuth, token } = useAdminAuthStore()
 
   const { register, handleSubmit, setValue } = useForm()
-
   const { register: registerPass, handleSubmit: handleSubmitPass } = useForm()
 
   /* =============================================
@@ -25,6 +25,7 @@ export default function ProfilePage() {
   ============================================= */
   const loadProfile = async () => {
     try {
+      // Gọi API lấy profile mới nhất
       const res = await api.get('/admin/profile')
       const data = res.data
 
@@ -32,12 +33,9 @@ export default function ProfilePage() {
       setValue('email', data.email)
       setAvatarPreview(data.avatar)
 
-      // cập nhật vào authStore để Header tự update avatar
-      updateAuthUser({
-        name: data.name,
-        email: data.email,
-        avatar: data.avatar
-      })
+      // 👇 Update vào Store Admin để Header tự nhảy
+      // (Giữ nguyên token cũ, chỉ update info admin)
+      if (token) setAdminAuth(token, data)
 
       setLoading(false)
     } catch (err) {
@@ -56,7 +54,7 @@ export default function ProfilePage() {
     try {
       await api.put('/admin/profile', values)
       toast.success('Cập nhật thành công')
-      loadProfile()
+      loadProfile() // Load lại để update store
     } catch {
       toast.error('Cập nhật thất bại')
     }
@@ -67,7 +65,7 @@ export default function ProfilePage() {
   ============================================= */
   const onSubmitPassword = async (values: any) => {
     try {
-      const res = await api.put('/admin/profile/change-password', values)
+      await api.put('/admin/profile/change-password', values)
       toast.success('Đổi mật khẩu thành công')
     } catch (err: any) {
       toast.error(err.response?.data?.error || 'Đổi mật khẩu thất bại')
@@ -89,13 +87,14 @@ export default function ProfilePage() {
 
     try {
       const res = await api.post('/admin/profile/avatar', form)
-      const data = res.data
+      const data = res.data // { avatar: 'url...' }
 
-      // cập nhật ngay trên header
-      updateAuthUser({ avatar: data.avatar })
+      // Cập nhật avatar vào store ngay lập tức
+      if (admin && token) {
+        setAdminAuth(token, { ...admin, avatar: data.avatar })
+      }
 
       toast.success('Cập nhật avatar thành công')
-      loadProfile()
     } catch {
       toast.error('Upload avatar thất bại')
     }
@@ -128,13 +127,17 @@ export default function ProfilePage() {
           </div>
 
           <div>
-            <label className="text-sm font-medium">Tên</label>
+            <label className="text-sm font-medium">Tên hiển thị</label>
             <Input {...register('name', { required: true })} />
           </div>
 
           <div>
             <label className="text-sm font-medium">Email</label>
-            <Input {...register('email', { required: true })} />
+            <Input
+              {...register('email', { required: true })}
+              disabled
+              className="bg-gray-100 cursor-not-allowed"
+            />
           </div>
 
           <Button onClick={handleSubmit(onSubmitProfile)}>Cập nhật</Button>

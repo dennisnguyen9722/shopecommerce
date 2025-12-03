@@ -69,7 +69,7 @@ export default function BestSellingProductsWidget() {
           <div className="space-y-3">
             {items.map((p: any, index: number) => (
               <div
-                key={`${p.productId}-${index}`} // 🔥 FIX LỖI KEY TRÙNG
+                key={`${p.productId}-${index}`}
                 className="flex items-center gap-4 p-3 rounded-xl bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 border border-gray-100 dark:border-gray-800 hover:shadow-md hover:scale-[1.02] transition-all duration-300"
               >
                 {/* Rank Badge */}

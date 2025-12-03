@@ -14,6 +14,9 @@ export const PERMISSIONS = {
   // Customers
   MANAGE_CUSTOMERS: 'manage_customers',
 
+  // ⭐ REWARDS (MỚI)
+  MANAGE_REWARDS: 'manage_rewards',
+
   // Banners
   MANAGE_BANNERS: 'manage_banners',
 

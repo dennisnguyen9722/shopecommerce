@@ -7,7 +7,6 @@ import DashboardTabs from '@/src/components/admin/DashboardTabs'
 import InventoryOverviewWidget from '@/src/components/admin/InventoryOverviewWidget'
 import BestSellingProductsWidget from '@/src/components/admin/BestSellingProductsWidget'
 import TopCustomersWidget from '@/src/components/admin/TopCustomersWidget'
-import PurchaseFrequencyWidget from '@/src/components/admin/PurchaseFrequencyWidget'
 
 export default function AdminOverviewPage() {
   return (
@@ -43,26 +42,11 @@ export default function AdminOverviewPage() {
             <InventoryOverviewWidget />
           </div>
 
-          {/* Revenue Chart - Featured
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-150">
-            <RevenueChart />
-          </div> */}
-
           {/* Grid Layout - Best Selling & Top Customers */}
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
             <BestSellingProductsWidget />
             <TopCustomersWidget />
           </div>
-
-          {/* Purchase Frequency */}
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-250">
-            <PurchaseFrequencyWidget />
-          </div>
-
-          {/* Dashboard Tabs - Orders/Customers
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
-            <DashboardTabs />
-          </div> */}
 
           {/* Bottom Spacing */}
           <div className="h-8" />
