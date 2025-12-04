@@ -5,6 +5,7 @@ import api from '@/src/lib/api'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
+import { generateSlug } from '@/lib/utils'
 
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -21,8 +22,10 @@ import ImageUploader from '@/src/components/admin/ImageUploader'
 import PriceInputShopifyPlus from '@/src/components/admin/PriceInput'
 import GlassCard from '@/src/components/admin/GlassCard'
 import Editor from '@/src/components/editor/Editor'
+import VariantManager from '@/src/components/admin/VariantManager'
+import SpecsManager from '@/src/components/admin/SpecsManager'
 
-import { ToggleLeft, ToggleRight } from 'lucide-react'
+import { ToggleLeft, ToggleRight, Layers, Settings2 } from 'lucide-react'
 
 type Category = {
   _id: string
@@ -46,20 +49,22 @@ export default function CreateProductPage() {
   const [images, setImages] = useState<{ url: string; public_id: string }[]>([])
   const [categoryId, setCategoryId] = useState<string>('')
 
-  // NEW
   const [isPublished, setIsPublished] = useState(true)
   const [isFeatured, setIsFeatured] = useState(false)
 
-  // Auto-slug
+  // STATE CHO BIẾN THỂ & SPECS
+  const [hasVariants, setHasVariants] = useState(false)
+  const [variantGroups, setVariantGroups] = useState<
+    { name: string; values: string[] }[]
+  >([])
+  const [variants, setVariants] = useState<any[]>([])
+  const [specs, setSpecs] = useState<{ key: string; value: string }[]>([])
+
+  // 👇 CẬP NHẬT LOGIC AUTO-SLUG
   const handleName = (value: string) => {
     setName(value)
-    setSlug(
-      value
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/\s+/g, '-')
-    )
+    // Tự động tạo slug chuẩn khi nhập tên
+    setSlug(generateSlug(value))
   }
 
   // load category list
@@ -81,12 +86,18 @@ export default function CreateProductPage() {
         slug,
         price,
         comparePrice,
-        stock,
+        stock: hasVariants
+          ? variants.reduce((acc, v) => acc + v.stock, 0)
+          : stock, // Nếu có variant, stock tổng = tổng stock variant
         description,
         images,
         category: categoryId || undefined,
         isPublished,
-        isFeatured
+        isFeatured,
+        hasVariants,
+        variantGroups,
+        variants,
+        specs
       })
       return res.data
     },
@@ -138,7 +149,7 @@ export default function CreateProductPage() {
             <Input
               value={name}
               onChange={(e) => handleName(e.target.value)}
-              placeholder="Ví dụ: Áo thun nam Basic"
+              placeholder="Ví dụ: iPhone 15 Pro Max"
               required
             />
           </div>
@@ -147,10 +158,14 @@ export default function CreateProductPage() {
             <Label>Slug</Label>
             <Input
               value={slug}
-              onChange={(e) => setSlug(e.target.value)}
-              placeholder="ao-thun-nam-basic"
+              // Cho phép sửa tay nhưng vẫn format chuẩn
+              onChange={(e) => setSlug(generateSlug(e.target.value))}
+              placeholder="iphone-15-pro-max"
               required
             />
+            <p className="text-xs text-muted-foreground">
+              Chuỗi định danh URL (tự động loại bỏ ký tự đặc biệt như /)
+            </p>
           </div>
 
           <div className="space-y-2 max-w-sm">
@@ -172,7 +187,6 @@ export default function CreateProductPage() {
             </Select>
           </div>
 
-          {/* NEW PUBLISHED + FEATURED BLOCK */}
           <div className="grid grid-cols-2 max-w-md gap-6 pt-4">
             <div className="space-y-2">
               <Label>Công khai (isPublished)</Label>
@@ -217,22 +231,21 @@ export default function CreateProductPage() {
             Thêm ảnh để hiển thị trên storefront và trang chi tiết sản phẩm.
           </p>
         </div>
-
         <ImageUploader initial={[]} onChange={(imgs) => setImages(imgs)} />
       </GlassCard>
 
       {/* GIÁ & TỒN KHO */}
       <GlassCard>
         <div className="border-b border-white/20 pb-4 mb-4">
-          <h2 className="text-lg font-semibold">Giá & Tồn kho</h2>
+          <h2 className="text-lg font-semibold">Giá & Tồn kho (Cơ bản)</h2>
           <p className="text-sm text-muted-foreground">
-            Thiết lập giá bán, giá gốc và số lượng tồn kho.
+            Nếu có biến thể, tồn kho sẽ được tính theo từng biến thể.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label>Giá bán</Label>
+            <Label>Giá bán (Giá hiển thị)</Label>
             <PriceInputShopifyPlus value={price} onChange={setPrice} />
           </div>
 
@@ -245,15 +258,80 @@ export default function CreateProductPage() {
           </div>
         </div>
 
-        <div className="space-y-2 mt-6 max-w-xs">
-          <Label>Số lượng tồn kho</Label>
-          <Input
-            type="number"
-            value={stock}
-            onChange={(e) => setStock(Number(e.target.value))}
-            required
-          />
+        {!hasVariants && (
+          <div className="space-y-2 mt-6 max-w-xs">
+            <Label>Số lượng tồn kho</Label>
+            <Input
+              type="number"
+              value={stock}
+              onChange={(e) => setStock(Number(e.target.value))}
+              required
+            />
+          </div>
+        )}
+      </GlassCard>
+
+      {/* QUẢN LÝ BIẾN THỂ (VARIANTS) */}
+      <GlassCard>
+        <div className="border-b border-white/20 pb-4 mb-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Layers className="text-orange-600" size={20} />
+            <div>
+              <h2 className="text-lg font-semibold">Biến thể sản phẩm</h2>
+              <p className="text-sm text-muted-foreground">
+                Màu sắc, Dung lượng, Kích thước...
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setHasVariants(!hasVariants)}
+            className="flex items-center gap-2"
+          >
+            {hasVariants ? (
+              <ToggleRight className="w-8 h-8 text-orange-600" />
+            ) : (
+              <ToggleLeft className="w-8 h-8 text-gray-400" />
+            )}
+            <span
+              className={
+                hasVariants ? 'font-semibold text-orange-600' : 'text-gray-500'
+              }
+            >
+              {hasVariants ? 'Đang bật' : 'Chưa kích hoạt'}
+            </span>
+          </button>
         </div>
+
+        {hasVariants ? (
+          <VariantManager
+            groups={variantGroups}
+            setGroups={setVariantGroups}
+            variants={variants}
+            setVariants={setVariants}
+            basePrice={price}
+          />
+        ) : (
+          <div className="text-center py-8 text-gray-400 bg-gray-50/50 rounded-lg border border-dashed">
+            Sản phẩm này không có biến thể (Sản phẩm đơn).
+          </div>
+        )}
+      </GlassCard>
+
+      {/* THÔNG SỐ KỸ THUẬT (SPECS) */}
+      <GlassCard>
+        <div className="border-b border-white/20 pb-4 mb-4 flex items-center gap-2">
+          <Settings2 className="text-blue-600" size={20} />
+          <div>
+            <h2 className="text-lg font-semibold">Thông số kỹ thuật</h2>
+            <p className="text-sm text-muted-foreground">
+              Chip, RAM, Camera, Pin...
+            </p>
+          </div>
+        </div>
+
+        <SpecsManager specs={specs} setSpecs={setSpecs} />
       </GlassCard>
 
       {/* MÔ TẢ CHI TIẾT */}

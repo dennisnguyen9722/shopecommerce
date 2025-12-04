@@ -4,10 +4,17 @@ import { useCart } from '@/app/contexts/CartContext'
 import CartItemCard from '../components/CartItemCard'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { useMemo } from 'react' // Thêm import này
 
 export default function CartPage() {
-  const { cart, totalPrice } = useCart()
+  // Bỏ totalPrice ra khỏi destructuring vì Context không trả về
+  const { cart } = useCart()
   const router = useRouter()
+
+  // Tính tổng tiền ở đây (sẽ tự tính lại khi giỏ hàng thay đổi)
+  const totalPrice = useMemo(() => {
+    return cart.reduce((total, item) => total + item.price * item.quantity, 0)
+  }, [cart])
 
   if (cart.length === 0)
     return (
@@ -27,7 +34,11 @@ export default function CartPage() {
       {/* LEFT */}
       <div className="lg:col-span-2 space-y-4">
         {cart.map((item) => (
-          <CartItemCard key={item._id} item={item} />
+          // Key kết hợp ID và VariantID
+          <CartItemCard
+            key={`${item._id}-${item.variantId || 'default'}`}
+            item={item}
+          />
         ))}
       </div>
 
@@ -43,7 +54,7 @@ export default function CartPage() {
         <button
           onClick={() => router.push('/checkout')}
           className="
-            w-full mt-6 py-3 rounded-xl bg-gradient-to-r 
+            w-full mt-6 py-3 rounded-xl bg-linear-to-r 
             from-orange-500 to-pink-500 text-white font-bold text-base
             shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]
           "

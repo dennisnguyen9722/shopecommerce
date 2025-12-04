@@ -26,8 +26,10 @@ import AdjustStockModal from '@/src/components/admin/AdjustStockModal'
 import InventoryLog from '@/src/components/admin/InventoryLog'
 import GlassCard from '@/src/components/admin/GlassCard'
 import Editor from '@/src/components/editor/Editor'
+import VariantManager from '@/src/components/admin/VariantManager' // 👈 Import Mới
+import SpecsManager from '@/src/components/admin/SpecsManager' // 👈 Import Mới
 
-import { ToggleLeft, ToggleRight } from 'lucide-react'
+import { ToggleLeft, ToggleRight, Layers, Settings2 } from 'lucide-react'
 
 export default function EditProductPage({
   params
@@ -46,8 +48,11 @@ export default function EditProductPage({
     watch,
     register,
     getValues,
+    setValue,
     formState: { isSubmitting }
   } = useForm()
+
+  const hasVariants = watch('hasVariants') // Theo dõi state để ẩn hiện UI
 
   // FETCH PRODUCT
   const { data, isLoading } = useQuery({
@@ -87,7 +92,12 @@ export default function EditProductPage({
       stock: data.stock || 0,
       images: data.images || [],
       isFeatured: data.isFeatured || false,
-      isPublished: data.isPublished ?? true
+      isPublished: data.isPublished ?? true,
+      // 👇 Dữ liệu mới
+      hasVariants: data.hasVariants || false,
+      variantGroups: data.variantGroups || [],
+      variants: data.variants || [],
+      specs: data.specs || []
     })
   }, [data, reset])
 
@@ -96,7 +106,11 @@ export default function EditProductPage({
     mutationFn: async (values: any) => {
       const payload = {
         ...values,
-        category: values.category === 'none' ? null : values.category
+        category: values.category === 'none' ? null : values.category,
+        // Nếu dùng biến thể, tự động tính tổng stock
+        stock: values.hasVariants
+          ? values.variants.reduce((acc: number, v: any) => acc + v.stock, 0)
+          : values.stock
       }
       const res = await api.put(`/admin/products/${id}`, payload)
       return res.data
@@ -143,25 +157,19 @@ export default function EditProductPage({
       <GlassCard>
         <div className="border-b border-white/20 pb-4 mb-4">
           <h2 className="text-lg font-semibold">Thông tin chung</h2>
-          <p className="text-sm text-muted-foreground">
-            Tên, slug và danh mục của sản phẩm.
-          </p>
         </div>
 
         <div className="space-y-4">
-          {/* NAME */}
           <div className="space-y-2">
             <Label>Tên sản phẩm</Label>
             <Input {...register('name')} placeholder="Nhập tên sản phẩm" />
           </div>
 
-          {/* SLUG */}
           <div className="space-y-2 max-w-md">
             <Label>Slug</Label>
             <Input {...register('slug')} placeholder="san-pham" />
           </div>
 
-          {/* CATEGORY */}
           <div className="space-y-2 max-w-sm">
             <Label>Danh mục</Label>
             <Controller
@@ -175,7 +183,6 @@ export default function EditProductPage({
                   <SelectTrigger>
                     <SelectValue placeholder="Chọn danh mục" />
                   </SelectTrigger>
-
                   <SelectContent>
                     <SelectItem value="none">Không danh mục</SelectItem>
                     {categories.map((cat: any) => (
@@ -189,10 +196,9 @@ export default function EditProductPage({
             />
           </div>
 
-          {/* NEW: PUBLISH & FEATURED */}
           <div className="grid grid-cols-2 max-w-md gap-6 pt-4">
             <div className="space-y-2">
-              <Label>Công khai (isPublished)</Label>
+              <Label>Công khai</Label>
               <Controller
                 control={control}
                 name="isPublished"
@@ -214,7 +220,7 @@ export default function EditProductPage({
             </div>
 
             <div className="space-y-2">
-              <Label>Nổi bật (isFeatured)</Label>
+              <Label>Nổi bật</Label>
               <Controller
                 control={control}
                 name="isFeatured"
@@ -242,11 +248,7 @@ export default function EditProductPage({
       <GlassCard>
         <div className="border-b border-white/20 pb-4 mb-4">
           <h2 className="text-lg font-semibold">Hình ảnh</h2>
-          <p className="text-sm text-muted-foreground">
-            Quản lý gallery ảnh cho sản phẩm này.
-          </p>
         </div>
-
         <Controller
           control={control}
           name="images"
@@ -259,15 +261,11 @@ export default function EditProductPage({
         />
       </GlassCard>
 
-      {/* PRICE */}
+      {/* PRICE & STOCK */}
       <GlassCard>
         <div className="border-b border-white/20 pb-4 mb-4">
           <h2 className="text-lg font-semibold">Giá & Tồn kho</h2>
-          <p className="text-sm text-muted-foreground">
-            Cập nhật giá bán, giá gốc và theo dõi tồn kho.
-          </p>
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <Label>Giá bán</Label>
@@ -282,9 +280,8 @@ export default function EditProductPage({
               )}
             />
           </div>
-
           <div className="space-y-2">
-            <Label>Giá gốc (compare price)</Label>
+            <Label>Giá gốc</Label>
             <Controller
               control={control}
               name="comparePrice"
@@ -298,21 +295,102 @@ export default function EditProductPage({
           </div>
         </div>
 
-        <div className="space-y-2 mt-6 max-w-xs">
-          <Label>Tồn kho hiện tại</Label>
-          <Input type="number" {...register('stock')} disabled />
+        {/* Chỉ hiện tồn kho tổng nếu KHÔNG dùng variant */}
+        {!hasVariants && (
+          <div className="space-y-2 mt-6 max-w-xs">
+            <Label>Tồn kho hiện tại</Label>
+            <Input type="number" {...register('stock')} disabled />
+          </div>
+        )}
+      </GlassCard>
+
+      {/* 🟢 PHẦN MỚI: QUẢN LÝ BIẾN THỂ (VARIANTS) */}
+      <GlassCard>
+        <div className="border-b border-white/20 pb-4 mb-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Layers className="text-orange-600" size={20} />
+            <div>
+              <h2 className="text-lg font-semibold">Biến thể sản phẩm</h2>
+              <p className="text-sm text-muted-foreground">
+                Màu sắc, Dung lượng, Kích thước...
+              </p>
+            </div>
+          </div>
+
+          <Controller
+            control={control}
+            name="hasVariants"
+            render={({ field }) => (
+              <button
+                type="button"
+                onClick={() => field.onChange(!field.value)}
+                className="flex items-center gap-2"
+              >
+                {field.value ? (
+                  <ToggleRight className="w-8 h-8 text-orange-600" />
+                ) : (
+                  <ToggleLeft className="w-8 h-8 text-gray-400" />
+                )}
+                <span
+                  className={
+                    field.value
+                      ? 'font-semibold text-orange-600'
+                      : 'text-gray-500'
+                  }
+                >
+                  {field.value ? 'Đang bật' : 'Chưa kích hoạt'}
+                </span>
+              </button>
+            )}
+          />
         </div>
+
+        {hasVariants ? (
+          <>
+            <Controller
+              control={control}
+              name="variants" // Dummy controller để re-render khi variants đổi
+              render={() => <></>}
+            />
+            <VariantManager
+              // Kết nối React Hook Form với Component VariantManager
+              groups={watch('variantGroups') || []}
+              setGroups={(g) => setValue('variantGroups', g)}
+              variants={watch('variants') || []}
+              setVariants={(v) => setValue('variants', v)}
+              basePrice={watch('price') || 0}
+            />
+          </>
+        ) : (
+          <div className="text-center py-8 text-gray-400 bg-gray-50/50 rounded-lg border border-dashed">
+            Sản phẩm này không có biến thể.
+          </div>
+        )}
+      </GlassCard>
+
+      {/* 🟢 PHẦN MỚI: THÔNG SỐ KỸ THUẬT (SPECS) */}
+      <GlassCard>
+        <div className="border-b border-white/20 pb-4 mb-4 flex items-center gap-2">
+          <Settings2 className="text-blue-600" size={20} />
+          <div>
+            <h2 className="text-lg font-semibold">Thông số kỹ thuật</h2>
+            <p className="text-sm text-muted-foreground">
+              Chip, RAM, Camera, Pin...
+            </p>
+          </div>
+        </div>
+
+        <SpecsManager
+          specs={watch('specs') || []}
+          setSpecs={(s) => setValue('specs', s)}
+        />
       </GlassCard>
 
       {/* DESCRIPTION */}
       <GlassCard>
         <div className="border-b border-white/20 pb-4 mb-4">
           <h2 className="text-lg font-semibold">Mô tả chi tiết</h2>
-          <p className="text-sm text-muted-foreground">
-            Nội dung mô tả hiển thị trên trang sản phẩm.
-          </p>
         </div>
-
         <Controller
           control={control}
           name="description"

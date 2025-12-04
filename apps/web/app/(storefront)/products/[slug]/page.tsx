@@ -5,21 +5,40 @@ import { useRouter } from 'next/navigation'
 import serverApi from '@/src/lib/serverApi'
 import Image from 'next/image'
 import ProductCard from '@/app/(storefront)/components/productCard'
-import { ShoppingCart, Zap } from 'lucide-react'
+import {
+  ShoppingCart,
+  Zap,
+  Check,
+  ShieldCheck,
+  Truck,
+  RotateCcw
+} from 'lucide-react'
 import { useCart } from '@/app/contexts/CartContext'
 import { useToast } from '@/app/(storefront)/components/ToastProvider'
 
+// 👇 Import 2 Component mới làm
+import ProductVariantSelector from './components/ProductVariantSelector'
+import ProductSpecs from './components/ProductSpecs'
+
+// Cập nhật Type cho đầy đủ
 type Product = {
   _id: string
   name: string
   slug: string
   description?: string
   price: number
-  comparePrice?: number | null
+  comparePrice?: number
   hasDiscount?: boolean
   images?: { url: string }[]
   category?: { _id: string; name: string; slug: string } | null
   isPublished?: boolean
+  brand?: string
+  // 👇 Các trường mới
+  stock: number
+  hasVariants?: boolean
+  variantGroups?: any[]
+  variants?: any[]
+  specs?: any[]
 }
 
 export default function ProductDetailPage({
@@ -31,6 +50,10 @@ export default function ProductDetailPage({
   const [product, setProduct] = useState<Product | null>(null)
   const [related, setRelated] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
+
+  // 🟢 State lưu biến thể đang chọn
+  const [activeVariant, setActiveVariant] = useState<any>(null)
+
   const { addToCart } = useCart()
   const { showToast } = useToast()
   const router = useRouter()
@@ -50,7 +73,7 @@ export default function ProductDetailPage({
           const { data: rel } = await serverApi.get('/public/products', {
             params: {
               category: p.category._id,
-              limit: 8,
+              limit: 4, // Lấy 4 cái cho đẹp layout
               sort: 'newest'
             }
           })
@@ -75,133 +98,237 @@ export default function ProductDetailPage({
     }
   }, [slug])
 
-  if (loading) return <div className="p-6">Đang tải...</div>
-  if (!product) return <div className="p-6">Không tìm thấy sản phẩm.</div>
+  if (loading)
+    return (
+      <div className="p-12 text-center text-gray-500">Đang tải sản phẩm...</div>
+    )
+  if (!product)
+    return (
+      <div className="p-12 text-center text-gray-500">
+        Không tìm thấy sản phẩm.
+      </div>
+    )
 
+  // 🟢 LOGIC TÍNH GIÁ & TỒN KHO HIỂN THỊ
+  // Nếu chọn biến thể -> Lấy giá biến thể. Không thì lấy giá gốc
+  const displayPrice = activeVariant ? activeVariant.price : product.price
+  const displayStock = activeVariant ? activeVariant.stock : product.stock
+  const isOutOfStock = displayStock <= 0
+
+  // Logic hiển thị giá gốc (gạch ngang)
   const showComparePrice =
     typeof product.comparePrice === 'number' &&
-    product.comparePrice > product.price
+    product.comparePrice > displayPrice
+
+  // 🟢 XỬ LÝ THÊM GIỎ HÀNG
+  const handleAddToCart = () => {
+    // 1. Kiểm tra nếu có biến thể mà chưa chọn
+    if (product.hasVariants && !activeVariant) {
+      // Dùng alert hoặc toast báo lỗi (Ở đây mình dùng alert cho nhanh, bạn có thể dùng toast error)
+      alert('Vui lòng chọn phân loại hàng (Màu sắc/Kích thước)!')
+      return
+    }
+
+    if (isOutOfStock) {
+      alert('Sản phẩm tạm hết hàng!')
+      return
+    }
+
+    // 2. Thêm vào giỏ
+    addToCart({
+      _id: product._id, // ID gốc sản phẩm
+      name: product.name,
+      slug: product.slug,
+      price: displayPrice, // Giá theo biến thể
+      quantity: 1,
+      image: product.images?.[0]?.url,
+      // 👇 Gửi thêm thông tin biến thể
+      variantId: activeVariant?._id,
+      variantName: activeVariant
+        ? Object.values(activeVariant.options).join(' / ')
+        : ''
+    })
+
+    showToast(product.name, product.images?.[0]?.url)
+  }
 
   return (
     <div className="container mx-auto px-4 max-w-7xl py-12">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* LEFT IMAGE */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        {/* LEFT: IMAGE GALLERY */}
         <div>
-          <div className="rounded-xl border p-6 bg-white">
-            <div className="w-full aspect-[4/3] relative">
+          <div className="rounded-2xl border border-gray-100 p-2 bg-white shadow-sm overflow-hidden">
+            <div className="w-full aspect-[4/3] relative rounded-xl overflow-hidden bg-gray-50">
               <Image
-                src={product.images?.[0]?.url || ''}
+                src={product.images?.[0]?.url || '/placeholder.png'}
                 alt={product.name}
                 fill
-                className="object-contain"
+                className="object-contain hover:scale-105 transition-transform duration-500"
               />
             </div>
+          </div>
 
-            {/* Thumbnails */}
-            <div className="mt-4 flex gap-3">
-              {product.images?.map((img, i) => (
+          {/* Thumbnails */}
+          {product.images && product.images.length > 1 && (
+            <div className="mt-4 flex gap-3 overflow-x-auto pb-2">
+              {product.images.map((img, i) => (
                 <div
                   key={i}
-                  className="w-16 h-16 rounded overflow-hidden border"
+                  className="w-20 h-20 rounded-lg overflow-hidden border border-gray-200 cursor-pointer hover:border-orange-500 transition-colors flex-shrink-0 bg-white"
                 >
                   <Image
                     src={img.url}
                     alt={product.name}
-                    width={64}
-                    height={64}
-                    className="object-cover"
+                    width={80}
+                    height={80}
+                    className="object-cover w-full h-full"
                   />
                 </div>
               ))}
             </div>
-          </div>
+          )}
         </div>
 
-        {/* RIGHT INFO */}
+        {/* RIGHT: INFO & ACTIONS */}
         <div>
-          <h1 className="text-2xl font-semibold mb-3">{product.name}</h1>
-
-          <div className="mb-4">
-            <div className="text-2xl font-bold text-orange-600">
-              {product.price.toLocaleString('vi-VN')}₫
-            </div>
-
-            {/* FIX: Chỉ hiển thị nếu comparePrice > price */}
-            {showComparePrice && (
-              <div className="text-sm text-gray-400 line-through">
-                {product.comparePrice?.toLocaleString('vi-VN')}₫
-              </div>
+          <div className="flex items-center gap-3 mb-2">
+            {product.brand && (
+              <span className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded font-bold uppercase">
+                {product.brand}
+              </span>
             )}
+            <span className="text-xs text-gray-400">
+              Mã SP: {activeVariant?.sku || 'SKU-DEFAULT'}
+            </span>
           </div>
 
-          {/* BUTTONS */}
-          <div className="flex gap-3 mb-6">
+          <h1 className="text-3xl font-bold text-gray-900 mb-4 leading-tight">
+            {product.name}
+          </h1>
+
+          {/* PRICE BLOCK */}
+          <div className="bg-gray-50/50 rounded-xl p-4 mb-6 border border-gray-100">
+            <div className="flex items-baseline gap-3">
+              <span className="text-3xl font-bold text-orange-600">
+                {displayPrice.toLocaleString('vi-VN')}₫
+              </span>
+              {showComparePrice && (
+                <span className="text-lg text-gray-400 line-through">
+                  {product.comparePrice?.toLocaleString('vi-VN')}₫
+                </span>
+              )}
+            </div>
+
+            {/* Tồn kho label */}
+            <div className="mt-2 text-sm">
+              {isOutOfStock ? (
+                <span className="text-red-500 font-medium">Hết hàng</span>
+              ) : (
+                <span className="text-green-600 font-medium">
+                  Còn {displayStock} sản phẩm
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* 🟢 BIẾN THỂ (VARIANTS) */}
+          {product.hasVariants && product.variantGroups && (
+            <ProductVariantSelector
+              groups={product.variantGroups}
+              variants={product.variants || []}
+              onVariantChange={setActiveVariant}
+            />
+          )}
+
+          {/* ACTION BUTTONS */}
+          <div className="flex gap-4 mb-8 mt-6">
             <button
-              onClick={() => {
-                addToCart({
-                  _id: product._id,
-                  name: product.name,
-                  slug: product.slug,
-                  price: product.price,
-                  quantity: 1,
-                  image: product.images?.[0]?.url
-                })
-                showToast(product.name, product.images?.[0]?.url)
-              }}
-              className="
-                w-full py-3 rounded-full font-semibold text-base
-                bg-gradient-to-r from-orange-500 to-pink-500
-                text-white shadow-lg
-                transition-all duration-300
-                flex items-center justify-center gap-2
-                hover:shadow-xl hover:scale-[1.02]
-              "
+              onClick={handleAddToCart}
+              disabled={isOutOfStock}
+              className={`
+                flex-1 py-3.5 rounded-full font-bold text-base shadow-lg
+                flex items-center justify-center gap-2 transition-all duration-300
+                ${
+                  isOutOfStock
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    : 'bg-gradient-to-r from-orange-500 to-red-600 text-white hover:shadow-xl hover:scale-[1.02]'
+                }
+              `}
             >
               <ShoppingCart className="w-5 h-5" />
-              Thêm vào giỏ
+              {isOutOfStock ? 'Hết hàng' : 'Thêm vào giỏ'}
             </button>
 
             <button
-              onClick={(e) => {
-                e.preventDefault()
-                // TODO: Buy now
-              }}
-              className="
-                w-full py-3 rounded-full font-semibold text-base
-                bg-black text-white
-                shadow-lg
-                transition-all duration-300
-                flex items-center justify-center gap-2
-                hover:shadow-xl hover:scale-[1.02]
-              "
+              disabled={isOutOfStock}
+              className={`
+                flex-1 py-3.5 rounded-full font-bold text-base shadow-lg
+                flex items-center justify-center gap-2 transition-all duration-300
+                ${
+                  isOutOfStock
+                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    : 'bg-gray-900 text-white hover:bg-black hover:shadow-xl hover:scale-[1.02]'
+                }
+              `}
             >
               <Zap className="w-5 h-5" />
               Mua ngay
             </button>
           </div>
 
-          {/* CATEGORY */}
-          <div className="text-sm text-gray-600 mb-4">
+          {/* POLICIES */}
+          <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-8 p-4 bg-white border border-gray-100 rounded-xl shadow-sm">
+            <div className="flex items-center gap-2">
+              <ShieldCheck size={18} className="text-green-600" /> Bảo hành
+              chính hãng
+            </div>
+            <div className="flex items-center gap-2">
+              <Truck size={18} className="text-blue-600" /> Giao hàng toàn quốc
+            </div>
+            <div className="flex items-center gap-2">
+              <RotateCcw size={18} className="text-orange-600" /> Đổi trả trong
+              7 ngày
+            </div>
+            <div className="flex items-center gap-2">
+              <Check size={18} className="text-purple-600" /> Kiểm tra khi nhận
+              hàng
+            </div>
+          </div>
+
+          {/* CATEGORY & DESC */}
+          <div className="text-sm text-gray-600 mb-6 pt-6 border-t border-gray-100">
             Danh mục:{' '}
             {product.category ? (
-              <span className="font-medium">{product.category.name}</span>
+              <span className="font-medium text-gray-900">
+                {product.category.name}
+              </span>
             ) : (
               <span className="italic text-gray-400">Không có</span>
             )}
           </div>
 
+          {/* 🟢 THÔNG SỐ KỸ THUẬT (Nếu có) */}
+          {product.specs && product.specs.length > 0 && (
+            <ProductSpecs specs={product.specs} />
+          )}
+
           {/* DESCRIPTION */}
-          <div
-            className="prose max-w-none"
-            dangerouslySetInnerHTML={{ __html: product.description || '' }}
-          />
+          <div className="mt-8">
+            <h3 className="text-lg font-bold mb-3">Mô tả sản phẩm</h3>
+            <div
+              className="prose max-w-none text-gray-600 leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: product.description || '' }}
+            />
+          </div>
         </div>
       </div>
 
       {/* RELATED PRODUCTS */}
       {related.length > 0 && (
-        <section className="mt-14">
-          <h3 className="text-lg font-semibold mb-4">Sản phẩm liên quan</h3>
+        <section className="mt-20 pt-10 border-t border-gray-100">
+          <h3 className="text-2xl font-bold mb-6 text-center">
+            Sản phẩm liên quan
+          </h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
             {related.map((r) => (
               <ProductCard key={r._id} product={r as any} />
