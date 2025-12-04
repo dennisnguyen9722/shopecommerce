@@ -1,7 +1,15 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 'use client'
 
-import { Search, MapPin, ShoppingCart, Heart, LogOut, Gift } from 'lucide-react'
+import {
+  Search,
+  ShoppingCart,
+  Heart,
+  LogOut,
+  Gift,
+  User,
+  Package
+} from 'lucide-react'
 import Link from 'next/link'
 import { useWishlist } from '@/app/contexts/WishlistContext'
 import { useCart } from '@/app/contexts/CartContext'
@@ -17,7 +25,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { useEffect, useState } from 'react'
-import { loyaltyApi } from '@/src/services/loyalty' // 👈 Import API Loyalty
+import { loyaltyApi } from '@/src/services/loyalty'
 
 interface NavbarTopProps {
   scrolled: boolean
@@ -26,21 +34,17 @@ interface NavbarTopProps {
 export default function NavbarTop({ scrolled }: NavbarTopProps) {
   const { wishlistCount } = useWishlist()
   const { cartCount } = useCart()
-
-  // Lấy state và hàm update từ store
   const { user, isAuthenticated, logout, updateUser, token } = useAuthStore()
-
   const [mounted, setMounted] = useState(false)
+
   useEffect(() => setMounted(true), [])
 
-  // ⭐ UPDATE LOGIC ĐỒNG BỘ ĐIỂM
+  // Sync Loyalty Data
   useEffect(() => {
     const syncLoyaltyData = async () => {
-      // 🛑 QUAN TRỌNG: Chỉ gọi khi CÓ TOKEN thực sự (tránh gọi lúc vừa login xong store chưa kịp lưu)
       if (isAuthenticated && token) {
         try {
           const data = await loyaltyApi.getDashboard()
-
           if (data && data.customer) {
             updateUser({
               loyaltyPoints: data.customer.loyaltyPoints,
@@ -48,182 +52,192 @@ export default function NavbarTop({ scrolled }: NavbarTopProps) {
               totalSpent: data.customer.totalSpent
             })
           }
-        } catch (error: any) {
-          // Chỉ log lỗi, KHÔNG logout tự động ở đây để tránh loop nếu mạng lag
-          console.error('Lỗi đồng bộ điểm thưởng:', error)
+        } catch (error) {
+          console.error('Lỗi đồng bộ điểm:', error)
         }
       }
     }
-
-    // Thêm token vào dependency để khi token thay đổi (vừa login xong) nó sẽ chạy lại
     syncLoyaltyData()
   }, [isAuthenticated, token])
 
   return (
     <div
       className={`
-        w-full backdrop-blur-xl bg-white/80 border-b border-gray-200/50
-        transition-all duration-300 shadow-sm
-        ${scrolled ? 'py-2 shadow-lg' : 'py-3'}
+        w-full transition-all duration-300 border-b border-gray-100
+        ${scrolled ? 'bg-white/95 backdrop-blur-sm py-2' : 'bg-white py-4'}
       `}
     >
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between gap-6">
-          {/* LEFT LOGO */}
-          <Link href="/" className="flex items-center gap-3">
-            <div className="relative group">
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-orange-600 rounded-2xl blur opacity-30 group-hover:opacity-50 transition" />
-              <div className="relative bg-gradient-to-br from-orange-400 to-orange-600 rounded-2xl p-3 shadow-lg">
-                <span className="text-white font-bold text-xl">🌐</span>
-              </div>
+        <div className="flex items-center justify-between gap-4 md:gap-8">
+          {/* 1. LOGO BRANDING */}
+          <Link href="/" className="flex items-center gap-3 group shrink-0">
+            <div className="relative w-11 h-11 flex items-center justify-center bg-gradient-to-br from-orange-500 via-red-500 to-pink-500 rounded-2xl shadow-lg group-hover:shadow-xl group-hover:scale-105 transition-all duration-300">
+              <span className="text-2xl">🎁</span>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-3xl">🎁</span>
-              <div className="flex flex-col text-xs leading-tight">
-                <span className="font-semibold text-gray-800">Shop</span>
-                <span className="font-semibold text-gray-600">Loyalty</span>
-              </div>
+            <div className="flex flex-col">
+              <span className="font-extrabold text-xl text-gray-900 leading-tight tracking-tight">
+                Dennis<span className="text-orange-600">Shop</span>
+              </span>
+              <span className="text-[9px] font-semibold text-gray-400 uppercase tracking-widest">
+                Premium Store
+              </span>
             </div>
           </Link>
 
-          {/* CENTER - SEARCH */}
-          <div className="flex items-center gap-3 flex-1 max-w-xl">
-            <div className="flex-1 relative group">
-              <div className="relative backdrop-blur-md bg-white/60 border border-gray-200/50 rounded-2xl shadow-sm hover:shadow-md transition">
-                <input
-                  type="text"
-                  placeholder="Tìm kiếm sản phẩm..."
-                  className="w-full px-5 py-3 bg-transparent text-gray-800 placeholder-gray-500 focus:outline-none text-sm"
-                />
-                <button className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl hover:shadow-md transition">
-                  <Search className="w-4 h-4 text-white" />
-                </button>
-              </div>
+          {/* 2. SEARCH BAR (Modern & Wide) */}
+          <div className="hidden md:flex flex-1 max-w-2xl relative">
+            <div className="relative w-full group">
+              <input
+                type="text"
+                placeholder="Bạn muốn tìm gì hôm nay?..."
+                className="w-full pl-5 pr-14 py-3 bg-gray-50 border border-gray-200 focus:bg-white focus:border-orange-400 focus:ring-2 focus:ring-orange-100 rounded-full outline-none transition-all duration-300 text-sm placeholder:text-gray-400"
+              />
+              <button className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-full flex items-center justify-center transition-all shadow-md hover:shadow-lg active:scale-95">
+                <Search className="w-4 h-4" />
+              </button>
             </div>
           </div>
 
-          {/* RIGHT - ACTIONS */}
-          <div className="flex items-center gap-3">
+          {/* 3. RIGHT ACTIONS */}
+          <div className="flex items-center gap-2 md:gap-3 shrink-0">
             {/* Wishlist */}
-            <Link
-              href="/wishlist"
-              className="relative p-2 hover:bg-gray-100 rounded-full transition"
-            >
-              <Heart className="w-6 h-6 text-gray-700 hover:text-red-500 transition" />
-              {wishlistCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">
-                  {wishlistCount}
-                </span>
-              )}
+            <Link href="/wishlist">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="relative hover:bg-red-50 hover:text-red-600 transition-all rounded-full"
+              >
+                <Heart className="w-5 h-5" />
+                {wishlistCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold flex items-center justify-center rounded-full ring-2 ring-white shadow-sm">
+                    {wishlistCount}
+                  </span>
+                )}
+              </Button>
             </Link>
 
             {/* Cart */}
-            <Link
-              href="/cart"
-              className="relative p-2 hover:bg-gray-100 rounded-full transition"
-            >
-              <ShoppingCart className="w-6 h-6 text-gray-700 hover:text-orange-600 transition" />
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">
-                  {cartCount}
-                </span>
-              )}
+            <Link href="/cart">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="relative hover:bg-orange-50 hover:text-orange-600 transition-all rounded-full"
+              >
+                <ShoppingCart className="w-5 h-5" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-orange-600 text-white text-xs font-bold flex items-center justify-center rounded-full ring-2 ring-white shadow-sm">
+                    {cartCount}
+                  </span>
+                )}
+              </Button>
             </Link>
 
-            {/* USER / LOGIN SECTION */}
+            {/* Divider */}
+            <div className="h-8 w-px bg-gray-200 hidden md:block"></div>
+
+            {/* User Dropdown */}
             {mounted && isAuthenticated && user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="relative h-10 w-10 rounded-full p-0 overflow-hidden border border-gray-200 hover:shadow-md transition"
+                    className="pl-2 pr-3 h-auto py-1.5 rounded-full hover:bg-gray-50 border border-gray-200 hover:border-gray-300 gap-2 transition-all"
                   >
-                    <Avatar className="h-full w-full">
+                    <Avatar className="h-9 w-9 ring-2 ring-white shadow-sm">
                       <AvatarImage src={user.avatar} alt={user.name} />
-                      <AvatarFallback className="bg-orange-100 text-orange-600 font-bold">
+                      <AvatarFallback className="bg-gradient-to-br from-orange-400 via-red-500 to-pink-500 text-white font-bold text-sm">
                         {user.name?.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
+                    <div className="hidden lg:flex flex-col items-start text-xs mr-1">
+                      <span className="font-bold text-gray-800 max-w-[100px] truncate">
+                        {user.name}
+                      </span>
+                      <span className="text-orange-600 font-semibold text-[11px]">
+                        {user.loyaltyPoints?.toLocaleString() ?? 0} điểm
+                      </span>
+                    </div>
                   </Button>
                 </DropdownMenuTrigger>
+
                 <DropdownMenuContent
-                  className="w-64 p-2"
+                  className="w-64 p-0 rounded-2xl shadow-2xl border border-gray-100"
                   align="end"
                   forceMount
                 >
-                  <DropdownMenuLabel className="font-normal">
-                    <div className="flex flex-col space-y-1 bg-gray-50 p-3 rounded-lg">
-                      <p className="text-sm font-bold text-gray-900 leading-none">
-                        {user.name}
-                      </p>
-                      <p className="text-xs leading-none text-gray-500">
-                        {user.email}
-                      </p>
-                      <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-200">
-                        <span className="text-[10px] font-bold bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full uppercase border border-yellow-200">
-                          {user.loyaltyTier || 'Member'}
+                  <DropdownMenuLabel className="p-0">
+                    <div className="flex items-center gap-3 p-4 bg-gradient-to-br from-orange-50 to-red-50 border-b border-gray-100 rounded-t-2xl">
+                      <Avatar className="h-12 w-12 ring-2 ring-white shadow-md">
+                        <AvatarImage src={user.avatar} />
+                        <AvatarFallback className="bg-gradient-to-br from-orange-400 via-red-500 to-pink-500 text-white font-bold text-lg">
+                          {user.name?.charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex flex-col">
+                        <span className="font-bold text-sm text-gray-800">
+                          {user.name}
                         </span>
-                        {/* HIỂN THỊ ĐIỂM */}
-                        <span className="text-xs font-bold text-orange-600 flex items-center gap-1">
-                          {/* Dùng toán tử ?? để tránh hiện undefined */}
-                          {user.loyaltyPoints?.toLocaleString() ?? 0} điểm
+                        <span className="text-xs font-bold text-orange-600 bg-orange-100 px-2 py-0.5 rounded-full w-fit mt-1">
+                          {user.loyaltyTier || 'MEMBER'}
                         </span>
                       </div>
                     </div>
                   </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
 
-                  <DropdownMenuItem
-                    asChild
-                    className="cursor-pointer focus:bg-orange-50"
-                  >
-                    <Link
-                      href="/loyalty"
-                      className="flex items-center gap-2 py-2"
+                  <div className="p-2">
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href="/profile"
+                        className="cursor-pointer gap-3 py-2.5 px-3 rounded-lg"
+                      >
+                        <User size={18} className="text-gray-400" />
+                        <span className="font-medium">Hồ sơ cá nhân</span>
+                      </Link>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href="/loyalty"
+                        className="cursor-pointer gap-3 py-2.5 px-3 rounded-lg"
+                      >
+                        <Gift size={18} className="text-indigo-400" />
+                        <span className="font-medium text-indigo-600">
+                          Điểm & Đổi quà
+                        </span>
+                      </Link>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href="/tracking"
+                        className="cursor-pointer gap-3 py-2.5 px-3 rounded-lg"
+                      >
+                        <Package size={18} className="text-blue-400" />
+                        <span className="font-medium">Theo dõi đơn hàng</span>
+                      </Link>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuSeparator className="my-2" />
+
+                    <DropdownMenuItem
+                      onClick={logout}
+                      className="text-red-600 focus:bg-red-50 focus:text-red-700 cursor-pointer gap-3 py-2.5 px-3 font-medium rounded-lg"
                     >
-                      <div className="p-1 bg-indigo-100 text-indigo-600 rounded">
-                        <Gift size={16} />
-                      </div>
-                      <span className="font-medium">Điểm & Đổi quà</span>
-                    </Link>
-                  </DropdownMenuItem>
-
-                  <DropdownMenuItem
-                    asChild
-                    className="cursor-pointer focus:bg-orange-50"
-                  >
-                    <Link
-                      href="/tracking"
-                      className="flex items-center gap-2 py-2"
-                    >
-                      <div className="p-1 bg-blue-100 text-blue-600 rounded">
-                        <MapPin size={16} />
-                      </div>
-                      <span className="font-medium">Theo dõi đơn hàng</span>
-                    </Link>
-                  </DropdownMenuItem>
-
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={logout}
-                    className="text-red-600 cursor-pointer focus:bg-red-50 py-2"
-                  >
-                    <LogOut className="mr-2 h-4 w-4" /> Đăng xuất
-                  </DropdownMenuItem>
+                      <LogOut size={18} /> Đăng xuất
+                    </DropdownMenuItem>
+                  </div>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
               <div className="flex items-center gap-2">
-                <Link href="/login">
-                  <Button variant="ghost" size="sm" className="font-medium">
-                    Đăng nhập
-                  </Button>
+                <Link
+                  href="/login"
+                  className="hidden md:block text-sm font-semibold text-gray-600 hover:text-orange-600 transition-colors px-3"
+                >
+                  Đăng nhập
                 </Link>
                 <Link href="/register">
-                  <Button
-                    size="sm"
-                    className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white shadow-md"
-                  >
+                  <Button className="rounded-full bg-gradient-to-r from-gray-900 to-gray-800 hover:from-orange-600 hover:to-red-600 text-white hover:shadow-lg transition-all duration-300 font-semibold px-5 h-9 text-sm">
                     Đăng ký
                   </Button>
                 </Link>

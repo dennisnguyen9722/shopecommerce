@@ -11,6 +11,17 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+// Import Alert Dialog
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from '@/components/ui/alert-dialog'
 import { Loader2, Gift, History, Ticket, Copy, Lock, Star } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -21,22 +32,32 @@ const formatCurrency = (val: number) =>
 
 export default function LoyaltyPage() {
   const router = useRouter()
-  // 👇 Lấy thêm hàm logout từ store
   const { user, isAuthenticated, updateUser, logout } = useAuthStore()
 
+  const [mounted, setMounted] = useState(false)
   const [loading, setLoading] = useState(true)
   const [dashboardData, setDashboardData] = useState<any>(null)
   const [rewards, setRewards] = useState<IReward[]>([])
   const [history, setHistory] = useState<IPointHistory[]>([])
   const [vouchers, setVouchers] = useState<IVoucher[]>([])
 
+  // STATE QUẢN LÝ HỘP THOẠI
+  const [selectedReward, setSelectedReward] = useState<IReward | null>(null)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+
   useEffect(() => {
-    if (!isAuthenticated) {
-      router.push('/login')
-      return
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (mounted) {
+      if (!isAuthenticated) {
+        router.push('/login')
+      } else {
+        fetchData()
+      }
     }
-    fetchData()
-  }, [isAuthenticated])
+  }, [mounted, isAuthenticated])
 
   const fetchData = async () => {
     try {
@@ -61,45 +82,54 @@ export default function LoyaltyPage() {
         })
       }
     } catch (error: any) {
-      console.error(error)
-      // 👇 XỬ LÝ LỖI 401 TẠI ĐÂY
       if (error.response?.status === 401) {
-        toast.error('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.')
-        logout() // Xóa token cũ
-        router.push('/login') // Chuyển về trang login
+        toast.error('Phiên đăng nhập hết hạn')
+        logout()
+        router.push('/login')
         return
       }
-      toast.error('Không thể tải dữ liệu loyalty')
     } finally {
       setLoading(false)
     }
   }
 
-  // ... (Phần logic handleRedeem, copyToClipboard và render UI giữ nguyên như cũ)
+  // KHI BẤM NÚT ĐỔI QUÀ
+  const onRedeemClick = (reward: IReward) => {
+    setSelectedReward(reward)
+    setIsDialogOpen(true)
+  }
 
-  const handleRedeem = async (reward: IReward) => {
+  // KHI XÁC NHẬN ĐỔI
+  const confirmRedeem = async () => {
+    if (!selectedReward) return
+
     try {
-      const res = await loyaltyApi.redeemReward(reward._id)
-      toast.success(`Đổi quà thành công! Mã: ${res.voucher.code}`)
+      const res = await loyaltyApi.redeemReward(selectedReward._id)
+
+      toast.success(`🎉 Đổi quà thành công! Mã: ${res.voucher.code}`)
+
       if (user) {
         updateUser({
-          loyaltyPoints: user.loyaltyPoints - reward.pointsRequired
+          loyaltyPoints: user.loyaltyPoints - selectedReward.pointsRequired
         })
       }
       fetchData()
     } catch (error: any) {
       toast.error(error.response?.data?.error || 'Đổi quà thất bại')
+    } finally {
+      setIsDialogOpen(false)
+      setSelectedReward(null)
     }
   }
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
-    toast.success('Đã sao chép mã voucher')
+    toast.success('📋 Đã sao chép mã voucher!')
   }
 
-  if (loading)
+  if (!mounted || loading)
     return (
-      <div className="flex justify-center items-center min-h-[400px]">
+      <div className="flex justify-center items-center min-h-[500px]">
         <Loader2 className="animate-spin text-orange-600" size={40} />
       </div>
     )
@@ -119,7 +149,6 @@ export default function LoyaltyPage() {
       {/* HEADER INFO */}
       <div className="bg-gradient-to-r from-orange-600 to-red-600 rounded-2xl p-6 md:p-8 text-white mb-8 shadow-xl relative overflow-hidden">
         <div className="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-white opacity-10 rounded-full blur-2xl"></div>
-
         <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-6">
           <div>
             <div className="flex items-center gap-3 mb-2">
@@ -134,7 +163,6 @@ export default function LoyaltyPage() {
               Cảm ơn bạn đã đồng hành cùng chúng tôi!
             </p>
           </div>
-
           <div className="text-center md:text-right bg-white/10 p-4 rounded-xl backdrop-blur-md border border-white/10 min-w-[180px]">
             <p className="text-sm text-orange-100 mb-1">
               Điểm tích lũy hiện có
@@ -147,7 +175,6 @@ export default function LoyaltyPage() {
             </div>
           </div>
         </div>
-
         {dashboardData?.tierInfo?.nextTier && (
           <div className="mt-8">
             <div className="flex justify-between text-xs md:text-sm mb-2 text-orange-100 font-medium">
@@ -169,26 +196,16 @@ export default function LoyaltyPage() {
         )}
       </div>
 
-      {/* TABS */}
       <Tabs defaultValue="rewards" className="w-full">
         <TabsList className="grid w-full grid-cols-3 mb-8 h-auto p-1 bg-gray-100 rounded-xl">
-          <TabsTrigger
-            value="rewards"
-            className="py-3 flex gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-lg"
-          >
+          <TabsTrigger value="rewards" className="py-3 flex gap-2 rounded-lg">
             <Gift size={18} /> <span className="hidden sm:inline">Đổi quà</span>
           </TabsTrigger>
-          <TabsTrigger
-            value="vouchers"
-            className="py-3 flex gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-lg"
-          >
+          <TabsTrigger value="vouchers" className="py-3 flex gap-2 rounded-lg">
             <Ticket size={18} />{' '}
             <span className="hidden sm:inline">Voucher của tôi</span>
           </TabsTrigger>
-          <TabsTrigger
-            value="history"
-            className="py-3 flex gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-lg"
-          >
+          <TabsTrigger value="history" className="py-3 flex gap-2 rounded-lg">
             <History size={18} />{' '}
             <span className="hidden sm:inline">Lịch sử điểm</span>
           </TabsTrigger>
@@ -233,8 +250,8 @@ export default function LoyaltyPage() {
                   <div className="flex justify-between items-center mt-2">
                     {reward.canRedeem ? (
                       <Button
-                        className="w-full bg-orange-600 hover:bg-orange-700 text-white"
-                        onClick={() => handleRedeem(reward)}
+                        className="w-full bg-orange-600 hover:bg-orange-700 text-white shadow-md hover:shadow-orange-200 transition-all"
+                        onClick={() => onRedeemClick(reward)}
                       >
                         Đổi ngay
                       </Button>
@@ -298,7 +315,6 @@ export default function LoyaltyPage() {
                   className="border border-orange-200 rounded-lg p-4 flex justify-between items-center bg-white shadow-sm hover:border-orange-400 transition-colors relative overflow-hidden group"
                 >
                   <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-orange-500"></div>
-
                   <div className="flex gap-4 items-center pl-3">
                     <div className="bg-orange-50 p-3 rounded-full text-orange-600">
                       <Ticket size={24} />
@@ -397,6 +413,46 @@ export default function LoyaltyPage() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* DIALOG ĐÃ SỬA LỖI QUOTE */}
+      <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <AlertDialogContent className="rounded-2xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-xl text-orange-600">
+              🎁 Xác nhận đổi quà
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-600">
+              {/* ✅ SỬA LỖI Ở ĐÂY: Dùng &quot; thay cho " */}
+              Bạn có chắc chắn muốn dùng{' '}
+              <span className="font-bold text-gray-900">
+                {selectedReward?.pointsRequired} điểm
+              </span>{' '}
+              để đổi lấy phần quà{' '}
+              <span className="font-bold text-gray-900">
+                &quot;{selectedReward?.name}&quot;
+              </span>{' '}
+              không?
+              <br />
+              <br />
+              <span className="text-xs text-gray-400 italic">
+                Voucher sẽ được lưu vào mục &quot;Voucher của tôi&quot; sau khi
+                đổi thành công.
+              </span>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="rounded-xl border-gray-200">
+              Suy nghĩ lại
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmRedeem}
+              className="rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold"
+            >
+              Đồng ý đổi
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

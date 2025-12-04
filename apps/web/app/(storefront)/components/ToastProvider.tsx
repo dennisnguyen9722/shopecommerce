@@ -2,6 +2,8 @@
 
 import { createContext, useContext, useState } from 'react'
 import Image from 'next/image'
+// 👇 1. IMPORT TOASTER CỦA SONNER
+import { Toaster } from 'sonner'
 
 type ToastData = {
   id: number
@@ -16,9 +18,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
 
   const showToast = (message: string, image?: string) => {
     const id = Date.now()
-
     setToasts((prev) => [...prev, { id, message, image }])
-
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id))
     }, 2500)
@@ -28,7 +28,10 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     <ToastContext.Provider value={{ showToast }}>
       {children}
 
-      {/* TOAST LIST */}
+      {/* 👇 2. THÊM DÒNG NÀY ĐỂ TRANG LOYALTY HIỆN THÔNG BÁO */}
+      <Toaster position="top-center" richColors closeButton />
+
+      {/* --- PHẦN DƯỚI NÀY LÀ CỦA GIỎ HÀNG (GIỮ NGUYÊN ĐỪNG XÓA) --- */}
       <div className="fixed bottom-5 right-5 flex flex-col gap-3 z-[9999]">
         {toasts.map((t) => (
           <div
@@ -39,7 +42,6 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               animate-toast-enter
             `}
           >
-            {/* Image */}
             {t.image && (
               <div className="w-12 h-12 rounded-lg overflow-hidden border">
                 <Image
@@ -51,8 +53,6 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
                 />
               </div>
             )}
-
-            {/* Text */}
             <div className="flex flex-col">
               <span className="font-semibold text-gray-900">{t.message}</span>
               <span className="text-sm text-green-600 font-medium">
@@ -63,7 +63,6 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
         ))}
       </div>
 
-      {/* ANIMATION */}
       <style jsx global>{`
         @keyframes toastEnter {
           0% {
