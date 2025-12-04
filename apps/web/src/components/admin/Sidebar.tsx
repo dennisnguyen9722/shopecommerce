@@ -21,7 +21,7 @@ import {
   CreditCard,
   Truck,
   UserCircle,
-  Gift // Icon Reward
+  Gift
 } from 'lucide-react'
 
 import { motion, AnimatePresence } from 'framer-motion'
@@ -34,10 +34,10 @@ import {
   TooltipProvider
 } from '@/components/ui/tooltip'
 
-// 👇 THAY ĐỔI 1: Import Store và Hook mới của Admin
+// 👇 IMPORT MỚI: Store & Constants
 import { useAdminPermission } from '@/src/hooks/useAdminPermission'
 import { useAdminAuthStore } from '@/src/store/adminAuthStore'
-import { PERMISSIONS } from '@/src/constants/permissions'
+import { PERMISSIONS } from '@/src/constants/permissions' // 👈 Import bộ từ điển quyền chuẩn
 
 export function Sidebar({
   onWidthChange
@@ -47,7 +47,7 @@ export function Sidebar({
   const pathname = usePathname()
   const [collapsed, setCollapsed] = useState(false)
 
-  // 👇 THAY ĐỔI 2: Lấy thông tin Admin đang đăng nhập
+  // Lấy thông tin Admin để hiển thị Avatar
   const admin = useAdminAuthStore((s) => s.admin)
 
   // Notify parent layout when width changes
@@ -55,6 +55,7 @@ export function Sidebar({
     if (onWidthChange) onWidthChange(collapsed ? 80 : 260)
   }, [collapsed])
 
+  // Auto open accordion logic
   const autoOpenBlog = pathname.startsWith('/admin/blog')
   const autoOpenSettings = pathname.startsWith('/admin/settings')
 
@@ -70,30 +71,31 @@ export function Sidebar({
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  // ================================
-  // PERMISSIONS CHECK (Dùng Hook mới useAdminPermission)
-  // ================================
-  const canDashboard = useAdminPermission(PERMISSIONS.VIEW_DASHBOARD)
-  const canOrders = useAdminPermission(PERMISSIONS.MANAGE_ORDERS)
-  const canProducts = useAdminPermission(PERMISSIONS.MANAGE_PRODUCTS)
-  const canCategories = useAdminPermission(PERMISSIONS.MANAGE_CATEGORIES)
-  const canCustomers = useAdminPermission(PERMISSIONS.MANAGE_CUSTOMERS)
+  // =========================================================================
+  // ⭐ CHECK PERMISSIONS (DÙNG CONSTANT CHUẨN)
+  // =========================================================================
 
-  // ✅ Check quyền Rewards
-  const canRewards = useAdminPermission(PERMISSIONS.MANAGE_REWARDS)
+  // 1. Dashboard: Dùng .VIEW
+  const canDashboard = useAdminPermission(PERMISSIONS.DASHBOARD.VIEW)
 
-  const canBanners = useAdminPermission(PERMISSIONS.MANAGE_BANNERS)
+  // 2. Core Features: Chỉ cần quyền READ là thấy menu
+  const canOrders = useAdminPermission(PERMISSIONS.ORDERS.READ)
+  const canProducts = useAdminPermission(PERMISSIONS.PRODUCTS.READ)
+  const canCategories = useAdminPermission(PERMISSIONS.CATEGORIES.READ)
+  const canCustomers = useAdminPermission(PERMISSIONS.CUSTOMERS.READ)
 
-  const canBlogPosts = useAdminPermission(PERMISSIONS.MANAGE_BLOG_POSTS)
-  const canBlogCategories = useAdminPermission(
-    PERMISSIONS.MANAGE_BLOG_CATEGORIES
-  )
-  const canBlogTags = useAdminPermission(PERMISSIONS.MANAGE_BLOG_TAGS)
+  // 3. Loyalty & Marketing
+  const canRewards = useAdminPermission(PERMISSIONS.REWARDS.MANAGE)
+  const canBanners = useAdminPermission(PERMISSIONS.BANNERS.MANAGE)
 
-  const canPayment = useAdminPermission(PERMISSIONS.MANAGE_PAYMENT)
-  const canShipping = useAdminPermission(PERMISSIONS.MANAGE_SHIPPING)
-  const canUsers = useAdminPermission(PERMISSIONS.MANAGE_USERS)
-  const canRoles = useAdminPermission(PERMISSIONS.MANAGE_ROLES)
+  // 4. Blog: Check quyền READ chung
+  const canBlogRead = useAdminPermission(PERMISSIONS.BLOG.READ)
+
+  // 5. Settings & System
+  const canPayment = useAdminPermission(PERMISSIONS.SETTINGS.MANAGE) // Hoặc tách nhỏ nếu muốn
+  const canShipping = useAdminPermission(PERMISSIONS.SETTINGS.MANAGE)
+  const canUsers = useAdminPermission(PERMISSIONS.SYSTEM.MANAGE_USERS)
+  const canRoles = useAdminPermission(PERMISSIONS.SYSTEM.MANAGE_ROLES)
 
   return (
     <TooltipProvider delayDuration={80}>
@@ -123,18 +125,16 @@ export function Sidebar({
 
         {/* NAV */}
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto no-scrollbar">
-          {/* ================= Dashboard ================= */}
-          {canDashboard && (
-            <NavItem
-              href="/admin/overview"
-              icon={LayoutDashboard}
-              label="Tổng quan"
-              active={pathname === '/admin/overview'}
-              collapsed={collapsed}
-            />
-          )}
+          {/* DASHBOARD - Luôn hiển thị nếu có quyền view hoặc fallback */}
+          <NavItem
+            href="/admin/overview"
+            icon={LayoutDashboard}
+            label="Tổng quan"
+            active={pathname === '/admin/overview'}
+            collapsed={collapsed}
+          />
 
-          {/* ================= Orders ================= */}
+          {/* ORDERS */}
           {canOrders && (
             <NavItem
               href="/admin/orders"
@@ -145,7 +145,7 @@ export function Sidebar({
             />
           )}
 
-          {/* ================= Products ================= */}
+          {/* PRODUCTS */}
           {canProducts && (
             <NavItem
               href="/admin/products"
@@ -156,7 +156,7 @@ export function Sidebar({
             />
           )}
 
-          {/* ================= Product Categories ================= */}
+          {/* CATEGORIES */}
           {canCategories && (
             <NavItem
               href="/admin/categories"
@@ -167,7 +167,7 @@ export function Sidebar({
             />
           )}
 
-          {/* ================= Customers ================= */}
+          {/* CUSTOMERS */}
           {canCustomers && (
             <NavItem
               href="/admin/customers"
@@ -178,7 +178,7 @@ export function Sidebar({
             />
           )}
 
-          {/* ================= Rewards (Loyalty) ================= */}
+          {/* REWARDS (LOYALTY) */}
           {canRewards && (
             <NavItem
               href="/admin/rewards"
@@ -189,7 +189,7 @@ export function Sidebar({
             />
           )}
 
-          {/* ================= Banners ================= */}
+          {/* BANNERS */}
           {canBanners && (
             <NavItem
               href="/admin/banners"
@@ -200,8 +200,8 @@ export function Sidebar({
             />
           )}
 
-          {/* ================= BLOG ================= */}
-          {(canBlogPosts || canBlogCategories || canBlogTags) && (
+          {/* BLOG GROUP */}
+          {canBlogRead && (
             <AccordionGroup
               id="blog"
               label="Blog / Tin tức"
@@ -211,39 +211,31 @@ export function Sidebar({
               openGroup={openGroup}
               setOpenGroup={setOpenGroup}
             >
-              {canBlogPosts && (
-                <SubItem
-                  href="/admin/blog/posts"
-                  label="Bài viết"
-                  icon={FileText}
-                  active={pathname.startsWith('/admin/blog/posts')}
-                  collapsed={collapsed}
-                />
-              )}
-
-              {canBlogCategories && (
-                <SubItem
-                  href="/admin/blog/categories"
-                  label="Danh mục bài viết"
-                  icon={FolderTree}
-                  active={pathname.startsWith('/admin/blog/categories')}
-                  collapsed={collapsed}
-                />
-              )}
-
-              {canBlogTags && (
-                <SubItem
-                  href="/admin/blog/tags"
-                  label="Tags"
-                  icon={TagsIcon}
-                  active={pathname.startsWith('/admin/blog/tags')}
-                  collapsed={collapsed}
-                />
-              )}
+              <SubItem
+                href="/admin/blog/posts"
+                label="Bài viết"
+                icon={FileText}
+                active={pathname.startsWith('/admin/blog/posts')}
+                collapsed={collapsed}
+              />
+              <SubItem
+                href="/admin/blog/categories"
+                label="Danh mục bài viết"
+                icon={FolderTree}
+                active={pathname.startsWith('/admin/blog/categories')}
+                collapsed={collapsed}
+              />
+              <SubItem
+                href="/admin/blog/tags"
+                label="Tags"
+                icon={TagsIcon}
+                active={pathname.startsWith('/admin/blog/tags')}
+                collapsed={collapsed}
+              />
             </AccordionGroup>
           )}
 
-          {/* ================= SETTINGS ================= */}
+          {/* SETTINGS GROUP */}
           {(canPayment || canShipping || canUsers || canRoles) && (
             <AccordionGroup
               id="settings"
@@ -297,7 +289,7 @@ export function Sidebar({
           )}
         </nav>
 
-        {/* ================= Profile ================= */}
+        {/* PROFILE - Luôn hiển thị */}
         <NavItem
           href="/admin/profile"
           icon={UserCircle}
@@ -306,7 +298,7 @@ export function Sidebar({
           collapsed={collapsed}
         />
 
-        {/* BOTTOM AVATAR - HIỂN THỊ THÔNG TIN TỪ ADMIN STORE */}
+        {/* BOTTOM AVATAR */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -340,9 +332,8 @@ export function Sidebar({
   )
 }
 
-/*-------------------------------------------------------*
- | MAIN ITEM (Giữ nguyên)
- *-------------------------------------------------------*/
+/* ===================== CÁC COMPONENT CON (GIỮ NGUYÊN) ===================== */
+
 function NavItem({ href, label, icon: Icon, active, collapsed }: any) {
   const Component = (
     <Link
@@ -385,9 +376,6 @@ function NavItem({ href, label, icon: Icon, active, collapsed }: any) {
   return Component
 }
 
-/*-------------------------------------------------------*
- | ACCORDION GROUP (Giữ nguyên)
- *-------------------------------------------------------*/
 function AccordionGroup({
   id,
   icon: Icon,
@@ -461,9 +449,6 @@ function AccordionGroup({
   )
 }
 
-/*-------------------------------------------------------*
- | SUB ITEM (Giữ nguyên)
- *-------------------------------------------------------*/
 function SubItem({ href, label, icon: Icon, active, collapsed }: any) {
   const Component = (
     <Link

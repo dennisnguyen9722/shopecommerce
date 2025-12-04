@@ -2,6 +2,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation' // 👈 1. Import Router
 import { Bell, Check } from 'lucide-react'
 import {
   DropdownMenu,
@@ -24,11 +25,11 @@ type Notification = {
 }
 
 export default function NotificationBell() {
+  const router = useRouter() // 👈 2. Khởi tạo router
   const [open, setOpen] = useState(false)
   const { notifications, unreadCount, hasNew, markAsRead, markAllAsRead } =
     useRealtimeNotifications()
 
-  // 🔔 Animation khi có thông báo mới
   const [pulse, setPulse] = useState(false)
 
   useEffect(() => {
@@ -38,15 +39,27 @@ export default function NotificationBell() {
     }
   }, [hasNew])
 
-  const handleMarkAsRead = (id: string) => {
-    markAsRead(id)
+  // 👇 3. Hàm xử lý logic click mới
+  const handleNotificationClick = (notification: Notification) => {
+    // Bước 1: Đánh dấu đã đọc ngay lập tức
+    if (!notification.isRead) {
+      markAsRead(notification._id)
+    }
+
+    // Bước 2: Đóng Dropdown
+    setOpen(false)
+
+    // Bước 3: Điều hướng (Nếu là thông báo đơn hàng)
+    if (notification.type === 'order' && notification.orderId) {
+      // Giả sử route chi tiết đơn hàng của bạn là /admin/orders/[id]
+      router.push(`/admin/orders?orderId=${notification.orderId}`)
+    }
   }
 
   const handleMarkAllAsRead = () => {
     markAllAsRead()
   }
 
-  // ✅ Filter out invalid notifications
   const validNotifications = (notifications || []).filter(
     (n: any) => n && n._id
   )
@@ -67,8 +80,6 @@ export default function NotificationBell() {
               pulse && 'text-orange-500'
             )}
           />
-
-          {/* Badge số lượng chưa đọc */}
           {unreadCount > 0 && (
             <span
               className={cn(
@@ -89,7 +100,6 @@ export default function NotificationBell() {
         align="end"
         className="w-96 p-0 shadow-xl border-gray-200"
       >
-        {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b bg-gray-50">
           <h3 className="font-semibold text-sm">
             Thông báo {unreadCount > 0 && `(${unreadCount})`}
@@ -105,7 +115,6 @@ export default function NotificationBell() {
           )}
         </div>
 
-        {/* Danh sách thông báo */}
         <div className="max-h-[400px] overflow-y-auto">
           {validNotifications.length === 0 ? (
             <div className="py-12 text-center">
@@ -118,7 +127,7 @@ export default function NotificationBell() {
                 <NotificationItem
                   key={notification._id}
                   notification={notification}
-                  onMarkAsRead={handleMarkAsRead}
+                  onClick={handleNotificationClick} // 👈 4. Truyền hàm click xuống
                 />
               ))}
             </div>
@@ -134,10 +143,10 @@ export default function NotificationBell() {
 // ========================================
 function NotificationItem({
   notification,
-  onMarkAsRead
+  onClick // 👈 5. Đổi tên props cho đúng ngữ cảnh
 }: {
   notification: Notification
-  onMarkAsRead: (id: string) => void
+  onClick: (n: Notification) => void
 }) {
   const getIcon = () => {
     switch (notification.type) {
@@ -164,13 +173,10 @@ function NotificationItem({
         'px-4 py-3 transition-colors cursor-pointer hover:bg-gray-50',
         !notification.isRead && 'bg-blue-50/50'
       )}
-      onClick={() => onMarkAsRead(notification._id)}
+      onClick={() => onClick(notification)} // 👈 6. Gọi hàm onClick với toàn bộ object notification
     >
       <div className="flex items-start gap-3">
-        {/* Icon */}
         <div className="text-2xl flex-shrink-0">{getIcon()}</div>
-
-        {/* Content */}
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
             <h4
@@ -185,11 +191,9 @@ function NotificationItem({
               <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-1" />
             )}
           </div>
-
           <p className="text-xs text-gray-600 mt-1 line-clamp-2">
             {notification.message}
           </p>
-
           <p className="text-xs text-gray-400 mt-1.5">
             {formatTime(notification.createdAt)}
           </p>

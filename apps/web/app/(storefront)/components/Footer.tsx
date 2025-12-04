@@ -1,6 +1,8 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import api from '@/src/lib/api' // Import API client của bạn
 import {
   Facebook,
   Instagram,
@@ -15,7 +17,30 @@ import {
   Heart
 } from 'lucide-react'
 
+// Định nghĩa kiểu dữ liệu Category
+interface Category {
+  _id: string
+  name: string
+  slug: string
+}
+
 export default function Footer() {
+  const [categories, setCategories] = useState<Category[]>([])
+
+  // Fetch danh mục từ API khi component mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await api.get('/public/categories')
+        // Lấy tối đa 8 danh mục đầu tiên để hiển thị cho đẹp
+        setCategories(res.data.slice(0, 8) || [])
+      } catch (error) {
+        console.error('Lỗi tải danh mục footer:', error)
+      }
+    }
+    fetchCategories()
+  }, [])
+
   return (
     <footer className="w-full bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white relative overflow-hidden">
       {/* Decorative Elements */}
@@ -82,18 +107,25 @@ export default function Footer() {
             {/* Column 1: About */}
             <div>
               <div className="flex items-center gap-2 mb-6">
-                <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-orange-600 rounded-2xl blur opacity-50" />
-                  <div className="relative bg-gradient-to-br from-orange-400 to-orange-600 rounded-2xl p-3 shadow-lg">
-                    <span className="text-white font-bold text-xl">🌐</span>
+                <Link
+                  href="/"
+                  className="relative group flex items-center gap-2"
+                >
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-orange-600 rounded-2xl blur opacity-50" />
+                    <div className="relative bg-gradient-to-br from-orange-400 to-orange-600 rounded-2xl p-2 shadow-lg">
+                      <span className="text-2xl">🎁</span>
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <div className="font-bold text-lg">Tech Store</div>
-                  <div className="text-xs text-gray-400">
-                    Authorized Reseller
+                  <div>
+                    <div className="font-bold text-lg leading-tight">
+                      Dennis<span className="text-orange-500">Shop</span>
+                    </div>
+                    <div className="text-[10px] text-gray-400 uppercase tracking-widest">
+                      Premium Store
+                    </div>
                   </div>
-                </div>
+                </Link>
               </div>
 
               <p className="text-gray-400 text-sm leading-relaxed mb-4">
@@ -132,55 +164,52 @@ export default function Footer() {
               </h3>
               <ul className="space-y-3">
                 {[
-                  'Giới thiệu',
-                  'Sản phẩm',
-                  'Tin tức',
-                  'Liên hệ',
-                  'Tuyển dụng',
-                  'Chính sách bảo hành',
-                  'Chính sách đổi trả',
-                  'Hướng dẫn mua hàng'
+                  { name: 'Về chúng tôi', href: '/about' },
+                  { name: 'Tin tức công nghệ', href: '/blog' },
+                  { name: 'Kiểm tra đơn hàng', href: '/tracking' },
+                  { name: 'Chương trình Loyalty', href: '/loyalty' },
+                  { name: 'Tuyển dụng', href: '#' },
+                  { name: 'Chính sách bảo hành', href: '#' }
                 ].map((item) => (
-                  <li key={item}>
+                  <li key={item.name}>
                     <Link
-                      href="#"
+                      href={item.href}
                       className="text-gray-400 hover:text-orange-500 transition-colors text-sm flex items-center gap-2 group"
                     >
                       <span className="w-1.5 h-1.5 rounded-full bg-gray-600 group-hover:bg-orange-500 transition-colors" />
-                      {item}
+                      {item.name}
                     </Link>
                   </li>
                 ))}
               </ul>
             </div>
 
-            {/* Column 3: Categories */}
+            {/* Column 3: Categories (DYNAMIC DATA) */}
             <div>
               <h3 className="text-lg font-bold mb-6 relative inline-block">
                 Danh mục sản phẩm
                 <div className="absolute bottom-0 left-0 w-12 h-1 bg-gradient-to-r from-orange-500 to-pink-500 rounded-full" />
               </h3>
               <ul className="space-y-3">
-                {[
-                  'iPhone',
-                  'iPad',
-                  'MacBook',
-                  'Apple Watch',
-                  'AirPods',
-                  'Phụ kiện Apple',
-                  'Máy cũ giá rẻ',
-                  'Thu cũ đổi mới'
-                ].map((item) => (
-                  <li key={item}>
-                    <Link
-                      href="#"
-                      className="text-gray-400 hover:text-orange-500 transition-colors text-sm flex items-center gap-2 group"
-                    >
-                      <span className="w-1.5 h-1.5 rounded-full bg-gray-600 group-hover:bg-orange-500 transition-colors" />
-                      {item}
-                    </Link>
-                  </li>
-                ))}
+                {categories.length > 0
+                  ? categories.map((cat) => (
+                      <li key={cat._id}>
+                        <Link
+                          href={`/category/${cat.slug}`}
+                          className="text-gray-400 hover:text-orange-500 transition-colors text-sm flex items-center gap-2 group"
+                        >
+                          <span className="w-1.5 h-1.5 rounded-full bg-gray-600 group-hover:bg-orange-500 transition-colors" />
+                          {cat.name}
+                        </Link>
+                      </li>
+                    ))
+                  : // Skeleton loading state nếu chưa tải xong
+                    [1, 2, 3, 4, 5].map((i) => (
+                      <li
+                        key={i}
+                        className="h-4 w-32 bg-gray-700/50 rounded animate-pulse"
+                      />
+                    ))}
               </ul>
             </div>
 
@@ -198,7 +227,7 @@ export default function Footer() {
                   <div>
                     <div className="text-sm font-medium">Địa chỉ</div>
                     <div className="text-xs text-gray-400">
-                      123 Nguyễn Văn A, Quận 1, TP.HCM
+                      123 Nguyễn Văn Linh, Quận 7, TP.HCM
                     </div>
                   </div>
                 </li>
@@ -210,10 +239,10 @@ export default function Footer() {
                   <div>
                     <div className="text-sm font-medium">Hotline</div>
                     <a
-                      href="tel:0123456789"
+                      href="tel:0909123456"
                       className="text-xs text-gray-400 hover:text-orange-500 transition-colors"
                     >
-                      0123 456 789
+                      0909 123 456
                     </a>
                   </div>
                 </li>
@@ -225,10 +254,10 @@ export default function Footer() {
                   <div>
                     <div className="text-sm font-medium">Email</div>
                     <a
-                      href="mailto:info@techstore.vn"
+                      href="mailto:support@dennisshop.vn"
                       className="text-xs text-gray-400 hover:text-orange-500 transition-colors"
                     >
-                      info@techstore.vn
+                      support@dennisshop.vn
                     </a>
                   </div>
                 </li>
@@ -254,7 +283,8 @@ export default function Footer() {
           <div className="container mx-auto px-4 py-6">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="text-sm text-gray-400 text-center md:text-left">
-                © 2025 Tech Store. All rights reserved. Made with{' '}
+                © {new Date().getFullYear()} Dennis Shop. All rights reserved.
+                Made with{' '}
                 <Heart className="w-4 h-4 inline text-red-500 fill-current" />{' '}
                 in Vietnam
               </div>

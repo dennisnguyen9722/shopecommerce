@@ -42,6 +42,8 @@ import ordersRouter from './routes/admin/orders'
 import adminRewardsRoutes from './routes/admin/rewards'
 import adminPointsRoutes from './routes/admin/points'
 
+import { seedSuperAdmin } from './seed/superAdminSeed'
+
 // PUBLIC STORE FRONT
 import publicBanners from './routes/public/banners'
 import publicCategories from './routes/public/categories'
@@ -143,8 +145,13 @@ const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/ecommerce'
 
 mongoose
   .connect(MONGO_URI)
-  .then(() => {
+  .then(async () => {
+    // 👈 Thêm từ khóa 'async' ở đây
     log.info('📦 MongoDB connected')
+
+    // 👇 THÊM DÒNG NÀY: Để nó tự động cập nhật quyền Super Admin
+    await seedSuperAdmin()
+
     server.listen(4000, () =>
       log.info('🚀 API running + Socket.IO on http://localhost:4000')
     )

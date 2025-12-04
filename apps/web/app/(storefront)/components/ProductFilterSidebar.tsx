@@ -44,9 +44,7 @@ export default function ProductFilterSidebar({
 
   // Sync categoryId when user is on /category/*
   useEffect(() => {
-    if (categoryId) {
-      setFilters((f) => ({ ...f, categoryId }))
-    }
+    setFilters((f) => ({ ...f, categoryId: categoryId ?? null }))
   }, [categoryId])
 
   const update = (patch: Partial<FilterState>) => {
@@ -56,19 +54,19 @@ export default function ProductFilterSidebar({
   }
 
   return (
-    <div className="w-64 shrink-0 space-y-8">
+    <div className="w-64 shrink-0 space-y-6 bg-white p-6 rounded-lg border shadow-sm h-fit sticky top-4">
       {/* CATEGORY */}
       <div>
-        <h3 className="font-semibold mb-3">Danh mục</h3>
+        <h3 className="font-semibold mb-3 text-gray-900">Danh mục</h3>
         <Select
           value={filters.categoryId || 'all'}
           onValueChange={(v) => update({ categoryId: v === 'all' ? null : v })}
         >
-          <SelectTrigger>
-            <SelectValue placeholder="Tất cả" />
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Tất cả danh mục" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Tất cả</SelectItem>
+            <SelectItem value="all">Tất cả danh mục</SelectItem>
             {categories.map((c) => (
               <SelectItem key={c._id} value={c._id}>
                 {c.name}
@@ -80,55 +78,67 @@ export default function ProductFilterSidebar({
 
       {/* PRICE */}
       <div>
-        <h3 className="font-semibold mb-3">Khoảng giá</h3>
-        <div className="flex gap-3">
+        <h3 className="font-semibold mb-3 text-gray-900">Khoảng giá</h3>
+        <div className="flex gap-2 items-center">
           <Input
             type="number"
             placeholder="Từ"
             value={filters.minPrice || ''}
             onChange={(e) => update({ minPrice: e.target.value })}
+            className="w-full"
           />
+          <span className="text-gray-400">-</span>
           <Input
             type="number"
             placeholder="Đến"
             value={filters.maxPrice || ''}
             onChange={(e) => update({ maxPrice: e.target.value })}
+            className="w-full"
           />
         </div>
       </div>
 
       {/* CHECKBOX FILTERS */}
-      <div className="space-y-3">
-        <div className="flex items-center gap-2">
-          <Checkbox
-            checked={filters.discountOnly || false}
-            onCheckedChange={(v) => update({ discountOnly: v === true })}
-          />
-          <span>Giảm giá</span>
-        </div>
+      <div>
+        <h3 className="font-semibold mb-3 text-gray-900">Bộ lọc</h3>
+        <div className="space-y-3">
+          <label className="flex items-center gap-2 cursor-pointer group">
+            <Checkbox
+              checked={filters.discountOnly || false}
+              onCheckedChange={(v) => update({ discountOnly: v === true })}
+            />
+            <span className="text-sm group-hover:text-orange-600 transition-colors">
+              Giảm giá
+            </span>
+          </label>
 
-        <div className="flex items-center gap-2">
-          <Checkbox
-            checked={filters.onlyHot || false}
-            onCheckedChange={(v) => update({ onlyHot: v === true })}
-          />
-          <span>Nổi bật</span>
-        </div>
+          <label className="flex items-center gap-2 cursor-pointer group">
+            <Checkbox
+              checked={filters.onlyHot || false}
+              onCheckedChange={(v) => update({ onlyHot: v === true })}
+            />
+            <span className="text-sm group-hover:text-orange-600 transition-colors">
+              Nổi bật
+            </span>
+          </label>
 
-        <div className="flex items-center gap-2">
-          <Checkbox
-            checked={filters.onlyNew || false}
-            onCheckedChange={(v) => update({ onlyNew: v === true })}
-          />
-          <span>Mới về</span>
+          <label className="flex items-center gap-2 cursor-pointer group">
+            <Checkbox
+              checked={filters.onlyNew || false}
+              onCheckedChange={(v) => update({ onlyNew: v === true })}
+            />
+            <span className="text-sm group-hover:text-orange-600 transition-colors">
+              Mới về
+            </span>
+          </label>
         </div>
       </div>
 
       {/* SORT */}
       <div>
-        <h3 className="font-semibold mb-3">Sắp xếp</h3>
+        <h3 className="font-semibold mb-3 text-gray-900">Sắp xếp</h3>
         <Select value={filters.sort} onValueChange={(v) => update({ sort: v })}>
-          <SelectTrigger>
+          <SelectTrigger className="w-full">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -139,6 +149,28 @@ export default function ProductFilterSidebar({
           </SelectContent>
         </Select>
       </div>
+
+      {/* CLEAR FILTERS */}
+      {(filters.minPrice ||
+        filters.maxPrice ||
+        filters.discountOnly ||
+        filters.onlyHot ||
+        filters.onlyNew) && (
+        <button
+          onClick={() =>
+            update({
+              minPrice: '',
+              maxPrice: '',
+              discountOnly: false,
+              onlyHot: false,
+              onlyNew: false
+            })
+          }
+          className="w-full text-sm text-orange-600 hover:text-orange-700 font-medium border border-orange-200 rounded-md py-2 hover:bg-orange-50 transition-colors"
+        >
+          Xóa bộ lọc
+        </button>
+      )}
     </div>
   )
 }

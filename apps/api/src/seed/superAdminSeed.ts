@@ -1,52 +1,52 @@
-// apps/api/src/seed/superAdminSeed.ts
-import dotenv from 'dotenv'
-dotenv.config()
-
-import mongoose from 'mongoose'
 import Role from '../models/Role'
 import User from '../models/User'
-import { ALL_PERMISSIONS } from '../constants/permissions'
+import { ALL_PERMISSIONS } from '../constants/permissions' // 👈 Import mảng quyền chuẩn từ file constant
 
-async function run() {
+export const seedSuperAdmin = async () => {
   try {
-    const MONGO_URI =
-      process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/ecommerce'
+    console.log('🔄 Đang đồng bộ quyền Super Admin...')
 
-    console.log('⏳ Connecting to MongoDB...')
-    await mongoose.connect(MONGO_URI)
-    console.log('✅ Connected!')
+    // 1. Tìm Role "Super Admin" trong Database
+    // (Hoặc tìm theo _id nếu bạn sợ trùng tên, nhưng tên thường là duy nhất)
+    let adminRole = await Role.findOne({ name: 'Super Admin' })
 
-    // 1) tìm hoặc tạo role Super Admin
-    let role = await Role.findOne({ name: 'Super Admin' })
-    if (!role) {
-      role = await Role.create({
+    if (!adminRole) {
+      // 2a. Nếu chưa có -> Tạo mới
+      adminRole = await Role.create({
         name: 'Super Admin',
-        description: 'Full quyền hệ thống',
-        permissions: ALL_PERMISSIONS,
-        isSystem: true
+        description: 'Quản trị viên cấp cao nhất (Full quyền)',
+        permissions: ALL_PERMISSIONS, // Gán tất cả quyền mới nhất
+        isSystem: true // Đánh dấu đây là role hệ thống, không xóa được
       })
-      console.log('🔥 Created Super Admin role:', role._id.toString())
+      console.log('✅ Đã tạo mới Role Super Admin')
     } else {
-      console.log('ℹ️ Super Admin role already exists:', role._id.toString())
+      // 2b. Nếu đã có -> CẬP NHẬT lại permissions
+      // Bước này cực quan trọng để fix lỗi "lệch pha" quyền cũ/mới
+      adminRole.permissions = ALL_PERMISSIONS
+
+      // Update thêm description nếu cần
+      adminRole.description = 'Quản trị viên cấp cao nhất (Full quyền)'
+
+      await adminRole.save()
+      console.log('✅ Đã cập nhật permissions cho Role Super Admin')
     }
 
-    // 2) tìm user admin@example.com
-    const admin = await User.findOne({ email: 'admin@example.com' })
-    if (admin) {
-      admin.role = role._id
-      await admin.save()
-      console.log('🎉 Assigned Super Admin role to:', admin.email)
-    } else {
-      console.log('⚠️ No admin@example.com user found — skipping assign')
-    }
+    // ---------------------------------------------------------
+    // 3. (Tùy chọn) Đảm bảo User Admin của bạn đang có Role này
+    // ---------------------------------------------------------
+    const myEmail = 'duypagau@gmail.com' // 👈 Thay email của bạn vào đây
+    const myAdmin = await User.findOne({ email: myEmail })
 
-    await mongoose.disconnect()
-    console.log('✅ Seed completed and MongoDB disconnected.')
-    process.exit(0)
-  } catch (err: any) {
-    console.error('❌ Seed error:', err.message || err)
-    process.exit(1)
+    if (myAdmin) {
+      // Gán role vừa update vào user này
+      myAdmin.role = 'admin' // Role string (để bypass logic cũ)
+      // Nếu logic mới của bạn dùng reference tới Role ID thì bỏ comment dòng dưới:
+      // myAdmin.roleId = adminRole._id;
+
+      await myAdmin.save()
+      console.log(`✅ Đã cấp lại quyền Admin cho: ${myEmail}`)
+    }
+  } catch (error) {
+    console.error('❌ Lỗi khi seed Super Admin:', error)
   }
 }
-
-run()

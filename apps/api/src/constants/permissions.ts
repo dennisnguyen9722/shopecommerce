@@ -1,34 +1,56 @@
 export const PERMISSIONS = {
-  products: {
-    read: 'products.read',
-    create: 'products.create',
-    update: 'products.update',
-    delete: 'products.delete'
+  DASHBOARD: {
+    VIEW: 'dashboard.view'
   },
-  orders: {
-    read: 'orders.read',
-    update: 'orders.update'
+  PRODUCTS: {
+    READ: 'products.read',
+    CREATE: 'products.create',
+    UPDATE: 'products.update',
+    DELETE: 'products.delete'
   },
-  customers: {
-    read: 'customers.read',
-    update: 'customers.update'
+  CATEGORIES: {
+    READ: 'categories.read',
+    CREATE: 'categories.create',
+    UPDATE: 'categories.update',
+    DELETE: 'categories.delete'
   },
-  blog: {
-    read: 'blog.read',
-    write: 'blog.write'
+  ORDERS: {
+    READ: 'orders.read',
+    UPDATE: 'orders.update',
+    DELETE: 'orders.delete'
   },
-  settings: {
-    manage: 'settings.manage'
+  CUSTOMERS: {
+    READ: 'customers.read',
+    UPDATE: 'customers.update',
+    DELETE: 'customers.delete'
   },
-  roles: {
-    manage: 'roles.manage'
+  INVENTORY: {
+    READ: 'inventory.read',
+    UPDATE: 'inventory.update'
   },
-  users: {
-    manage: 'users.manage'
+  BLOG: {
+    READ: 'blog.read',
+    CREATE: 'blog.create',
+    UPDATE: 'blog.update',
+    DELETE: 'blog.delete'
+  },
+  BANNERS: {
+    MANAGE: 'banners.manage' // Hoặc chi tiết ra read/create/update/delete nếu cần
+  },
+  REWARDS: {
+    MANAGE: 'rewards.manage' // Loyalty
+  },
+  SETTINGS: {
+    MANAGE: 'settings.manage', // Chung cho payment/shipping
+    VIEW_ANALYTICS: 'settings.view_analytics'
+  },
+  SYSTEM: {
+    MANAGE_USERS: 'users.manage',
+    MANAGE_ROLES: 'roles.manage'
   }
-}
+} as const
 
-// Flatten list
+// Helper để lấy danh sách tất cả quyền (cho Super Admin nếu cần)
 export const ALL_PERMISSIONS = Object.values(PERMISSIONS).flatMap((group) =>
-  typeof group === 'string' ? group : Object.values(group)
+  Object.values(group)
 )

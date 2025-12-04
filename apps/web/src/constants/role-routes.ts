@@ -1,49 +1,40 @@
+import { PERMISSIONS } from '@/src/constants/permissions'
+
 export const PERMISSION_ROUTES = [
   {
-    perms: [
-      'products.read',
-      'products.create',
-      'products.update',
-      'products.delete'
-    ],
+    perms: [PERMISSIONS.PRODUCTS.READ],
     route: '/admin/products'
   },
   {
-    perms: [
-      'categories.read',
-      'categories.create',
-      'categories.update',
-      'categories.delete'
-    ],
+    perms: [PERMISSIONS.CATEGORIES.READ],
     route: '/admin/categories'
   },
   {
-    perms: [
-      'customers.read',
-      'customers.create',
-      'customers.update',
-      'customers.delete'
-    ],
-    route: '/admin/customers'
-  },
-  {
-    perms: ['orders.read', 'orders.update'],
+    perms: [PERMISSIONS.ORDERS.READ],
     route: '/admin/orders'
   },
   {
-    perms: ['banners.manage'],
+    perms: [PERMISSIONS.CUSTOMERS.READ],
+    route: '/admin/customers'
+  },
+  {
+    perms: [PERMISSIONS.BANNERS.MANAGE],
     route: '/admin/banners'
   },
   {
-    perms: ['roles.manage'],
+    perms: [PERMISSIONS.REWARDS.MANAGE],
+    route: '/admin/rewards'
+  },
+  {
+    perms: [PERMISSIONS.SYSTEM.MANAGE_ROLES],
     route: '/admin/settings/roles'
   },
   {
-    perms: ['users.manage'],
+    perms: [PERMISSIONS.SYSTEM.MANAGE_USERS],
     route: '/admin/settings/users'
   },
   {
-    perms: ['dashboard.view'],
+    perms: [PERMISSIONS.DASHBOARD.VIEW],
     route: '/admin/overview'
   }
 ]

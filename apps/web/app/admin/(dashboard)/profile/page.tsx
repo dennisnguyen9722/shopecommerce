@@ -33,12 +33,18 @@ export default function ProfilePage() {
       setValue('email', data.email)
       setAvatarPreview(data.avatar)
 
-      // 👇 Update vào Store Admin để Header tự nhảy
-      // (Giữ nguyên token cũ, chỉ update info admin)
-      if (token) setAdminAuth(token, data)
+      // 👇 SỬA LẠI ĐOẠN NÀY:
+      // Đừng dùng data trần, hãy merge với admin cũ để giữ lại Permissions/Role
+      if (token && admin) {
+        setAdminAuth(token, {
+          ...admin, // Giữ lại role, permissions, id... của admin cũ
+          ...data // Chỉ cập nhật name, avatar, email mới đè lên
+        })
+      }
 
       setLoading(false)
     } catch (err) {
+      console.error(err) // Log lỗi ra xem cho dễ
       toast.error('Không thể tải thông tin user')
     }
   }
