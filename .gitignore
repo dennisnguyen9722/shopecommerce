@@ -1,6 +1,7 @@
 # pnpm/yarn
 node_modules
 .pnpm-store
+/apps/api/logs/
 
 # env
 .env
