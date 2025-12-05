@@ -50,6 +50,8 @@ import publicCategories from './routes/public/categories'
 import publicProducts from './routes/public/products'
 import publicBlog from './routes/public/blog'
 import publicOrders from './routes/public/orders'
+import publicPostsRouter from './routes/public/posts'
+import publicBlogCategoriesRouter from './routes/public/blog-categories'
 
 import publicAuthRoutes from './routes/public/auth'
 
@@ -129,6 +131,8 @@ app.use('/public/orders', publicOrders)
 app.use('/public/customer-auth', customerAuthRoutes)
 
 app.use('/public/auth', publicAuthRoutes)
+app.use('/public/posts', publicPostsRouter)
+app.use('/public/blog-categories', publicBlogCategoriesRouter)
 
 // 🆕 NEW: PUBLIC LOYALTY SYSTEM
 app.use('/public/loyalty', publicLoyaltyRoutes)

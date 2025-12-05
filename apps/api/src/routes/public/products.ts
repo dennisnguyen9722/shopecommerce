@@ -18,6 +18,9 @@ const PRODUCT_FIELDS = `
   createdAt
   images
   category
+  specs
+  hasVariants
+  variantGroups
   variants
   isNew
   isHot

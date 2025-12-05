@@ -1,37 +1,20 @@
 'use client'
 
-import { useEffect } from 'react'
-import { Button } from '@/components/ui/button'
+import { useState, useEffect } from 'react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Plus, Trash2, X } from 'lucide-react'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@/components/ui/table'
-
-// Kiểu dữ liệu
-type VariantGroup = {
-  name: string
-  values: string[]
-}
-
-type VariantItem = {
-  sku: string
-  price: number
-  stock: number
-  options: Record<string, string>
-}
+import { Button } from '@/components/ui/button'
+import { Plus, ImagePlus, X, Loader2 } from 'lucide-react'
+import Image from 'next/image'
+import { toast } from 'sonner'
+// 👇 Import hàm upload vừa tạo
+import { uploadImage } from '@/src/lib/upload'
 
 interface Props {
-  groups: VariantGroup[]
-  setGroups: (g: VariantGroup[]) => void
-  variants: VariantItem[]
-  setVariants: (v: VariantItem[]) => void
+  groups: { name: string; values: string[] }[]
+  setGroups: (groups: { name: string; values: string[] }[]) => void
+  variants: any[]
+  setVariants: (variants: any[]) => void
   basePrice: number
 }
 
@@ -42,237 +25,260 @@ export default function VariantManager({
   setVariants,
   basePrice
 }: Props) {
-  // --- 1. QUẢN LÝ NHÓM (GROUPS) ---
-  const addGroup = () => {
-    setGroups([...groups, { name: '', values: [] }])
-  }
+  // State để hiển thị loading xoay xoay khi đang upload
+  const [uploadingState, setUploadingState] = useState<Record<number, boolean>>(
+    {}
+  )
 
-  const removeGroup = (index: number) => {
-    const newGroups = [...groups]
-    newGroups.splice(index, 1)
-    setGroups(newGroups)
-  }
-
-  const updateGroupName = (index: number, name: string) => {
-    const newGroups = [...groups]
-    newGroups[index].name = name
-    setGroups(newGroups)
-  }
-
-  const addValueToGroup = (index: number, val: string) => {
-    if (!val) return
-    const newGroups = [...groups]
-    if (!newGroups[index].values.includes(val)) {
-      newGroups[index].values.push(val)
-      setGroups(newGroups)
-    }
-  }
-
-  const removeValueFromGroup = (gIndex: number, vIndex: number) => {
-    const newGroups = [...groups]
-    newGroups[gIndex].values.splice(vIndex, 1)
-    setGroups(newGroups)
-  }
-
-  // --- 2. TỰ ĐỘNG SINH BIẾN THỂ (GENERATOR) ---
+  // 1. Tự động tạo tổ hợp biến thể
   useEffect(() => {
-    if (groups.length === 0 || groups.some((g) => g.values.length === 0)) {
-      // Nếu xóa hết nhóm -> reset variants
-      if (groups.length === 0 && variants.length > 0) {
-        setVariants([])
-      }
+    if (groups.length === 0) {
+      setVariants([])
       return
     }
 
     const generateCombinations = (
       groupIndex: number,
       currentOptions: Record<string, string>
-    ): Record<string, string>[] => {
+    ): any[] => {
       if (groupIndex === groups.length) {
-        return [currentOptions]
+        const sku = Object.values(currentOptions)
+          .join('-')
+          .toUpperCase()
+          .replace(/\s+/g, '')
+
+        // Giữ lại dữ liệu cũ nếu biến thể đã tồn tại
+        const existing = variants.find((v) =>
+          Object.entries(currentOptions).every(
+            ([key, val]) => v.options[key] === val
+          )
+        )
+
+        return [
+          existing || {
+            options: currentOptions,
+            sku: `SKU-${sku}`,
+            price: basePrice,
+            stock: 0,
+            image: '' // Trường chứa ảnh biến thể
+          }
+        ]
       }
 
       const group = groups[groupIndex]
-      let combinations: Record<string, string>[] = []
+      let combinations: any[] = []
+      if (group.values.length === 0) return []
 
-      for (const val of group.values) {
-        combinations = combinations.concat(
-          generateCombinations(groupIndex + 1, {
+      group.values.forEach((value) => {
+        combinations = [
+          ...combinations,
+          ...generateCombinations(groupIndex + 1, {
             ...currentOptions,
-            [group.name]: val
+            [group.name]: value
           })
-        )
-      }
+        ]
+      })
+
       return combinations
     }
 
-    const combos = generateCombinations(0, {})
-
-    const newVariants = combos.map((options) => {
-      const existing = variants.find(
-        (v) => JSON.stringify(v.options) === JSON.stringify(options)
-      )
-
-      if (existing) return existing
-
-      const skuSuffix = Object.values(options)
-        .map((v) => v.toUpperCase().substring(0, 3))
-        .join('-')
-
-      return {
-        sku: `SKU-${skuSuffix}-${Math.floor(Math.random() * 1000)}`,
-        price: basePrice,
-        stock: 0,
-        options
-      }
-    })
-
+    const newVariants = generateCombinations(0, {})
     setVariants(newVariants)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [groups])
+  }, [groups, basePrice])
 
-  // --- 3. CẬP NHẬT DỮ LIỆU VARIANT (Đã Fix lỗi TS) ---
-  const updateVariant = (
+  // Xử lý nhóm (Thêm/Xóa)
+  const addGroup = () => {
+    setGroups([...groups, { name: '', values: [] }])
+  }
+  const removeGroup = (idx: number) => {
+    const newGroups = [...groups]
+    newGroups.splice(idx, 1)
+    setGroups(newGroups)
+  }
+
+  // Cập nhật giá trị trong bảng
+  const handleVariantChange = (index: number, field: string, value: any) => {
+    const newVariants = [...variants]
+    newVariants[index] = { ...newVariants[index], [field]: value }
+    setVariants(newVariants)
+  }
+
+  // 🟢 HÀM UPLOAD ẢNH CHO 1 DÒNG
+  const handleUploadRow = async (
     index: number,
-    field: keyof VariantItem,
-    value: string | number
+    e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const newVars = [...variants]
+    const file = e.target.files?.[0]
+    if (!file) return
 
-    // ✅ FIX: Dùng spread operator để cập nhật an toàn, không cần @ts-ignore
-    newVars[index] = {
-      ...newVars[index],
-      [field]: value
+    try {
+      setUploadingState((prev) => ({ ...prev, [index]: true }))
+
+      // Gọi hàm từ file utils
+      const url = await uploadImage(file)
+
+      handleVariantChange(index, 'image', url)
+      toast.success('Đã tải ảnh biến thể')
+    } catch (error) {
+      toast.error('Lỗi tải ảnh')
+    } finally {
+      setUploadingState((prev) => ({ ...prev, [index]: false }))
     }
-
-    setVariants(newVars)
   }
 
   return (
     <div className="space-y-6">
-      {/* PHẦN 1: ĐỊNH NGHĨA NHÓM */}
+      {/* KHU VỰC NHẬP NHÓM (MÀU, SIZE...) */}
       <div className="space-y-4">
         {groups.map((group, idx) => (
-          <div
-            key={idx}
-            className="p-4 bg-gray-50 rounded-lg border border-gray-100 relative group-hover:border-gray-200"
-          >
-            <div className="flex justify-between items-start mb-3">
-              <div className="space-y-1 flex-1">
-                <Label>Tên nhóm biến thể (VD: Màu sắc, Size)</Label>
+          <div key={idx} className="p-4 border rounded-lg bg-gray-50 relative">
+            <button
+              type="button"
+              onClick={() => removeGroup(idx)}
+              className="absolute top-2 right-2 text-red-500 hover:bg-red-100 p-1 rounded"
+            >
+              <X size={16} />
+            </button>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label>Tên nhóm (VD: Màu sắc)</Label>
                 <Input
                   value={group.name}
-                  onChange={(e) => updateGroupName(idx, e.target.value)}
-                  placeholder="Nhập tên nhóm..."
-                  className="bg-white"
+                  onChange={(e) => {
+                    const newGroups = [...groups]
+                    newGroups[idx].name = e.target.value
+                    setGroups(newGroups)
+                  }}
                 />
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => removeGroup(idx)}
-                className="text-red-500 hover:text-red-600 hover:bg-red-50 mt-6 ml-2"
-              >
-                <Trash2 className="w-4 h-4" />
-              </Button>
-            </div>
-
-            {/* Nhập giá trị */}
-            <div>
-              <Label className="text-xs text-gray-500 mb-1.5 block">
-                Các giá trị (Nhấn Enter để thêm)
-              </Label>
-              <div className="flex flex-wrap gap-2 mb-2">
-                {group.values.map((val, vIdx) => (
-                  <span
-                    key={vIdx}
-                    className="bg-white border px-2 py-1 rounded text-sm flex items-center gap-1 shadow-sm"
-                  >
-                    {val}
-                    <button
-                      onClick={() => removeValueFromGroup(idx, vIdx)}
-                      className="text-gray-400 hover:text-red-500"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                  </span>
-                ))}
+              <div>
+                <Label>Giá trị (VD: Đỏ, Xanh - Phân cách bằng dấu phẩy)</Label>
+                <Input
+                  placeholder="Nhập và nhấn ra ngoài..."
+                  onBlur={(e) => {
+                    const valStr = e.target.value
+                    if (valStr) {
+                      const values = valStr
+                        .split(',')
+                        .map((s) => s.trim())
+                        .filter(Boolean)
+                      const newGroups = [...groups]
+                      newGroups[idx].values = values
+                      setGroups(newGroups)
+                    }
+                  }}
+                  defaultValue={group.values.join(', ')}
+                />
               </div>
-              <Input
-                placeholder="Nhập giá trị rồi Enter (VD: Đỏ, Xanh...)"
-                className="bg-white"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault()
-                    addValueToGroup(idx, e.currentTarget.value)
-                    e.currentTarget.value = ''
-                  }
-                }}
-              />
             </div>
           </div>
         ))}
-
         <Button
-          onClick={addGroup}
+          type="button"
           variant="outline"
+          onClick={addGroup}
           className="w-full border-dashed"
         >
-          <Plus className="w-4 h-4 mr-2" /> Thêm nhóm biến thể mới
+          <Plus className="w-4 h-4 mr-2" /> Thêm nhóm biến thể
         </Button>
       </div>
 
-      {/* PHẦN 2: DANH SÁCH BIẾN THỂ */}
+      {/* BẢNG BIẾN THỂ */}
       {variants.length > 0 && (
         <div className="border rounded-lg overflow-hidden">
-          <Table>
-            <TableHeader className="bg-gray-50">
-              <TableRow>
-                <TableHead>Tên biến thể</TableHead>
-                <TableHead className="w-[150px]">SKU</TableHead>
-                <TableHead className="w-[120px]">Giá</TableHead>
-                <TableHead className="w-[100px]">Tồn kho</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {variants.map((v, idx) => (
-                <TableRow key={idx}>
-                  <TableCell className="font-medium">
-                    {Object.values(v.options).join(' / ')}
-                  </TableCell>
-                  <TableCell>
+          <table className="w-full text-sm text-left">
+            <thead className="bg-gray-100 text-gray-700 font-semibold">
+              <tr>
+                <th className="p-3">Biến thể</th>
+                <th className="p-3 text-center">Ảnh</th>
+                <th className="p-3">SKU</th>
+                <th className="p-3">Giá</th>
+                <th className="p-3">Kho</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y">
+              {variants.map((variant, index) => (
+                <tr key={index} className="hover:bg-gray-50">
+                  <td className="p-3 font-medium">
+                    {Object.values(variant.options).join(' / ')}
+                  </td>
+
+                  {/* CỘT UPLOAD ẢNH NHỎ GỌN */}
+                  <td className="p-3 text-center">
+                    <div className="flex justify-center">
+                      <label
+                        className={`
+                            cursor-pointer group relative w-10 h-10 rounded border border-dashed border-gray-300 
+                            flex items-center justify-center bg-white overflow-hidden hover:border-orange-500
+                            ${uploadingState[index] ? 'opacity-50' : ''}
+                        `}
+                      >
+                        {uploadingState[index] ? (
+                          <Loader2 className="w-4 h-4 animate-spin text-orange-600" />
+                        ) : variant.image ? (
+                          <Image
+                            src={variant.image}
+                            alt="v"
+                            fill
+                            className="object-cover"
+                          />
+                        ) : (
+                          <ImagePlus className="w-4 h-4 text-gray-400 group-hover:text-orange-500" />
+                        )}
+
+                        <input
+                          type="file"
+                          className="hidden"
+                          accept="image/*"
+                          disabled={uploadingState[index]}
+                          onChange={(e) => handleUploadRow(index, e)}
+                        />
+                      </label>
+                    </div>
+                  </td>
+
+                  <td className="p-3">
                     <Input
-                      value={v.sku}
+                      value={variant.sku}
                       onChange={(e) =>
-                        updateVariant(idx, 'sku', e.target.value)
+                        handleVariantChange(index, 'sku', e.target.value)
                       }
-                      className="h-8 text-xs font-mono"
+                      className="h-8 w-28 text-xs"
                     />
-                  </TableCell>
-                  <TableCell>
+                  </td>
+                  <td className="p-3">
                     <Input
                       type="number"
-                      value={v.price}
+                      value={variant.price}
                       onChange={(e) =>
-                        updateVariant(idx, 'price', Number(e.target.value))
+                        handleVariantChange(
+                          index,
+                          'price',
+                          Number(e.target.value)
+                        )
                       }
-                      className="h-8"
+                      className="h-8 w-28 text-xs"
                     />
-                  </TableCell>
-                  <TableCell>
+                  </td>
+                  <td className="p-3">
                     <Input
                       type="number"
-                      value={v.stock}
+                      value={variant.stock}
                       onChange={(e) =>
-                        updateVariant(idx, 'stock', Number(e.target.value))
+                        handleVariantChange(
+                          index,
+                          'stock',
+                          Number(e.target.value)
+                        )
                       }
-                      className="h-8"
+                      className="h-8 w-20 text-xs"
                     />
-                  </TableCell>
-                </TableRow>
+                  </td>
+                </tr>
               ))}
-            </TableBody>
-          </Table>
+            </tbody>
+          </table>
         </div>
       )}
     </div>
