@@ -37,6 +37,7 @@ import customersRoutes from './routes/customers'
 
 // 🔥 NEW - ADMIN ORDERS API
 import ordersRouter from './routes/admin/orders'
+import couponRoutes from './routes/admin/coupons'
 
 // 🆕 NEW - LOYALTY SYSTEM (ADMIN)
 import adminRewardsRoutes from './routes/admin/rewards'
@@ -109,6 +110,7 @@ app.use('/admin/metrics', metricsRoutes)
 
 // ⭐ NEW: ADMIN ORDERS
 app.use('/admin/orders', ordersRouter)
+app.use('/admin/coupons', couponRoutes)
 
 // 🆕 NEW: ADMIN LOYALTY SYSTEM
 app.use('/admin/rewards', adminRewardsRoutes)

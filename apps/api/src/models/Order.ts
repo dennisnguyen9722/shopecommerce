@@ -19,7 +19,6 @@ const OrderSchema = new mongoose.Schema(
       required: true
     },
     customerEmail: {
-      // ✅ THÊM EMAIL
       type: String,
       required: true
     },
@@ -35,15 +34,30 @@ const OrderSchema = new mongoose.Schema(
       type: String,
       required: true
     },
-
     items: {
       type: [OrderItemSchema],
       required: true
     },
-
     totalPrice: {
       type: Number,
       required: true
+    },
+
+    // ⚡ NEW: Lưu link đến coupon thật sự
+    couponId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Coupon'
+    },
+
+    couponCode: {
+      type: String,
+      uppercase: true
+    },
+
+    couponDiscount: {
+      type: Number,
+      default: 0,
+      min: 0
     },
 
     status: {

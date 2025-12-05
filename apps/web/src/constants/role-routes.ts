@@ -26,6 +26,10 @@ export const PERMISSION_ROUTES = [
     route: '/admin/rewards'
   },
   {
+    perms: [PERMISSIONS.COUPONS.MANAGE],
+    route: '/admin/coupons'
+  },
+  {
     perms: [PERMISSIONS.SYSTEM.MANAGE_ROLES],
     route: '/admin/settings/roles'
   },

@@ -65,6 +65,12 @@ export const PERMISSION_GROUPS = [
     ]
   },
   {
+    label: 'Khuyến mãi',
+    permissions: [
+      { key: PERMISSIONS.COUPONS.MANAGE, label: 'Quản lý mã giảm giá (Coupon)' }
+    ]
+  },
+  {
     label: 'Hệ thống',
     permissions: [
       {

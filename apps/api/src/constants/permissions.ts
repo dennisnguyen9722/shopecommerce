@@ -35,13 +35,19 @@ export const PERMISSIONS = {
     DELETE: 'blog.delete'
   },
   BANNERS: {
-    MANAGE: 'banners.manage' // Hoặc chi tiết ra read/create/update/delete nếu cần
+    MANAGE: 'banners.manage'
   },
   REWARDS: {
-    MANAGE: 'rewards.manage' // Loyalty
+    MANAGE: 'rewards.manage'
   },
+
+  // ⭐️ THÊM BLOCK COUPONS Ở ĐÂY
+  COUPONS: {
+    MANAGE: 'coupons.manage'
+  },
+
   SETTINGS: {
-    MANAGE: 'settings.manage', // Chung cho payment/shipping
+    MANAGE: 'settings.manage',
     VIEW_ANALYTICS: 'settings.view_analytics'
   },
   SYSTEM: {

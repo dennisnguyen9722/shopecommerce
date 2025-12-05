@@ -40,6 +40,9 @@ export const PERMISSIONS = {
   REWARDS: {
     MANAGE: 'rewards.manage' // Loyalty
   },
+  COUPONS: {
+    MANAGE: 'coupons.manage'
+  },
   SETTINGS: {
     MANAGE: 'settings.manage', // Chung cho payment/shipping
     VIEW_ANALYTICS: 'settings.view_analytics'

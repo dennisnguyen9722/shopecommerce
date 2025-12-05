@@ -88,6 +88,8 @@ export function Sidebar({
   const canRewards = useAdminPermission(PERMISSIONS.REWARDS.MANAGE)
   const canBanners = useAdminPermission(PERMISSIONS.BANNERS.MANAGE)
 
+  const canCoupons = useAdminPermission(PERMISSIONS.COUPONS.MANAGE)
+
   // 4. Blog: Check quyền READ chung
   const canBlogRead = useAdminPermission(PERMISSIONS.BLOG.READ)
 
@@ -185,6 +187,16 @@ export function Sidebar({
               icon={Gift}
               label="Đổi quà & Voucher"
               active={pathname.startsWith('/admin/rewards')}
+              collapsed={collapsed}
+            />
+          )}
+
+          {canCoupons && (
+            <NavItem
+              href="/admin/coupons"
+              icon={TagsIcon}
+              label="Mã giảm giá"
+              active={pathname.startsWith('/admin/coupons')}
               collapsed={collapsed}
             />
           )}

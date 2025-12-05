@@ -2,9 +2,8 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState } from 'react'
-import { toast } from 'sonner' // Hoặc thư viện toast bạn đang dùng
+import { toast } from 'sonner'
 
-// 1. CẬP NHẬT TYPE CART ITEM
 export type CartItem = {
   _id: string
   name: string
@@ -12,7 +11,6 @@ export type CartItem = {
   price: number
   image?: string
   quantity: number
-  // 👇 THÊM 2 DÒNG NÀY
   variantId?: string
   variantName?: string
 }
@@ -21,14 +19,14 @@ type CartContextType = {
   cart: CartItem[]
   cartCount: number
   addToCart: (item: CartItem) => void
-  removeFromCart: (productId: string, variantId?: string) => void // Cập nhật signature
+  removeFromCart: (productId: string, variantId?: string) => void
   updateQuantity: (
     productId: string,
     quantity: number,
     variantId?: string
-  ) => void // Cập nhật signature
+  ) => void
   clearCart: () => void
-  cartTotal: number
+  totalPrice: number // 👈 Đã sửa từ cartTotal thành totalPrice
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
@@ -57,44 +55,37 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [cart, mounted])
 
-  // 2. LOGIC THÊM GIỎ HÀNG (CÓ HỖ TRỢ BIẾN THỂ)
+  // LOGIC THÊM GIỎ HÀNG
   const addToCart = (newItem: CartItem) => {
     setCart((prev) => {
-      // Tìm xem sản phẩm đã tồn tại chưa
-      // Phải check cả ID sản phẩm VÀ ID biến thể
       const existingItem = prev.find(
         (item) =>
           item._id === newItem._id && item.variantId === newItem.variantId
       )
 
       if (existingItem) {
-        // Nếu có rồi -> Tăng số lượng
         return prev.map((item) =>
           item._id === newItem._id && item.variantId === newItem.variantId
             ? { ...item, quantity: item.quantity + newItem.quantity }
             : item
         )
       }
-
-      // Nếu chưa có -> Thêm mới
       return [...prev, newItem]
     })
-
-    // Toast thông báo (Tuỳ chọn)
     // toast.success('Đã thêm vào giỏ hàng')
   }
 
-  // 3. XÓA SẢN PHẨM (CẦN VARIANT ID ĐỂ XÓA ĐÚNG DÒNG)
+  // XÓA SẢN PHẨM
   const removeFromCart = (productId: string, variantId?: string) => {
     setCart((prev) =>
       prev.filter((item) => {
-        // Giữ lại item nếu ID khác HOẶC variantId khác
         return !(item._id === productId && item.variantId === variantId)
       })
     )
+    toast.error('Đã xóa sản phẩm khỏi giỏ')
   }
 
-  // 4. CẬP NHẬT SỐ LƯỢNG (CẦN VARIANT ID)
+  // CẬP NHẬT SỐ LƯỢNG
   const updateQuantity = (
     productId: string,
     quantity: number,
@@ -109,15 +100,18 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     )
   }
 
-  const clearCart = () => setCart([])
+  const clearCart = () => {
+    setCart([])
+    localStorage.removeItem('cart')
+  }
 
-  // Tính tổng tiền
-  const cartTotal = cart.reduce(
+  // 🔥 ĐỔI TÊN Ở ĐÂY: cartTotal -> totalPrice
+  const totalPrice = cart.reduce(
     (total, item) => total + item.price * item.quantity,
     0
   )
 
-  // Tính tổng số lượng item (cho Badge trên Header)
+  // Tính tổng số lượng item
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0)
 
   return (
@@ -129,7 +123,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         removeFromCart,
         updateQuantity,
         clearCart,
-        cartTotal
+        totalPrice // 👈 Truyền totalPrice vào context
       }}
     >
       {children}
