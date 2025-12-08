@@ -2,17 +2,15 @@
 
 import { LogOut } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useAdminAuthStore } from '@/src/store/adminAuthStore' // ✅ Dùng store Admin
+import { useAdminAuthStore } from '@/src/store/adminAuthStore'
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
 import NotificationBell from './NotificationBell'
+import { ThemeToggle } from '@/src/components/ThemeToggle'
 
-// 👇 SỬA Ở ĐÂY: Dùng "export function" thay vì "export default"
 export function Header() {
   const router = useRouter()
-
-  // 👇 Lấy thông tin từ Admin Store
   const admin = useAdminAuthStore((s) => s.admin)
   const logoutAdmin = useAdminAuthStore((s) => s.logoutAdmin)
 
@@ -26,38 +24,39 @@ export function Header() {
     <header
       className={cn(
         'sticky top-0 z-50',
-        'backdrop-blur-xl bg-white/60 dark:bg-black/20',
-        'border-b border-white/20 dark:border-white/10',
+        // 👇 SỬA Ở ĐÂY: Dùng background/80 thay vì white/black để tự động theo theme
+        'backdrop-blur-xl bg-background/80',
+        'border-b border-border', // Dùng border-border tự động đổi màu
         'h-14 flex items-center px-6',
         'shadow-sm'
       )}
     >
       <div className="flex items-center justify-end w-full gap-4">
-        {/* Notification */}
+        <ThemeToggle />
         <NotificationBell />
 
-        {/* User Avatar + Info */}
         <div className="flex items-center gap-3">
           <Image
             src={admin?.avatar || '/avatar.webp'}
             alt="avatar"
             width={32}
             height={32}
-            className="rounded-full border border-white/40 shadow-sm object-cover"
+            className="rounded-full border border-border shadow-sm object-cover"
           />
 
           <div className="text-sm leading-tight hidden md:block">
-            <div className="font-semibold">
+            {/* 👇 SỬA Ở ĐÂY: Dùng text-foreground và text-muted-foreground */}
+            <div className="font-semibold text-foreground">
               {admin?.name || 'Administrator'}
             </div>
-            <div className="text-xs text-gray-500">{admin?.email}</div>
+            <div className="text-xs text-muted-foreground">{admin?.email}</div>
           </div>
         </div>
 
-        {/* Logout */}
         <button
           onClick={handleLogout}
-          className="flex items-center gap-1 text-sm text-gray-700 dark:text-gray-200 hover:opacity-60 transition"
+          // 👇 SỬA Ở ĐÂY: Dùng text-muted-foreground hover sang foreground
+          className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
           <LogOut className="w-4 h-4" />
           <span className="hidden md:inline">Đăng xuất</span>

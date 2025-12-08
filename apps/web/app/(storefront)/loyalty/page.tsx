@@ -129,7 +129,7 @@ export default function LoyaltyPage() {
 
   if (!mounted || loading)
     return (
-      <div className="flex justify-center items-center min-h-[500px]">
+      <div className="flex justify-center items-center min-h-[500px] !bg-white">
         <Loader2 className="animate-spin text-orange-600" size={40} />
       </div>
     )
@@ -145,17 +145,17 @@ export default function LoyaltyPage() {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4 max-w-5xl">
+    <div className="container mx-auto py-8 px-4 max-w-5xl !bg-white">
       {/* HEADER INFO */}
       <div className="bg-gradient-to-r from-orange-600 to-red-600 rounded-2xl p-6 md:p-8 text-white mb-8 shadow-xl relative overflow-hidden">
         <div className="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-white opacity-10 rounded-full blur-2xl"></div>
         <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-6">
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <h1 className="text-2xl md:text-3xl font-bold">
+              <h1 className="text-2xl md:text-3xl font-bold !text-white">
                 Xin chào, {user?.name}
               </h1>
-              <Badge className="bg-yellow-400 text-black hover:bg-yellow-500 uppercase px-3 py-1 font-bold shadow-sm border-none">
+              <Badge className="bg-yellow-400 !text-black hover:bg-yellow-500 uppercase px-3 py-1 font-bold shadow-sm border-none">
                 {user?.loyaltyTier || 'MEMBER'}
               </Badge>
             </div>
@@ -169,7 +169,7 @@ export default function LoyaltyPage() {
             </p>
             <div className="flex items-center justify-center md:justify-end gap-2">
               <Star className="fill-yellow-400 text-yellow-400" size={24} />
-              <p className="text-4xl font-bold text-white">
+              <p className="text-4xl font-bold !text-white">
                 {user?.loyaltyPoints?.toLocaleString() ?? 0}
               </p>
             </div>
@@ -197,15 +197,24 @@ export default function LoyaltyPage() {
       </div>
 
       <Tabs defaultValue="rewards" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 mb-8 h-auto p-1 bg-gray-100 rounded-xl">
-          <TabsTrigger value="rewards" className="py-3 flex gap-2 rounded-lg">
+        <TabsList className="grid w-full grid-cols-3 mb-8 h-auto p-1 bg-gray-100! rounded-xl border-0!">
+          <TabsTrigger
+            value="rewards"
+            className="py-3 flex gap-2 rounded-lg text-gray-700! bg-transparent! data-[state=active]:bg-white! data-[state=active]:text-orange-600! data-[state=active]:shadow-sm hover:bg-gray-50!"
+          >
             <Gift size={18} /> <span className="hidden sm:inline">Đổi quà</span>
           </TabsTrigger>
-          <TabsTrigger value="vouchers" className="py-3 flex gap-2 rounded-lg">
+          <TabsTrigger
+            value="vouchers"
+            className="py-3 flex gap-2 rounded-lg text-gray-700! bg-transparent! data-[state=active]:bg-white! data-[state=active]:text-orange-600! data-[state=active]:shadow-sm hover:bg-gray-50!"
+          >
             <Ticket size={18} />{' '}
             <span className="hidden sm:inline">Voucher của tôi</span>
           </TabsTrigger>
-          <TabsTrigger value="history" className="py-3 flex gap-2 rounded-lg">
+          <TabsTrigger
+            value="history"
+            className="py-3 flex gap-2 rounded-lg text-gray-700! bg-transparent! data-[state=active]:bg-white! data-[state=active]:text-orange-600! data-[state=active]:shadow-sm hover:bg-gray-50!"
+          >
             <History size={18} />{' '}
             <span className="hidden sm:inline">Lịch sử điểm</span>
           </TabsTrigger>
@@ -219,10 +228,10 @@ export default function LoyaltyPage() {
             {rewards.map((reward) => (
               <Card
                 key={reward._id}
-                className="overflow-hidden hover:shadow-lg transition-all border-gray-200 group flex flex-col h-full"
+                className="overflow-hidden hover:shadow-lg transition-all border-gray-200 group flex flex-col h-full !bg-white"
               >
                 <div className="h-40 bg-orange-50 flex items-center justify-center relative shrink-0">
-                  <div className="absolute top-3 right-3 bg-black/70 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm z-10">
+                  <div className="absolute top-3 right-3 bg-black/70 !text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm z-10">
                     {reward.pointsRequired} điểm
                   </div>
                   {reward.imageUrl ? (
@@ -239,10 +248,10 @@ export default function LoyaltyPage() {
                   )}
                 </div>
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-lg line-clamp-1">
+                  <CardTitle className="text-lg line-clamp-1 !text-gray-900">
                     {reward.name}
                   </CardTitle>
-                  <p className="text-sm text-gray-500 line-clamp-2 min-h-[40px]">
+                  <p className="text-sm !text-gray-500 line-clamp-2 min-h-[40px]">
                     {reward.description}
                   </p>
                 </CardHeader>
@@ -250,7 +259,7 @@ export default function LoyaltyPage() {
                   <div className="flex justify-between items-center mt-2">
                     {reward.canRedeem ? (
                       <Button
-                        className="w-full bg-orange-600 hover:bg-orange-700 text-white shadow-md hover:shadow-orange-200 transition-all"
+                        className="w-full bg-orange-600 hover:bg-orange-700 !text-white shadow-md hover:shadow-orange-200 transition-all"
                         onClick={() => onRedeemClick(reward)}
                       >
                         Đổi ngay
@@ -259,7 +268,7 @@ export default function LoyaltyPage() {
                       <Button
                         variant="secondary"
                         disabled
-                        className="w-full opacity-70 cursor-not-allowed"
+                        className="w-full opacity-70 cursor-not-allowed !bg-gray-100 !text-gray-500"
                       >
                         {reward.reason === 'Insufficient points' ? (
                           <>
@@ -274,7 +283,7 @@ export default function LoyaltyPage() {
                   {!reward.canRedeem &&
                     user &&
                     user.loyaltyPoints < reward.pointsRequired && (
-                      <p className="text-xs text-orange-500 mt-2 text-center font-medium">
+                      <p className="text-xs !text-orange-500 mt-2 text-center font-medium">
                         Cần thêm{' '}
                         {(
                           reward.pointsRequired - user.loyaltyPoints
@@ -286,7 +295,7 @@ export default function LoyaltyPage() {
               </Card>
             ))}
             {rewards.length === 0 && (
-              <div className="col-span-3 text-center py-10 text-gray-500">
+              <div className="col-span-3 text-center py-10 !text-gray-500">
                 Hiện chưa có quà tặng nào.
               </div>
             )}
@@ -298,12 +307,12 @@ export default function LoyaltyPage() {
           className="animate-in fade-in slide-in-from-bottom-2"
         >
           {vouchers.length === 0 ? (
-            <div className="text-center py-12 bg-gray-50 rounded-lg border border-dashed">
-              <Ticket className="mx-auto h-12 w-12 text-gray-300 mb-3" />
-              <h3 className="text-lg font-medium text-gray-900">
+            <div className="text-center py-12 !bg-gray-50 rounded-lg border border-dashed">
+              <Ticket className="mx-auto h-12 w-12 !text-gray-300 mb-3" />
+              <h3 className="text-lg font-medium !text-gray-900">
                 Chưa có voucher nào
               </h3>
-              <p className="text-gray-500">
+              <p className="!text-gray-500">
                 Hãy tích điểm và đổi quà ngay nhé!
               </p>
             </div>
@@ -312,7 +321,7 @@ export default function LoyaltyPage() {
               {vouchers.map((voucher) => (
                 <div
                   key={voucher._id}
-                  className="border border-orange-200 rounded-lg p-4 flex justify-between items-center bg-white shadow-sm hover:border-orange-400 transition-colors relative overflow-hidden group"
+                  className="border border-orange-200 rounded-lg p-4 flex justify-between items-center !bg-white shadow-sm hover:border-orange-400 transition-colors relative overflow-hidden group"
                 >
                   <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-orange-500"></div>
                   <div className="flex gap-4 items-center pl-3">
@@ -320,17 +329,17 @@ export default function LoyaltyPage() {
                       <Ticket size={24} />
                     </div>
                     <div>
-                      <h3 className="font-bold text-gray-900">
+                      <h3 className="font-bold !text-gray-900">
                         {voucher.rewardId.name}
                       </h3>
-                      <p className="text-xs text-gray-500 mb-1">
+                      <p className="text-xs !text-gray-500 mb-1">
                         Hết hạn:{' '}
                         {new Date(voucher.expiresAt).toLocaleDateString(
                           'vi-VN'
                         )}
                       </p>
                       <div className="flex items-center gap-2">
-                        <code className="bg-gray-100 px-2 py-1 rounded text-sm font-mono font-bold text-orange-700 border border-gray-200">
+                        <code className="!bg-gray-100 px-2 py-1 rounded text-sm font-mono font-bold !text-orange-700 border border-gray-200">
                           {voucher.voucherCode}
                         </code>
                       </div>
@@ -354,10 +363,10 @@ export default function LoyaltyPage() {
           value="history"
           className="animate-in fade-in slide-in-from-bottom-2"
         >
-          <Card>
+          <Card className="!bg-white">
             <CardContent className="p-0 overflow-x-auto">
               <table className="w-full text-sm text-left">
-                <thead className="text-xs text-gray-500 uppercase bg-gray-50 border-b">
+                <thead className="text-xs !text-gray-500 uppercase !bg-gray-50 border-b">
                   <tr>
                     <th className="px-6 py-4 font-medium">Thời gian</th>
                     <th className="px-6 py-4 font-medium">Hoạt động</th>
@@ -368,13 +377,13 @@ export default function LoyaltyPage() {
                   {history.map((item) => (
                     <tr
                       key={item._id}
-                      className="bg-white hover:bg-gray-50 transition-colors"
+                      className="!bg-white hover:!bg-gray-50 transition-colors"
                     >
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap !text-gray-500">
                         {new Date(item.createdAt).toLocaleString('vi-VN')}
                       </td>
                       <td className="px-6 py-4">
-                        <p className="font-medium text-gray-900 capitalize">
+                        <p className="font-medium !text-gray-900 capitalize">
                           {item.type === 'earn'
                             ? 'Tích điểm mua hàng'
                             : item.type === 'redeem'
@@ -383,13 +392,13 @@ export default function LoyaltyPage() {
                             ? 'Hoàn trả đơn hàng'
                             : item.type}
                         </p>
-                        <p className="text-xs text-gray-500 mt-0.5">
+                        <p className="text-xs !text-gray-500 mt-0.5">
                           {item.description}
                         </p>
                       </td>
                       <td
                         className={`px-6 py-4 font-bold text-right ${
-                          item.points > 0 ? 'text-green-600' : 'text-red-600'
+                          item.points > 0 ? '!text-green-600' : '!text-red-600'
                         }`}
                       >
                         {item.points > 0 ? '+' : ''}
@@ -401,7 +410,7 @@ export default function LoyaltyPage() {
                     <tr>
                       <td
                         colSpan={3}
-                        className="px-6 py-12 text-center text-gray-500"
+                        className="px-6 py-12 text-center !text-gray-500"
                       >
                         Chưa có lịch sử điểm nào.
                       </td>
@@ -416,37 +425,37 @@ export default function LoyaltyPage() {
 
       {/* DIALOG ĐÃ SỬA LỖI QUOTE */}
       <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <AlertDialogContent className="rounded-2xl">
+        <AlertDialogContent className="rounded-2xl !bg-white">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-xl text-orange-600">
+            <AlertDialogTitle className="text-xl !text-orange-600">
               🎁 Xác nhận đổi quà
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-gray-600">
+            <AlertDialogDescription className="!text-gray-600">
               {/* ✅ SỬA LỖI Ở ĐÂY: Dùng &quot; thay cho " */}
               Bạn có chắc chắn muốn dùng{' '}
-              <span className="font-bold text-gray-900">
+              <span className="font-bold !text-gray-900">
                 {selectedReward?.pointsRequired} điểm
               </span>{' '}
               để đổi lấy phần quà{' '}
-              <span className="font-bold text-gray-900">
+              <span className="font-bold !text-gray-900">
                 &quot;{selectedReward?.name}&quot;
               </span>{' '}
               không?
               <br />
               <br />
-              <span className="text-xs text-gray-400 italic">
+              <span className="text-xs !text-gray-400 italic">
                 Voucher sẽ được lưu vào mục &quot;Voucher của tôi&quot; sau khi
                 đổi thành công.
               </span>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="rounded-xl border-gray-200">
+            <AlertDialogCancel className="rounded-xl border-gray-200 !bg-white !text-gray-700 hover:!bg-gray-50">
               Suy nghĩ lại
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmRedeem}
-              className="rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold"
+              className="rounded-xl bg-orange-600 hover:bg-orange-700 !text-white font-bold"
             >
               Đồng ý đổi
             </AlertDialogAction>

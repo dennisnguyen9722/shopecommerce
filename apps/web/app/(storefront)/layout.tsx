@@ -13,11 +13,12 @@ export default function StorefrontLayout({
     <WishlistProvider>
       <CartProvider>
         <ToastProvider>
-          <div className="flex flex-col min-h-screen">
+          {/* Force light mode cho storefront */}
+          <div className="flex flex-col min-h-screen light">
             <Navbar />
 
             {/* Main Content */}
-            <main className="flex-1">{children}</main>
+            <main className="flex-1 bg-white">{children}</main>
 
             {/* Footer */}
             <Footer />

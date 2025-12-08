@@ -28,10 +28,7 @@ export default function InventoryOverviewWidget() {
   })
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      refetch()
-    }, 10000)
-
+    const timer = setInterval(() => refetch(), 10000)
     return () => clearInterval(timer)
   }, [refetch])
 
@@ -40,84 +37,78 @@ export default function InventoryOverviewWidget() {
       title: 'Tổng sản phẩm',
       value: data?.totalProducts ?? 0,
       icon: Package,
-      color: 'from-blue-500 to-cyan-500',
-      bgColor: 'bg-blue-50 dark:bg-blue-950/30',
-      textColor: 'text-blue-600 dark:text-blue-400'
+      iconClass: 'text-blue-600 dark:text-blue-400',
+      bgClass: 'bg-blue-100 dark:bg-blue-900/30'
     },
     {
       title: 'Số biến thể',
       value: data?.totalVariants ?? 0,
       icon: Boxes,
-      color: 'from-purple-500 to-pink-500',
-      bgColor: 'bg-purple-50 dark:bg-purple-950/30',
-      textColor: 'text-purple-600 dark:text-purple-400'
+      iconClass: 'text-purple-600 dark:text-purple-400',
+      bgClass: 'bg-purple-100 dark:bg-purple-900/30'
     },
     {
       title: 'Sắp hết hàng',
       value: data?.lowStock ?? 0,
       icon: AlertTriangle,
-      color: 'from-orange-500 to-yellow-500',
-      bgColor: 'bg-orange-50 dark:bg-orange-950/30',
-      textColor: 'text-orange-600 dark:text-orange-400'
+      iconClass: 'text-orange-600 dark:text-orange-400',
+      bgClass: 'bg-orange-100 dark:bg-orange-900/30'
     },
     {
       title: 'Hết hàng',
       value: data?.outOfStock ?? 0,
       icon: XCircle,
-      color: 'from-red-500 to-rose-500',
-      bgColor: 'bg-red-50 dark:bg-red-950/30',
-      textColor: 'text-red-600 dark:text-red-400'
+      iconClass: 'text-red-600 dark:text-red-400',
+      bgClass: 'bg-red-100 dark:bg-red-900/30'
     }
   ]
 
   return (
-    <Card className="border-0 shadow-lg bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
-      <CardHeader className="flex flex-row items-center justify-between pb-4">
+    // 👇 SỬA CARD: Dùng bg-card chuẩn
+    <Card className="border-border shadow-sm bg-card">
+      <CardHeader className="flex flex-row items-center justify-between pb-4 border-b border-border/50">
         <div className="space-y-1">
-          <CardTitle className="text-xl font-bold flex items-center gap-2">
-            <Package className="w-6 h-6 text-orange-600" />
+          <CardTitle className="text-xl font-bold flex items-center gap-2 text-foreground">
+            <Package className="w-6 h-6 text-primary" />
             Tổng quan tồn kho
           </CardTitle>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Theo dõi trạng thái hàng tồn kho theo thời gian thực
+          <p className="text-sm text-muted-foreground">
+            Trạng thái hàng hóa thời gian thực
           </p>
         </div>
 
-        <Link href="/admin/inventory">
-          <Button
-            variant="outline"
-            size="sm"
-            className="hover:bg-orange-50 hover:text-orange-600 hover:border-orange-300 transition-all"
-          >
-            Xem chi tiết →
+        <Link href="/admin/products?tab=inventory">
+          <Button variant="outline" size="sm">
+            Xem chi tiết
           </Button>
         </Link>
       </CardHeader>
 
-      <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6">
         {stats.map((stat, index) => {
           const Icon = stat.icon
           return (
             <div
               key={index}
-              className={`${stat.bgColor} rounded-xl p-4 border border-gray-100 dark:border-gray-800 hover:scale-105 transition-transform duration-300`}
+              className={`
+                rounded-xl p-4 border border-border transition-all
+                hover:shadow-md bg-background/50
+              `}
             >
               <div className="flex items-start justify-between mb-3">
-                <div
-                  className={`p-2 rounded-lg bg-gradient-to-br ${stat.color}`}
-                >
-                  <Icon className="w-5 h-5 text-white" />
+                <div className={`p-2 rounded-lg ${stat.bgClass}`}>
+                  <Icon className={`w-5 h-5 ${stat.iconClass}`} />
                 </div>
               </div>
 
               <div className="space-y-1">
-                <div className="text-xs font-medium text-gray-600 dark:text-gray-400">
+                <div className="text-xs font-medium text-muted-foreground">
                   {stat.title}
                 </div>
                 {isLoading ? (
                   <Skeleton className="h-8 w-16" />
                 ) : (
-                  <div className={`text-2xl font-bold ${stat.textColor}`}>
+                  <div className="text-2xl font-bold text-foreground">
                     {stat.value.toLocaleString()}
                   </div>
                 )}

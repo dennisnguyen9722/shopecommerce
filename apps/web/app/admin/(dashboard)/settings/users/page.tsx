@@ -69,37 +69,45 @@ export default function UsersPage() {
     onError: () => toast.error('Không thể cập nhật role')
   })
 
-  if (isLoading) return <p>Đang tải...</p>
+  if (isLoading)
+    return <p className="p-6 text-gray-600 dark:text-gray-300">Đang tải...</p>
 
   return (
     <div className="p-6 space-y-6 max-w-4xl mx-auto">
+      {/* HEADER */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold">Quản lý người dùng</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl font-semibold dark:text-gray-900">
+            Quản lý người dùng
+          </h1>
+          <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
             Tạo user mới, gán role và phân quyền cho từng tài khoản.
           </p>
         </div>
 
         <Button onClick={() => setOpenCreate(true)}>
-          <Plus className="w-4 h-4 mr-1" />
-          Tạo User
+          <Plus className="w-4 h-4 mr-2" />
+          Tạo User mới
         </Button>
       </div>
 
       <div className="space-y-4">
         {users?.map((user: UserType) => (
-          <GlassCard key={user._id}>
-            <div className="flex items-center justify-between py-4">
+          <GlassCard key={user._id} className="p-0">
+            <div className="flex items-center justify-between p-6">
               {/* LEFT */}
               <div className="flex items-center gap-4">
-                <div className="p-2 rounded-lg bg-blue-50">
-                  <UserCircle className="h-6 w-6 text-blue-600" />
+                <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-900/30">
+                  <UserCircle className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-lg">{user.name}</h3>
-                  <p className="text-sm text-muted-foreground">{user.email}</p>
+                  <h3 className="font-semibold text-base text-gray-900 dark:text-white">
+                    {user.name}
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">
+                    {user.email}
+                  </p>
                 </div>
               </div>
 
@@ -112,7 +120,7 @@ export default function UsersPage() {
                     assignMutation.mutate({ userId: user._id, roleId })
                   }
                 >
-                  <SelectTrigger className="w-40">
+                  <SelectTrigger className="w-40 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
                     <SelectValue placeholder="Chọn role" />
                   </SelectTrigger>
 
@@ -130,6 +138,7 @@ export default function UsersPage() {
                   onClick={() =>
                     assignMutation.mutate({ userId: user._id, roleId: '' })
                   }
+                  className="min-w-[100px]"
                 >
                   Xóa Role
                 </Button>

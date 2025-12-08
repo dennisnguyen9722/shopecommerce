@@ -175,7 +175,7 @@ export default function CouponsPage() {
       {/* HEADER */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold">
+          <h1 className="text-2xl font-semibold dark:text-gray-900">
             Quản lý Mã giảm giá (Coupon)
           </h1>
           <p className="text-sm text-muted-foreground mt-1">

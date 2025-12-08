@@ -75,7 +75,9 @@ export default function BlogPostsPage() {
     <div className="space-y-6 p-6">
       {/* HEADER */}
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Blog / Tin tức</h1>
+        <h1 className="text-2xl font-semibold dark:text-gray-900">
+          Blog / Tin tức
+        </h1>
 
         <Button onClick={() => router.push('/admin/blog/posts/new')}>
           + Thêm bài viết

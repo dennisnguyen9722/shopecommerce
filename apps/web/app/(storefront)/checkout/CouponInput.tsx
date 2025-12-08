@@ -84,7 +84,7 @@ export default function CouponInput({
               value={couponCode}
               onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
               onKeyDown={(e) => e.key === 'Enter' && handleValidateCoupon()}
-              className="pl-10 uppercase"
+              className="pl-10 uppercase !bg-white !text-gray-900 border-gray-300"
               disabled={loading}
             />
           </div>
@@ -92,6 +92,7 @@ export default function CouponInput({
             onClick={handleValidateCoupon}
             disabled={loading || !couponCode.trim()}
             variant="outline"
+            className="!bg-white !text-gray-900 border-gray-300"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Áp dụng'}
           </Button>
@@ -111,7 +112,7 @@ export default function CouponInput({
                   <Badge className="bg-green-600 text-white font-mono font-bold">
                     {appliedCoupon.code}
                   </Badge>
-                  <span className="text-sm text-green-700">
+                  <span className="text-sm text-green-700 font-semibold">
                     -{appliedCoupon.discountAmount.toLocaleString('vi-VN')}₫
                   </span>
                 </div>
@@ -126,7 +127,7 @@ export default function CouponInput({
 
             <button
               onClick={onRemoveCoupon}
-              className="text-green-600 hover:text-green-700 p-1"
+              className="text-green-600 hover:text-green-700 p-1 hover:bg-green-100 rounded transition-colors"
             >
               <X className="w-4 h-4" />
             </button>

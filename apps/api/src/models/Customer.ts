@@ -1,20 +1,24 @@
 import mongoose, { Schema, Document, Model } from 'mongoose'
 import bcrypt from 'bcryptjs'
 
+// 1. Define Methods Interface
 interface ICustomerMethods {
   matchPassword(enteredPassword: string): Promise<boolean>
   calculateLoyaltyTier(): 'bronze' | 'silver' | 'gold' | 'platinum'
 }
 
+// 2. Define Model Type
 type CustomerModel = Model<ICustomer, {}, ICustomerMethods>
 
+// 3. Define Document Interface (TypeScript Types)
 export interface ICustomer extends Document, ICustomerMethods {
   name: string
   email: string
-  password?: string // Đổi thành optional string
-  phone?: string
+  password?: string
 
-  // 👇 THÊM AVATAR VÀO INTERFACE
+  // 👇 Đã bổ sung đầy đủ các trường cần thiết
+  phone?: string
+  address?: string // Thêm dòng này để hết lỗi address
   avatar?: string | null
 
   tags: string[]
@@ -26,7 +30,7 @@ export interface ICustomer extends Document, ICustomerMethods {
   loyaltyPoints: number
   loyaltyTier: 'bronze' | 'silver' | 'gold' | 'platinum'
 
-  // Stats (tự động tính từ orders)
+  // Stats
   totalSpent: number
   ordersCount: number
   averageOrderValue: number
@@ -36,14 +40,16 @@ export interface ICustomer extends Document, ICustomerMethods {
   updatedAt: Date
 }
 
+// 4. Define Mongoose Schema (Database Structure)
 const CustomerSchema = new Schema<ICustomer, CustomerModel, ICustomerMethods>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true, index: true },
     password: { type: String, default: null },
-    phone: { type: String },
 
-    // 👇 THÊM AVATAR VÀO SCHEMA
+    // 👇 Bổ sung các trường vào Schema
+    phone: { type: String, default: '' },
+    address: { type: String, default: '' }, // Thêm dòng này để lưu xuống DB
     avatar: { type: String, default: null },
 
     tags: { type: [String], default: [] },
@@ -73,10 +79,7 @@ const CustomerSchema = new Schema<ICustomer, CustomerModel, ICustomerMethods>(
   { timestamps: true }
 )
 
-// 🛑 ĐÃ XÓA đoạn pre('save') hash password để tránh bị hash 2 lần
-// Vì bên controller (auth.ts) chúng ta đã hash thủ công rồi.
-
-// Match password
+// Match password method
 CustomerSchema.methods.matchPassword = async function (
   enteredPassword: string
 ): Promise<boolean> {
@@ -84,7 +87,7 @@ CustomerSchema.methods.matchPassword = async function (
   return await bcrypt.compare(enteredPassword, this.password)
 }
 
-// Calculate loyalty tier based on totalSpent
+// Calculate loyalty tier method
 CustomerSchema.methods.calculateLoyaltyTier = function ():
   | 'bronze'
   | 'silver'
@@ -96,7 +99,7 @@ CustomerSchema.methods.calculateLoyaltyTier = function ():
   return 'bronze'
 }
 
-// Auto update tier before save
+// Middleware: Auto update tier before save
 CustomerSchema.pre('save', function (next) {
   this.loyaltyTier = this.calculateLoyaltyTier()
   if (this.ordersCount > 0) {

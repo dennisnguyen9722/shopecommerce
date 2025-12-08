@@ -25,6 +25,7 @@ import {
 import GlassCard from '@/src/components/admin/GlassCard'
 import ConfirmDeleteDialog from '@/src/components/admin/ConfirmDeleteDialog'
 import { Plus } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 // Types
 interface Category {
@@ -55,6 +56,8 @@ export default function CategoriesPage() {
   const [sort, setSort] = useState('newest')
   const [page, setPage] = useState(1)
   const [selected, setSelected] = useState<string[]>([])
+
+  const router = useRouter()
 
   // ======================
   // FETCH
@@ -115,16 +118,16 @@ export default function CategoriesPage() {
       {/* HEADER */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Danh mục</h1>
+          <h1 className="text-2xl font-semibold dark:text-gray-900">
+            Danh mục sản phẩm
+          </h1>
           <p className="text-sm text-muted-foreground">
             Quản lý danh mục dùng cho sản phẩm.
           </p>
         </div>
 
-        <Button asChild>
-          <Link href="/admin/categories/new">
-            <Plus className="w-4 h-4 mr-2" /> Tạo danh mục
-          </Link>
+        <Button onClick={() => router.push('/admin/categories/new')}>
+          <Plus className="w-4 h-4 mr-2" /> Tạo danh mục
         </Button>
       </div>
 
@@ -178,10 +181,6 @@ export default function CategoriesPage() {
               <SelectItem value="name-desc">Tên Z → A</SelectItem>
             </SelectContent>
           </Select>
-        </div>
-
-        <div className="pt-2 mt-2 border-t border-white/30 text-sm text-muted-foreground">
-          Hiển thị {items.length} danh mục
         </div>
       </GlassCard>
 

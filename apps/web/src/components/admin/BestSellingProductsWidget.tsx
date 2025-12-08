@@ -29,80 +29,67 @@ export default function BestSellingProductsWidget() {
   }, [])
 
   return (
-    <Card className="border-0 shadow-lg bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
-      <CardHeader className="pb-4">
-        <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <CardTitle className="text-xl font-bold flex items-center gap-2">
-              <TrendingUp className="w-6 h-6 text-green-600" />
-              Sản phẩm bán chạy
-            </CardTitle>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Top 5 trong 30 ngày qua
-            </p>
-          </div>
+    <Card className="border-border shadow-sm bg-card h-full">
+      <CardHeader className="pb-4 border-b border-border/50">
+        <div className="space-y-1">
+          <CardTitle className="text-xl font-bold flex items-center gap-2 text-foreground">
+            <TrendingUp className="w-6 h-6 text-green-500" />
+            Sản phẩm bán chạy
+          </CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Top 5 trong 30 ngày qua
+          </p>
         </div>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="pt-4">
         {loading ? (
           <div className="space-y-3">
             {[...Array(3)].map((_, i) => (
               <div
                 key={i}
-                className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800"
+                className="flex items-center gap-3 p-3 rounded-lg border border-border"
               >
-                <Skeleton className="h-14 w-14 rounded-lg" />
+                <Skeleton className="h-12 w-12 rounded-lg" />
                 <div className="flex-1 space-y-2">
                   <Skeleton className="h-4 w-32" />
-                  <Skeleton className="h-3 w-24" />
+                  <Skeleton className="h-3 w-20" />
                 </div>
               </div>
             ))}
           </div>
         ) : items.length === 0 ? (
-          <div className="py-12 text-center">
-            <Package className="w-12 h-12 mx-auto text-gray-300 mb-3" />
-            <p className="text-gray-500">Chưa có dữ liệu bán hàng</p>
+          <div className="py-12 text-center text-muted-foreground">
+            <Package className="w-12 h-12 mx-auto mb-3 opacity-20" />
+            <p>Chưa có dữ liệu</p>
           </div>
         ) : (
           <div className="space-y-3">
             {items.map((p: any, index: number) => (
               <div
                 key={`${p.productId}-${index}`}
-                className="flex items-center gap-4 p-3 rounded-xl bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 border border-gray-100 dark:border-gray-800 hover:shadow-md hover:scale-[1.02] transition-all duration-300"
+                className="flex items-center gap-4 p-3 rounded-xl border border-border bg-background/50 hover:bg-accent/50 transition-colors"
               >
-                {/* Rank Badge */}
+                {/* Rank */}
                 <div
                   className={`
-                  flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm
+                  w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white
                   ${
                     index === 0
-                      ? 'bg-gradient-to-br from-yellow-400 to-orange-500 text-white'
-                      : ''
-                  }
-                  ${
-                    index === 1
-                      ? 'bg-gradient-to-br from-gray-300 to-gray-400 text-white'
-                      : ''
-                  }
-                  ${
-                    index === 2
-                      ? 'bg-gradient-to-br from-orange-300 to-amber-500 text-white'
-                      : ''
-                  }
-                  ${
-                    index > 2
-                      ? 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
-                      : ''
+                      ? 'bg-yellow-500'
+                      : index === 1
+                      ? 'bg-gray-400'
+                      : index === 2
+                      ? 'bg-orange-400'
+                      : 'bg-muted text-muted-foreground'
                   }
                 `}
                 >
                   {index + 1}
                 </div>
 
-                {/* Product Image */}
-                <div className="relative h-14 w-14 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 flex-shrink-0">
+                {/* Image */}
+                <div className="relative h-12 w-12 rounded-lg overflow-hidden border border-border flex-shrink-0 bg-muted">
                   {p.image ? (
                     <Image
                       src={p.image}
@@ -111,35 +98,27 @@ export default function BestSellingProductsWidget() {
                       className="object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <Package className="w-6 h-6 text-gray-400" />
+                    <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                      <Package size={16} />
                     </div>
                   )}
                 </div>
 
-                {/* Product Info */}
+                {/* Info */}
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-semibold text-sm text-gray-900 dark:text-white truncate">
+                  <h4 className="font-medium text-sm text-foreground truncate">
                     {p.name}
                   </h4>
-                  <div className="flex items-center gap-3 mt-1">
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                      Đã bán:{' '}
-                      <span className="font-semibold text-blue-600 dark:text-blue-400">
-                        {p.quantitySold}
-                      </span>
+                  <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
+                    <span>
+                      Đã bán: <b className="text-primary">{p.quantitySold}</b>
                     </span>
-                    <span className="text-xs text-gray-300 dark:text-gray-600">
-                      •
-                    </span>
-                    <span className="text-xs font-semibold text-green-600 dark:text-green-400">
+                    <span>•</span>
+                    <span className="text-green-600 dark:text-green-400 font-medium">
                       {p.revenue.toLocaleString()}₫
                     </span>
                   </div>
                 </div>
-
-                {/* Trend Icon */}
-                <TrendingUp className="w-5 h-5 text-green-500 flex-shrink-0" />
               </div>
             ))}
           </div>

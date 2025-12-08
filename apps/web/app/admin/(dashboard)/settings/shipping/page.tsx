@@ -24,6 +24,7 @@ import {
   arrayMove
 } from '@dnd-kit/sortable'
 import SortableItem from '@/src/components/dnd/sortable-item'
+import { Plus } from 'lucide-react'
 
 export type ShippingRule = {
   _id: string
@@ -124,15 +125,22 @@ export default function ShippingSettingsPage() {
 
   return (
     <div className="p-6 space-y-6 max-w-3xl mx-auto">
+      {/* HEADER */}
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Phí vận chuyển</h1>
+        <div>
+          <h1 className="text-2xl font-semibold dark:text-gray-900">
+            Phí vận chuyển
+          </h1>
+          <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+            Thiết lập phí vận chuyển nâng cao cho cửa hàng.
+          </p>
+        </div>
 
-        <Button onClick={() => setCreateOpen(true)}>Thêm rule</Button>
+        <Button onClick={() => setCreateOpen(true)}>
+          <Plus className="w-4 h-4 mr-2" />
+          Thêm rule
+        </Button>
       </div>
-
-      <p className="text-muted-foreground">
-        Thiết lập phí vận chuyển nâng cao cho cửa hàng.
-      </p>
 
       <div className="space-y-4">
         <DndContext

@@ -97,7 +97,9 @@ export default function EditCategoryPage({
           <div className="text-sm text-muted-foreground">
             Danh mục / {data?.name}
           </div>
-          <h1 className="text-2xl font-semibold mt-1">Chỉnh sửa danh mục</h1>
+          <h1 className="text-2xl font-semibold mt-1 dark:text-gray-900">
+            Chỉnh sửa danh mục
+          </h1>
         </div>
         <Button
           onClick={() => mut.mutate()}

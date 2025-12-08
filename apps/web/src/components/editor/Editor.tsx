@@ -160,7 +160,7 @@ export default function Editor({ value, onChange, placeholder }: EditorProps) {
     isActive ? 'default' : ('secondary' as const)
 
   return (
-    <div className="border rounded-xl p-3 space-y-2 bg-white shadow-sm">
+    <div className="border rounded-xl p-3 space-y-2 bg-white shadow-sm dark:text-gray-900">
       {/* Toolbar */}
       <div className="flex flex-wrap items-center gap-1">
         {/* Text style */}

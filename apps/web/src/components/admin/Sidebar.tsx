@@ -34,10 +34,9 @@ import {
   TooltipProvider
 } from '@/components/ui/tooltip'
 
-// 👇 IMPORT MỚI: Store & Constants
 import { useAdminPermission } from '@/src/hooks/useAdminPermission'
 import { useAdminAuthStore } from '@/src/store/adminAuthStore'
-import { PERMISSIONS } from '@/src/constants/permissions' // 👈 Import bộ từ điển quyền chuẩn
+import { PERMISSIONS } from '@/src/constants/permissions'
 
 export function Sidebar({
   onWidthChange
@@ -46,14 +45,11 @@ export function Sidebar({
 }) {
   const pathname = usePathname()
   const [collapsed, setCollapsed] = useState(false)
-
-  // Lấy thông tin Admin để hiển thị Avatar
   const admin = useAdminAuthStore((s) => s.admin)
 
-  // Notify parent layout when width changes
   useEffect(() => {
     if (onWidthChange) onWidthChange(collapsed ? 80 : 260)
-  }, [collapsed])
+  }, [collapsed, onWidthChange])
 
   // Auto open accordion logic
   const autoOpenBlog = pathname.startsWith('/admin/blog')
@@ -63,7 +59,6 @@ export function Sidebar({
     autoOpenBlog ? 'blog' : autoOpenSettings ? 'settings' : null
   )
 
-  // Auto collapse for small screens
   useEffect(() => {
     const handleResize = () => setCollapsed(window.innerWidth < 1280)
     handleResize()
@@ -71,30 +66,16 @@ export function Sidebar({
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  // =========================================================================
-  // ⭐ CHECK PERMISSIONS (DÙNG CONSTANT CHUẨN)
-  // =========================================================================
-
-  // 1. Dashboard: Dùng .VIEW
-  const canDashboard = useAdminPermission(PERMISSIONS.DASHBOARD.VIEW)
-
-  // 2. Core Features: Chỉ cần quyền READ là thấy menu
+  // Permissions
   const canOrders = useAdminPermission(PERMISSIONS.ORDERS.READ)
   const canProducts = useAdminPermission(PERMISSIONS.PRODUCTS.READ)
   const canCategories = useAdminPermission(PERMISSIONS.CATEGORIES.READ)
   const canCustomers = useAdminPermission(PERMISSIONS.CUSTOMERS.READ)
-
-  // 3. Loyalty & Marketing
   const canRewards = useAdminPermission(PERMISSIONS.REWARDS.MANAGE)
   const canBanners = useAdminPermission(PERMISSIONS.BANNERS.MANAGE)
-
   const canCoupons = useAdminPermission(PERMISSIONS.COUPONS.MANAGE)
-
-  // 4. Blog: Check quyền READ chung
   const canBlogRead = useAdminPermission(PERMISSIONS.BLOG.READ)
-
-  // 5. Settings & System
-  const canPayment = useAdminPermission(PERMISSIONS.SETTINGS.MANAGE) // Hoặc tách nhỏ nếu muốn
+  const canPayment = useAdminPermission(PERMISSIONS.SETTINGS.MANAGE)
   const canShipping = useAdminPermission(PERMISSIONS.SETTINGS.MANAGE)
   const canUsers = useAdminPermission(PERMISSIONS.SYSTEM.MANAGE_USERS)
   const canRoles = useAdminPermission(PERMISSIONS.SYSTEM.MANAGE_ROLES)
@@ -105,29 +86,29 @@ export function Sidebar({
         animate={{ width: collapsed ? 80 : 260 }}
         transition={{ duration: 0.28, ease: 'easeInOut' }}
         className={cn(
-          'h-screen border-r border-white/30 dark:border-white/10 flex flex-col',
-          'backdrop-blur-xl bg-white/70 dark:bg-black/30 shadow-none relative z-20'
+          'h-screen flex flex-col',
+          // 👇 SỬA MÀU NỀN & VIỀN: Dùng biến sidebar chuẩn
+          'bg-sidebar border-r border-sidebar-border relative z-20 shadow-xl'
         )}
       >
         {/* HEADER */}
-        <div className="flex items-center justify-between p-4 border-b border-white/20">
+        <div className="flex items-center justify-between p-4 border-b border-sidebar-border">
           {!collapsed && (
-            <h2 className="text-xl font-semibold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+            <h2 className="text-xl font-bold text-sidebar-foreground">
               Admin Panel
             </h2>
           )}
 
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="p-2 hover:bg-white/40 dark:hover:bg-white/10 rounded-lg transition"
+            className="p-2 hover:bg-sidebar-accent text-sidebar-foreground rounded-lg transition"
           >
-            {collapsed ? <Menu /> : <ChevronLeft />}
+            {collapsed ? <Menu size={20} /> : <ChevronLeft size={20} />}
           </button>
         </div>
 
         {/* NAV */}
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto no-scrollbar">
-          {/* DASHBOARD - Luôn hiển thị nếu có quyền view hoặc fallback */}
           <NavItem
             href="/admin/overview"
             icon={LayoutDashboard}
@@ -136,7 +117,6 @@ export function Sidebar({
             collapsed={collapsed}
           />
 
-          {/* ORDERS */}
           {canOrders && (
             <NavItem
               href="/admin/orders"
@@ -147,7 +127,6 @@ export function Sidebar({
             />
           )}
 
-          {/* PRODUCTS */}
           {canProducts && (
             <NavItem
               href="/admin/products"
@@ -158,18 +137,16 @@ export function Sidebar({
             />
           )}
 
-          {/* CATEGORIES */}
           {canCategories && (
             <NavItem
               href="/admin/categories"
               icon={FolderTree}
-              label="Danh mục sản phẩm"
+              label="Danh mục SP"
               active={pathname.startsWith('/admin/categories')}
               collapsed={collapsed}
             />
           )}
 
-          {/* CUSTOMERS */}
           {canCustomers && (
             <NavItem
               href="/admin/customers"
@@ -180,7 +157,6 @@ export function Sidebar({
             />
           )}
 
-          {/* REWARDS (LOYALTY) */}
           {canRewards && (
             <NavItem
               href="/admin/rewards"
@@ -201,7 +177,6 @@ export function Sidebar({
             />
           )}
 
-          {/* BANNERS */}
           {canBanners && (
             <NavItem
               href="/admin/banners"
@@ -212,7 +187,6 @@ export function Sidebar({
             />
           )}
 
-          {/* BLOG GROUP */}
           {canBlogRead && (
             <AccordionGroup
               id="blog"
@@ -247,7 +221,6 @@ export function Sidebar({
             </AccordionGroup>
           )}
 
-          {/* SETTINGS GROUP */}
           {(canPayment || canShipping || canUsers || canRoles) && (
             <AccordionGroup
               id="settings"
@@ -261,23 +234,21 @@ export function Sidebar({
               {canPayment && (
                 <SubItem
                   href="/admin/settings/payment"
-                  label="Phương thức thanh toán"
+                  label="Thanh toán"
                   icon={CreditCard}
                   active={pathname.startsWith('/admin/settings/payment')}
                   collapsed={collapsed}
                 />
               )}
-
               {canShipping && (
                 <SubItem
                   href="/admin/settings/shipping"
-                  label="Phí vận chuyển"
+                  label="Vận chuyển"
                   icon={Truck}
                   active={pathname.startsWith('/admin/settings/shipping')}
                   collapsed={collapsed}
                 />
               )}
-
               {canUsers && (
                 <SubItem
                   href="/admin/settings/users"
@@ -287,11 +258,10 @@ export function Sidebar({
                   collapsed={collapsed}
                 />
               )}
-
               {canRoles && (
                 <SubItem
                   href="/admin/settings/roles"
-                  label="Phân quyền (Roles)"
+                  label="Phân quyền"
                   icon={Settings}
                   active={pathname.startsWith('/admin/settings/roles')}
                   collapsed={collapsed}
@@ -301,7 +271,7 @@ export function Sidebar({
           )}
         </nav>
 
-        {/* PROFILE - Luôn hiển thị */}
+        {/* PROFILE */}
         <NavItem
           href="/admin/profile"
           icon={UserCircle}
@@ -314,26 +284,26 @@ export function Sidebar({
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-4 border-t border-white/20 flex items-center gap-3"
+          className="p-4 border-t border-sidebar-border flex items-center gap-3"
         >
           {admin?.avatar ? (
             <img
               src={admin.avatar}
               alt={admin.name}
-              className="w-10 h-10 rounded-full object-cover border border-gray-200"
+              className="w-10 h-10 rounded-full object-cover border border-sidebar-border"
             />
           ) : (
-            <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500">
+            <div className="w-10 h-10 rounded-full bg-sidebar-accent flex items-center justify-center text-sidebar-foreground">
               <Users className="w-6 h-6" />
             </div>
           )}
 
           {!collapsed && (
             <div className="flex flex-col">
-              <span className="text-sm font-semibold truncate max-w-[150px]">
+              <span className="text-sm font-semibold text-sidebar-foreground truncate max-w-[150px]">
                 {admin?.name || 'Administrator'}
               </span>
-              <span className="text-xs text-gray-500">
+              <span className="text-xs text-muted-foreground">
                 {admin?.email || 'System'}
               </span>
             </div>
@@ -344,7 +314,7 @@ export function Sidebar({
   )
 }
 
-/* ===================== CÁC COMPONENT CON (GIỮ NGUYÊN) ===================== */
+// === CÁC COMPONENT CON (Đã sửa màu) ===
 
 function NavItem({ href, label, icon: Icon, active, collapsed }: any) {
   const Component = (
@@ -352,28 +322,27 @@ function NavItem({ href, label, icon: Icon, active, collapsed }: any) {
       href={href}
       className={cn(
         'relative flex items-center gap-3 p-3 rounded-lg transition-all group overflow-hidden',
+        // 👇 SỬA MÀU ACTIVE/HOVER
         active
-          ? 'bg-white/70 dark:bg-white/10 shadow-inner'
-          : 'hover:bg-white/40 dark:hover:bg-white/10'
+          ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium'
+          : 'text-sidebar-foreground/80 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
       )}
     >
       {active && (
         <motion.div
           layoutId="neon-active"
-          className="absolute left-0 top-2 bottom-2 w-[3px] rounded-r-md bg-gradient-to-b from-blue-500 to-purple-500"
+          className="absolute left-0 top-2 bottom-2 w-[3px] rounded-r-md bg-sidebar-primary"
         />
       )}
 
       <Icon
         className={cn(
           'w-5 h-5 flex-shrink-0',
-          active ? 'text-gray-900 dark:text-white' : 'text-gray-500'
+          active ? 'text-sidebar-primary' : 'text-sidebar-foreground/70'
         )}
       />
 
-      {!collapsed && (
-        <span className="font-medium whitespace-nowrap">{label}</span>
-      )}
+      {!collapsed && <span className="whitespace-nowrap">{label}</span>}
     </Link>
   )
 
@@ -381,7 +350,12 @@ function NavItem({ href, label, icon: Icon, active, collapsed }: any) {
     return (
       <Tooltip>
         <TooltipTrigger asChild>{Component}</TooltipTrigger>
-        <TooltipContent side="right">{label}</TooltipContent>
+        <TooltipContent
+          side="right"
+          className="bg-sidebar text-sidebar-foreground border-sidebar-border"
+        >
+          {label}
+        </TooltipContent>
       </Tooltip>
     )
 
@@ -404,21 +378,26 @@ function AccordionGroup({
     <button
       onClick={() => setOpenGroup(isOpen ? null : id)}
       className={cn(
-        'relative flex items-center justify-between p-3 rounded-lg w-full',
+        'relative flex items-center justify-between p-3 rounded-lg w-full transition-all',
         active
-          ? 'bg-white/70 dark:bg-white/10 shadow-inner'
-          : 'hover:bg-white/40 dark:hover:bg-white/10'
+          ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium'
+          : 'text-sidebar-foreground/80 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
       )}
     >
       {active && (
         <motion.div
           layoutId="neon-active"
-          className="absolute left-0 top-2 bottom-2 w-[3px] bg-gradient-to-b from-blue-500 to-purple-500"
+          className="absolute left-0 top-2 bottom-2 w-[3px] bg-sidebar-primary"
         />
       )}
 
       <span className="flex items-center gap-3">
-        <Icon className="w-5 h-5 flex-shrink-0 text-gray-500 dark:text-gray-300" />
+        <Icon
+          className={cn(
+            'w-5 h-5 flex-shrink-0',
+            active ? 'text-sidebar-primary' : 'text-sidebar-foreground/70'
+          )}
+        />
         {!collapsed && <span className="whitespace-nowrap">{label}</span>}
       </span>
 
@@ -438,7 +417,12 @@ function AccordionGroup({
       {collapsed ? (
         <Tooltip>
           <TooltipTrigger asChild>{Header}</TooltipTrigger>
-          <TooltipContent side="right">{label}</TooltipContent>
+          <TooltipContent
+            side="right"
+            className="bg-sidebar text-sidebar-foreground border-sidebar-border"
+          >
+            {label}
+          </TooltipContent>
         </Tooltip>
       ) : (
         Header
@@ -447,11 +431,11 @@ function AccordionGroup({
       <AnimatePresence initial={false}>
         {isOpen && !collapsed && (
           <motion.div
-            initial={{ opacity: 0, height: 0, x: -10 }}
-            animate={{ opacity: 1, height: 'auto', x: 0 }}
-            exit={{ opacity: 0, height: 0, x: -10 }}
-            transition={{ duration: 0.25 }}
-            className="ml-8 mt-1 flex flex-col gap-1 overflow-hidden"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="ml-4 pl-4 mt-1 flex flex-col gap-1 border-l border-sidebar-border/50"
           >
             {children}
           </motion.div>
@@ -462,43 +446,23 @@ function AccordionGroup({
 }
 
 function SubItem({ href, label, icon: Icon, active, collapsed }: any) {
-  const Component = (
+  return (
     <Link
       href={href}
       className={cn(
         'relative flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-all group',
         active
-          ? 'bg-white/70 dark:bg-white/10 shadow-inner'
-          : 'hover:bg-white/40 dark:hover:bg-white/10'
+          ? 'text-sidebar-primary font-medium bg-sidebar-accent/50'
+          : 'text-muted-foreground hover:text-sidebar-foreground hover:bg-sidebar-accent/30'
       )}
     >
-      {active && (
-        <motion.div
-          layoutId="sub-active"
-          className="absolute left-0 top-1 bottom-1 w-[2px] bg-gradient-to-b from-purple-400 to-blue-400"
-        />
-      )}
-
       <Icon
         className={cn(
           'w-4 h-4 flex-shrink-0',
-          active
-            ? 'text-gray-900 dark:text-white'
-            : 'text-gray-400 group-hover:text-gray-700'
+          active ? 'text-sidebar-primary' : 'text-muted-foreground'
         )}
       />
-
       {!collapsed && <span className="whitespace-nowrap">{label}</span>}
     </Link>
   )
-
-  if (collapsed)
-    return (
-      <Tooltip>
-        <TooltipTrigger asChild>{Component}</TooltipTrigger>
-        <TooltipContent side="right">{label}</TooltipContent>
-      </Tooltip>
-    )
-
-  return Component
 }

@@ -81,7 +81,9 @@ export default function EditCategoryPage() {
     <div className="max-w-xl mx-auto p-6 space-y-6">
       {/* HEADER */}
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Chỉnh sửa danh mục</h1>
+        <h1 className="text-2xl font-semibold dark:text-gray-900">
+          Chỉnh sửa danh mục
+        </h1>
         <Button
           variant="destructive"
           onClick={deleteCategory}

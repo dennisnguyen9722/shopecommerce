@@ -111,21 +111,31 @@ export default function ProductsPage() {
   }, [filters, allProducts])
 
   return (
-    <div className="container mx-auto px-4 max-w-7xl py-12 flex gap-12">
-      <ProductFilterSidebar
-        categories={categories}
-        onFilterChange={setFilters}
-      />
+    <div className="bg-white min-h-screen">
+      <div className="container mx-auto px-4 max-w-7xl py-12 flex gap-12">
+        <ProductFilterSidebar
+          categories={categories}
+          onFilterChange={setFilters}
+        />
 
-      <div className="flex-1">
-        <h1 className="text-2xl font-bold mb-6">Tất cả sản phẩm</h1>
+        <div className="flex-1">
+          <h1 className="text-2xl font-bold mb-6 text-gray-900">
+            Tất cả sản phẩm
+          </h1>
 
-        {loading && <div>Đang tải...</div>}
+          {loading && <div className="text-gray-600">Đang tải...</div>}
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-          {products.map((p) => (
-            <ProductCard key={p._id} product={p as any} />
-          ))}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+            {products.map((p) => (
+              <ProductCard key={p._id} product={p as any} />
+            ))}
+          </div>
+
+          {!loading && products.length === 0 && (
+            <div className="text-center py-12 text-gray-500">
+              Không tìm thấy sản phẩm nào
+            </div>
+          )}
         </div>
       </div>
     </div>

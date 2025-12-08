@@ -54,7 +54,9 @@ export default function BannersPage() {
       {/* HEADER */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Banner</h1>
+          <h1 className="text-2xl font-semibold tracking-tight dark:text-gray-900">
+            Banner
+          </h1>
           <p className="text-sm text-muted-foreground">
             Quản lý slideshow hiển thị ngoài trang chủ.
           </p>

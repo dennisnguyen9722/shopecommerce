@@ -9,7 +9,7 @@ import { toast } from 'sonner'
 import RoleConfigModal from '@/app/admin/(dashboard)/settings/roles/role-modal'
 
 // ICONS
-import { ShieldCheck, ShieldAlert } from 'lucide-react'
+import { ShieldCheck, ShieldAlert, Plus } from 'lucide-react'
 
 export default function RolesPage() {
   const [selectedRole, setSelectedRole] = useState<any>(null)
@@ -36,14 +36,18 @@ export default function RolesPage() {
   if (isLoading) return <p>Đang tải...</p>
 
   return (
-    <div className="p-6 space-y-6 max-w-3xl mx-auto">
-      <h1 className="text-2xl font-semibold">Phân quyền (Roles)</h1>
-      <p className="text-muted-foreground">
-        Tạo, chỉnh sửa và phân quyền cho nhân sự trong hệ thống.
-      </p>
+    <div className="p-6 space-y-6 max-w-4xl mx-auto">
+      {/* HEADER */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold dark:text-gray-900">
+            Phân quyền (Roles)
+          </h1>
+          <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+            Tạo, chỉnh sửa và phân quyền cho nhân sự trong hệ thống.
+          </p>
+        </div>
 
-      {/* NEW: Button tạo role */}
-      <div className="flex justify-end">
         <Button
           onClick={() =>
             setSelectedRole({
@@ -54,6 +58,7 @@ export default function RolesPage() {
             })
           }
         >
+          <Plus className="w-4 h-4 mr-2" />
           Tạo Role mới
         </Button>
       </div>

@@ -42,7 +42,9 @@ export default function NewCategoryPage() {
 
   return (
     <div className="max-w-xl mx-auto p-6 space-y-6">
-      <h1 className="text-2xl font-semibold">Tạo danh mục mới</h1>
+      <h1 className="text-2xl font-semibold dark:text-gray-900">
+        Tạo danh mục mới
+      </h1>
 
       <GlassCard className="p-5 space-y-5">
         <div className="space-y-2">

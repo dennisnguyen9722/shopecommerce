@@ -119,7 +119,9 @@ export default function CustomersPage() {
       {/* HEADER */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold">Khách hàng</h1>
+          <h1 className="text-2xl font-semibold dark:text-gray-900">
+            Khách hàng
+          </h1>
           <p className="text-sm text-muted-foreground mt-1">
             Quản lý thông tin khách hàng và chương trình loyalty
           </p>
@@ -302,8 +304,12 @@ export default function CustomersPage() {
 
                   <TableCell>
                     <div className="text-sm">
-                      <div className="text-gray-900">{c.email}</div>
-                      <div className="text-gray-500">{c.phone || '—'}</div>
+                      <div className="text-gray-900 dark:text-white">
+                        {c.email}
+                      </div>
+                      <div className="text-gray-500 dark:text-white">
+                        {c.phone || '—'}
+                      </div>
                     </div>
                   </TableCell>
 
@@ -355,7 +361,7 @@ export default function CustomersPage() {
                     </Badge>
                   </TableCell>
 
-                  <TableCell className="text-sm text-gray-600">
+                  <TableCell className="text-sm text-gray-600 dark:text-white">
                     {new Date(c.createdAt).toLocaleDateString('vi-VN')}
                   </TableCell>
 

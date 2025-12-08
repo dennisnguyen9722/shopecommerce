@@ -47,7 +47,7 @@ export default function NewTagPage() {
 
   return (
     <div className="p-6 max-w-2xl mx-auto space-y-6">
-      <h1 className="text-2xl font-semibold">Tạo tag mới</h1>
+      <h1 className="text-2xl font-semibold dark:text-gray-900">Tạo tag mới</h1>
 
       <GlassCard className="p-5 space-y-4">
         <div className="space-y-2">

@@ -38,6 +38,7 @@ import {
 
 import { Input } from '@/components/ui/input'
 import GlassCard from '@/src/components/admin/GlassCard'
+import { useRouter } from 'next/navigation'
 
 interface BlogCategory {
   _id: string
@@ -60,6 +61,8 @@ export default function BlogCategoriesPage() {
   // Pagination
   const [page, setPage] = useState(1)
   const perPage = 10
+
+  const router = useRouter()
 
   async function load() {
     try {
@@ -112,16 +115,16 @@ export default function BlogCategoriesPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold">Danh mục bài viết</h1>
+          <h1 className="text-2xl font-semibold dark:text-gray-900">
+            Danh mục bài viết
+          </h1>
           <p className="text-sm text-muted-foreground">
             Quản lý danh mục blog.
           </p>
         </div>
 
-        <Button asChild>
-          <Link href="/admin/blog/categories/new">
-            <Plus className="mr-2 h-4 w-4" /> Tạo danh mục
-          </Link>
+        <Button onClick={() => router.push('/admin/blog/categories/new')}>
+          <Plus className="w-4 h-4 mr-2" /> Tạo danh mục
         </Button>
       </div>
 

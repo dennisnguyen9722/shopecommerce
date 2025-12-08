@@ -55,6 +55,7 @@ import publicPostsRouter from './routes/public/posts'
 import publicBlogCategoriesRouter from './routes/public/blog-categories'
 
 import publicAuthRoutes from './routes/public/auth'
+import publicProfileRouter from './routes/public/profile'
 
 // 🆕 NEW - LOYALTY SYSTEM (PUBLIC)
 import publicLoyaltyRoutes from './routes/public/loyalty'
@@ -131,7 +132,7 @@ app.use('/public/products', publicProducts)
 app.use('/public/blog', publicBlog)
 app.use('/public/orders', publicOrders)
 app.use('/public/customer-auth', customerAuthRoutes)
-
+app.use('/public/profile', publicProfileRouter)
 app.use('/public/auth', publicAuthRoutes)
 app.use('/public/posts', publicPostsRouter)
 app.use('/public/blog-categories', publicBlogCategoriesRouter)

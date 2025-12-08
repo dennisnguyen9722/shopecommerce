@@ -116,7 +116,9 @@ export default function CreateProductPage() {
           <div className="text-sm text-muted-foreground">
             Sản phẩm / Tạo mới
           </div>
-          <h1 className="text-2xl font-semibold mt-1">Tạo sản phẩm mới</h1>
+          <h1 className="text-2xl font-semibold mt-1 dark:text-gray-900">
+            Tạo sản phẩm mới
+          </h1>
         </div>
         <Button onClick={() => mut.mutate()} disabled={mut.isPending}>
           {mut.isPending ? 'Đang xử lý...' : 'Lưu sản phẩm'}

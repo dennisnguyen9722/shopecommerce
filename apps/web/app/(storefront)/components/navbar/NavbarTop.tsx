@@ -58,13 +58,13 @@ export default function NavbarTop({ scrolled }: NavbarTopProps) {
       }
     }
     syncLoyaltyData()
-  }, [isAuthenticated, token])
+  }, [isAuthenticated, token, updateUser])
 
   return (
     <div
       className={`
-        w-full transition-all duration-300 border-b border-gray-100
-        ${scrolled ? 'bg-white/95 backdrop-blur-sm py-2' : 'bg-white py-4'}
+        w-full transition-all duration-300 border-b border-gray-100! bg-white! sticky top-0 z-50
+        ${scrolled ? 'bg-white!/95 backdrop-blur-sm py-2' : 'bg-white! py-4'}
       `}
     >
       <div className="container mx-auto px-4">
@@ -75,10 +75,10 @@ export default function NavbarTop({ scrolled }: NavbarTopProps) {
               <span className="text-2xl">🎁</span>
             </div>
             <div className="flex flex-col">
-              <span className="font-extrabold text-xl text-gray-900 leading-tight tracking-tight">
+              <span className="font-extrabold text-xl text-gray-900! leading-tight tracking-tight">
                 Dennis<span className="text-orange-600">Shop</span>
               </span>
-              <span className="text-[9px] font-semibold text-gray-400 uppercase tracking-widest">
+              <span className="text-[9px] font-semibold text-gray-400! uppercase tracking-widest">
                 Premium Store
               </span>
             </div>
@@ -90,7 +90,7 @@ export default function NavbarTop({ scrolled }: NavbarTopProps) {
               <input
                 type="text"
                 placeholder="Bạn muốn tìm gì hôm nay?..."
-                className="w-full pl-5 pr-14 py-3 bg-gray-50 border border-gray-200 focus:bg-white focus:border-orange-400 focus:ring-2 focus:ring-orange-100 rounded-full outline-none transition-all duration-300 text-sm placeholder:text-gray-400"
+                className="w-full pl-5 pr-14 py-3 bg-gray-50! text-gray-900! border border-gray-200! focus:bg-white! focus:border-orange-400 focus:ring-2 focus:ring-orange-100 rounded-full outline-none transition-all duration-300 text-sm placeholder:text-gray-400!"
               />
               <button className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-full flex items-center justify-center transition-all shadow-md hover:shadow-lg active:scale-95">
                 <Search className="w-4 h-4" />
@@ -105,7 +105,7 @@ export default function NavbarTop({ scrolled }: NavbarTopProps) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="relative hover:bg-red-50 hover:text-red-600 transition-all rounded-full"
+                className="relative hover:bg-red-100! hover:text-red-600 transition-all rounded-full text-gray-700! bg-orange-50! border border-orange-100!"
               >
                 <Heart className="w-5 h-5" />
                 {wishlistCount > 0 && (
@@ -121,7 +121,7 @@ export default function NavbarTop({ scrolled }: NavbarTopProps) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="relative hover:bg-orange-50 hover:text-orange-600 transition-all rounded-full"
+                className="relative hover:bg-orange-100! hover:text-orange-600 transition-all rounded-full text-gray-700! bg-orange-50! border border-orange-100!"
               >
                 <ShoppingCart className="w-5 h-5" />
                 {cartCount > 0 && (
@@ -141,7 +141,7 @@ export default function NavbarTop({ scrolled }: NavbarTopProps) {
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="pl-2 pr-3 h-auto py-1.5 rounded-full hover:bg-gray-50 border border-gray-200 hover:border-gray-300 gap-2 transition-all"
+                    className="pl-2 pr-3 h-auto py-1.5 rounded-full bg-white! hover:bg-gray-50! border border-gray-200! hover:border-gray-300! gap-2 transition-all"
                   >
                     <Avatar className="h-9 w-9 ring-2 ring-white shadow-sm">
                       <AvatarImage src={user.avatar} alt={user.name} />
@@ -150,7 +150,7 @@ export default function NavbarTop({ scrolled }: NavbarTopProps) {
                       </AvatarFallback>
                     </Avatar>
                     <div className="hidden lg:flex flex-col items-start text-xs mr-1">
-                      <span className="font-bold text-gray-800 max-w-[100px] truncate">
+                      <span className="font-bold text-gray-800! max-w-[100px] truncate">
                         {user.name}
                       </span>
                       <span className="text-orange-600 font-semibold text-[11px]">
@@ -161,12 +161,12 @@ export default function NavbarTop({ scrolled }: NavbarTopProps) {
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent
-                  className="w-64 p-0 rounded-2xl shadow-2xl border border-gray-100"
+                  className="w-64 p-0 rounded-2xl shadow-2xl border border-gray-100! bg-white! z-[9999]"
                   align="end"
                   forceMount
                 >
                   <DropdownMenuLabel className="p-0">
-                    <div className="flex items-center gap-3 p-4 bg-gradient-to-br from-orange-50 to-red-50 border-b border-gray-100 rounded-t-2xl">
+                    <div className="flex items-center gap-3 p-4 bg-gradient-to-br from-orange-50 to-red-50 border-b border-gray-100! rounded-t-2xl">
                       <Avatar className="h-12 w-12 ring-2 ring-white shadow-md">
                         <AvatarImage src={user.avatar} />
                         <AvatarFallback className="bg-gradient-to-br from-orange-400 via-red-500 to-pink-500 text-white font-bold text-lg">
@@ -174,7 +174,7 @@ export default function NavbarTop({ scrolled }: NavbarTopProps) {
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex flex-col">
-                        <span className="font-bold text-sm text-gray-800">
+                        <span className="font-bold text-sm text-gray-800!">
                           {user.name}
                         </span>
                         <span className="text-xs font-bold text-orange-600 bg-orange-100 px-2 py-0.5 rounded-full w-fit mt-1">
@@ -184,24 +184,26 @@ export default function NavbarTop({ scrolled }: NavbarTopProps) {
                     </div>
                   </DropdownMenuLabel>
 
-                  <div className="p-2">
+                  <div className="p-2 bg-white!">
                     <DropdownMenuItem asChild>
                       <Link
                         href="/profile"
-                        className="cursor-pointer gap-3 py-2.5 px-3 rounded-lg"
+                        className="cursor-pointer gap-3 py-2.5 px-3 rounded-lg hover:bg-gray-50! text-gray-700!"
                       >
-                        <User size={18} className="text-gray-400" />
-                        <span className="font-medium">Hồ sơ cá nhân</span>
+                        <User size={18} className="text-gray-400!" />
+                        <span className="font-medium text-gray-700!">
+                          Hồ sơ cá nhân
+                        </span>
                       </Link>
                     </DropdownMenuItem>
 
                     <DropdownMenuItem asChild>
                       <Link
                         href="/loyalty"
-                        className="cursor-pointer gap-3 py-2.5 px-3 rounded-lg"
+                        className="cursor-pointer gap-3 py-2.5 px-3 rounded-lg hover:bg-indigo-50! text-indigo-600!"
                       >
-                        <Gift size={18} className="text-indigo-400" />
-                        <span className="font-medium text-indigo-600">
+                        <Gift size={18} className="text-indigo-400!" />
+                        <span className="font-medium text-indigo-600!">
                           Điểm & Đổi quà
                         </span>
                       </Link>
@@ -210,18 +212,20 @@ export default function NavbarTop({ scrolled }: NavbarTopProps) {
                     <DropdownMenuItem asChild>
                       <Link
                         href="/tracking"
-                        className="cursor-pointer gap-3 py-2.5 px-3 rounded-lg"
+                        className="cursor-pointer gap-3 py-2.5 px-3 rounded-lg hover:bg-blue-50! text-gray-700!"
                       >
-                        <Package size={18} className="text-blue-400" />
-                        <span className="font-medium">Theo dõi đơn hàng</span>
+                        <Package size={18} className="text-blue-400!" />
+                        <span className="font-medium text-gray-700!">
+                          Theo dõi đơn hàng
+                        </span>
                       </Link>
                     </DropdownMenuItem>
 
-                    <DropdownMenuSeparator className="my-2" />
+                    <DropdownMenuSeparator className="my-2 bg-gray-200!" />
 
                     <DropdownMenuItem
                       onClick={logout}
-                      className="text-red-600 focus:bg-red-50 focus:text-red-700 cursor-pointer gap-3 py-2.5 px-3 font-medium rounded-lg"
+                      className="text-red-600! focus:bg-red-50! focus:text-red-700! cursor-pointer gap-3 py-2.5 px-3 font-medium rounded-lg hover:bg-red-50!"
                     >
                       <LogOut size={18} /> Đăng xuất
                     </DropdownMenuItem>
@@ -232,7 +236,7 @@ export default function NavbarTop({ scrolled }: NavbarTopProps) {
               <div className="flex items-center gap-2">
                 <Link
                   href="/login"
-                  className="hidden md:block text-sm font-semibold text-gray-600 hover:text-orange-600 transition-colors px-3"
+                  className="hidden md:block text-sm font-semibold text-gray-600! hover:text-orange-600 transition-colors px-3"
                 >
                   Đăng nhập
                 </Link>

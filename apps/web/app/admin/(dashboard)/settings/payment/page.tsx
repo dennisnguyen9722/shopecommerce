@@ -64,7 +64,8 @@ export default function PaymentMethodsPage() {
     }
   })
 
-  if (isLoading) return <p>Đang tải...</p>
+  if (isLoading)
+    return <p className="p-6 text-gray-600 dark:text-gray-300">Đang tải...</p>
 
   const onDragEnd = (event: any) => {
     const { active, over } = event
@@ -80,11 +81,18 @@ export default function PaymentMethodsPage() {
   }
 
   return (
-    <div className="p-6 space-y-6 max-w-3xl mx-auto">
-      <h1 className="text-2xl font-semibold">Phương thức thanh toán</h1>
-      <p className="text-muted-foreground">
-        Bật/tắt và cấu hình các phương thức thanh toán cho cửa hàng.
-      </p>
+    <div className="p-6 space-y-6 max-w-4xl mx-auto">
+      {/* HEADER */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold dark:text-gray-900">
+            Phương thức thanh toán
+          </h1>
+          <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+            Bật/tắt và cấu hình các phương thức thanh toán cho cửa hàng.
+          </p>
+        </div>
+      </div>
 
       <DndContext
         sensors={sensors}
@@ -98,42 +106,48 @@ export default function PaymentMethodsPage() {
           <div className="space-y-4">
             {data?.map((item: any) => (
               <SortableItem key={item.key} id={item.key}>
-                <GlassCard>
-                  <div className="flex items-center justify-between py-4">
-                    {/* LEFT SECTION: Drag handle + icon + text */}
+                <GlassCard className="p-0">
+                  <div className="flex items-center justify-between p-6">
+                    {/* LEFT SECTION */}
                     <div className="flex items-center gap-4">
                       {/* ICONS */}
                       {item.key === 'cod' && (
-                        <div className="p-2 rounded-lg bg-blue-50">
-                          <Truck className="h-6 w-6 text-blue-600" />
+                        <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-900/30">
+                          <Truck className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                         </div>
                       )}
 
                       {item.key === 'bank' && (
-                        <div className="p-2 rounded-lg bg-green-50">
-                          <Landmark className="h-6 w-6 text-green-600" />
+                        <div className="p-3 rounded-lg bg-green-50 dark:bg-green-900/30">
+                          <Landmark className="h-6 w-6 text-green-600 dark:text-green-400" />
                         </div>
                       )}
 
                       {item.key === 'momo' && (
-                        <img
-                          src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png"
-                          alt="momo"
-                          className="h-8 w-8 rounded"
-                        />
+                        <div className="p-3 rounded-lg bg-pink-50 dark:bg-pink-900/30">
+                          <img
+                            src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png"
+                            alt="momo"
+                            className="h-6 w-6 rounded"
+                          />
+                        </div>
                       )}
 
                       {item.key === 'stripe' && (
-                        <img
-                          src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/stripe.svg"
-                          alt="stripe"
-                          className="h-8 w-8 rounded"
-                        />
+                        <div className="p-3 rounded-lg bg-purple-50 dark:bg-purple-900/30">
+                          <img
+                            src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/stripe.svg"
+                            alt="stripe"
+                            className="h-6 w-6 rounded"
+                          />
+                        </div>
                       )}
 
                       <div>
-                        <h3 className="text-lg font-semibold">{item.name}</h3>
-                        <p className="text-sm text-muted-foreground">
+                        <h3 className="text-base font-semibold text-gray-900 dark:text-white">
+                          {item.name}
+                        </h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">
                           {item.key === 'cod' && 'Thanh toán khi nhận hàng.'}
                           {item.key === 'bank' &&
                             'Khách chuyển khoản trước khi giao hàng.'}
@@ -144,8 +158,8 @@ export default function PaymentMethodsPage() {
                       </div>
                     </div>
 
-                    {/* RIGHT: toggle + config */}
-                    <div className="flex items-center gap-4">
+                    {/* RIGHT */}
+                    <div className="flex items-center gap-3">
                       <Switch
                         checked={item.enabled}
                         onCheckedChange={() => toggleMutation.mutate(item.key)}
@@ -154,6 +168,7 @@ export default function PaymentMethodsPage() {
                       <Button
                         variant="outline"
                         onClick={() => setSelectedMethod(item)}
+                        className="min-w-[100px]"
                       >
                         Cấu hình
                       </Button>

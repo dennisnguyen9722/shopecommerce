@@ -19,29 +19,16 @@ interface Step3Props {
 export default function Step3Confirm({ back, address, payment }: Step3Props) {
   const { cart, totalPrice, clearCart } = useCart()
 
-  // -----------------
-  // VOUCHER STATE (LOYALTY)
-  // -----------------
   const [voucherCode, setVoucherCode] = useState('')
   const [appliedVoucher, setAppliedVoucher] = useState<any>(null)
   const [checkingVoucher, setCheckingVoucher] = useState(false)
-
-  // -----------------
-  // COUPON STATE (NEW SYSTEM)
-  // -----------------
   const [appliedCoupon, setAppliedCoupon] = useState<any>(null)
 
-  // -----------------
-  // PRICE CALCULATION
-  // -----------------
   const discountAmount =
     appliedCoupon?.discountAmount || appliedVoucher?.discountAmount || 0
 
   const finalTotal = Math.max(0, totalPrice - discountAmount)
 
-  // ===========================
-  // APPLY VOUCHER (LOYALTY)
-  // ===========================
   const handleApplyVoucher = async () => {
     if (appliedCoupon) {
       toast.error('Bạn đã áp dụng Coupon. Hãy xoá Coupon trước.')
@@ -85,9 +72,6 @@ export default function Step3Confirm({ back, address, payment }: Step3Props) {
     setVoucherCode('')
   }
 
-  // ===========================
-  // APPLY COUPON (NEW SYSTEM)
-  // ===========================
   const handleApplyCoupon = (coupon: any) => {
     if (appliedVoucher) {
       toast.error('Bạn đã áp dụng Voucher. Hãy xoá Voucher trước.')
@@ -102,9 +86,6 @@ export default function Step3Confirm({ back, address, payment }: Step3Props) {
     setAppliedCoupon(null)
   }
 
-  // ===========================
-  // PLACE ORDER
-  // ===========================
   const [loading, setLoading] = useState(false)
 
   const placeOrder = async () => {
@@ -159,50 +140,71 @@ export default function Step3Confirm({ back, address, payment }: Step3Props) {
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-6">Xác nhận đơn hàng</h2>
+      <h2 className="text-xl font-semibold mb-6 !text-gray-900">
+        Xác nhận đơn hàng
+      </h2>
 
       {/* Thông tin giao hàng */}
-      <div className="p-5 bg-gray-50 rounded-xl mb-6 border">
-        <h3 className="font-semibold mb-3">Thông tin giao hàng</h3>
+      <div className="p-5 !bg-gray-50 rounded-xl mb-6 border border-gray-200">
+        <h3 className="font-semibold mb-3 !text-gray-900">
+          Thông tin giao hàng
+        </h3>
 
-        <div className="text-sm space-y-1">
-          <p>Người nhận: {address.name}</p>
-          <p>Email: {address.email}</p>
-          <p>SĐT: {address.phone}</p>
-          <p>Địa chỉ: {address.address}</p>
-          <p>Thanh toán: {paymentLabels[payment]}</p>
+        <div className="text-sm space-y-1.5 !text-gray-700">
+          <p>
+            <span className="font-medium">Người nhận:</span> {address.name}
+          </p>
+          <p>
+            <span className="font-medium">Email:</span> {address.email}
+          </p>
+          <p>
+            <span className="font-medium">SĐT:</span> {address.phone}
+          </p>
+          <p>
+            <span className="font-medium">Địa chỉ:</span> {address.address}
+          </p>
+          <p>
+            <span className="font-medium">Thanh toán:</span>{' '}
+            {paymentLabels[payment]}
+          </p>
         </div>
       </div>
 
       {/* Sản phẩm */}
-      <div className="border rounded-xl overflow-hidden mb-6">
-        <div className="bg-gray-50 px-4 py-3 font-semibold border-b">
+      <div className="border border-gray-200 rounded-xl overflow-hidden mb-6 !bg-white">
+        <div className="!bg-gray-50 px-4 py-3 font-semibold border-b border-gray-200 !text-gray-900">
           Sản phẩm ({cart.length})
         </div>
         <div className="p-4 space-y-3">
           {cart.map((i) => (
-            <div key={i._id} className="flex justify-between text-sm">
-              <div className="flex gap-3">
+            <div
+              key={i._id}
+              className="flex justify-between text-sm items-center"
+            >
+              <div className="flex gap-3 items-center">
                 <img
                   src={i.image}
-                  className="w-10 h-10 rounded border"
+                  className="w-12 h-12 rounded border border-gray-200 object-cover"
                   alt=""
                 />
                 <div>
-                  <p className="font-medium">{i.name}</p>
-                  <p className="text-xs text-gray-500">SL: {i.quantity}</p>
+                  <p className="font-medium !text-gray-900">{i.name}</p>
+                  <p className="text-xs !text-gray-500">SL: {i.quantity}</p>
                 </div>
               </div>
-              <span>{(i.price * i.quantity).toLocaleString('vi-VN')}₫</span>
+              <span className="font-semibold !text-gray-900">
+                {(i.price * i.quantity).toLocaleString('vi-VN')}₫
+              </span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* 🎫 Coupon mới */}
-      <div className="border rounded-xl p-4 mb-6">
-        <h3 className="font-semibold mb-2">Mã giảm giá (Coupon)</h3>
-
+      {/* Coupon */}
+      <div className="border border-gray-200 rounded-xl p-4 mb-4 !bg-white">
+        <h3 className="font-semibold mb-3 !text-gray-900">
+          Mã giảm giá (Coupon)
+        </h3>
         <CouponInput
           subtotal={totalPrice}
           customerEmail={address.email}
@@ -212,11 +214,13 @@ export default function Step3Confirm({ back, address, payment }: Step3Props) {
         />
       </div>
 
-      {/* 🎁 Loyalty Voucher */}
-      <div className="border rounded-xl p-4 mb-6">
+      {/* Voucher */}
+      <div className="border border-gray-200 rounded-xl p-4 mb-6 !bg-white">
         <div className="flex items-center gap-2 mb-3">
           <Tag className="text-indigo-600" size={18} />
-          <span className="font-semibold text-sm">Voucher (Thành viên)</span>
+          <span className="font-semibold text-sm !text-gray-900">
+            Voucher (Thành viên)
+          </span>
         </div>
 
         {!appliedVoucher ? (
@@ -225,6 +229,7 @@ export default function Step3Confirm({ back, address, payment }: Step3Props) {
               placeholder="Nhập mã voucher"
               value={voucherCode}
               onChange={(e) => setVoucherCode(e.target.value.toUpperCase())}
+              className="!bg-white !text-gray-900 border-gray-300"
             />
             <Button
               onClick={handleApplyVoucher}
@@ -239,7 +244,7 @@ export default function Step3Confirm({ back, address, payment }: Step3Props) {
             </Button>
           </div>
         ) : (
-          <div className="bg-green-50 p-3 rounded border flex justify-between">
+          <div className="bg-green-50 p-3 rounded border border-green-200 flex justify-between">
             <div>
               <p className="font-bold text-green-700">{appliedVoucher.code}</p>
               <p className="text-xs text-green-600">
@@ -260,23 +265,27 @@ export default function Step3Confirm({ back, address, payment }: Step3Props) {
       </div>
 
       {/* Tổng tiền */}
-      <div className="bg-orange-50 p-5 rounded-xl border">
-        <div className="mb-4 text-sm space-y-1">
-          <div className="flex justify-between">
+      <div className="bg-orange-50 p-5 rounded-xl border border-orange-200">
+        <div className="mb-4 text-sm space-y-2">
+          <div className="flex justify-between !text-gray-700">
             <span>Tạm tính:</span>
-            <span>{totalPrice.toLocaleString('vi-VN')}₫</span>
+            <span className="font-semibold">
+              {totalPrice.toLocaleString('vi-VN')}₫
+            </span>
           </div>
 
           {discountAmount > 0 && (
-            <div className="flex justify-between text-green-600">
+            <div className="flex justify-between text-green-600 font-medium">
               <span>Giảm giá:</span>
               <span>-{discountAmount.toLocaleString('vi-VN')}₫</span>
             </div>
           )}
         </div>
 
-        <div className="flex justify-between items-center">
-          <span className="text-lg font-semibold">Tổng thanh toán:</span>
+        <div className="flex justify-between items-center pt-3 border-t border-orange-200">
+          <span className="text-lg font-semibold !text-gray-900">
+            Tổng thanh toán:
+          </span>
           <span className="text-2xl text-orange-600 font-bold">
             {finalTotal.toLocaleString('vi-VN')}₫
           </span>
@@ -284,17 +293,27 @@ export default function Step3Confirm({ back, address, payment }: Step3Props) {
       </div>
 
       {/* Buttons */}
-      <div className="flex justify-between mt-8 gap-4">
-        <button onClick={back} className="flex-1 px-5 py-3 border rounded-xl">
+      <div className="flex gap-4 mt-8">
+        <button
+          onClick={back}
+          className="flex-1 px-5 py-3 !bg-white !text-gray-700 border border-gray-300 rounded-xl font-medium hover:bg-gray-50 transition-colors"
+        >
           Quay lại
         </button>
 
         <button
           onClick={placeOrder}
           disabled={loading}
-          className="flex-1 px-6 py-3 bg-green-600 text-white rounded-xl font-bold"
+          className="flex-1 px-6 py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-300 text-white rounded-xl font-bold transition-colors shadow-lg flex items-center justify-center gap-2"
         >
-          {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Đặt hàng'}
+          {loading ? (
+            <>
+              <Loader2 className="w-5 h-5 animate-spin" />
+              <span>Đang xử lý...</span>
+            </>
+          ) : (
+            'Đặt hàng'
+          )}
         </button>
       </div>
     </div>

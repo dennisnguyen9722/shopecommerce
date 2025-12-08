@@ -134,7 +134,9 @@ export default function RewardsPage() {
     <div className="p-6 space-y-6">
       {/* HEADER */}
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Quản lý Đổi quà (Rewards)</h1>
+        <h1 className="text-2xl font-semibold dark:text-gray-900">
+          Quản lý Đổi quà (Rewards)
+        </h1>
         <Button onClick={() => router.push('/admin/rewards/new')}>
           <Plus className="w-4 h-4 mr-2" /> Tạo quà mới
         </Button>

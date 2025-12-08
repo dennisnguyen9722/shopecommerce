@@ -136,7 +136,9 @@ export default function EditProductPage({
           <div className="text-sm text-muted-foreground">
             Sản phẩm / {currentName}
           </div>
-          <h1 className="text-2xl font-semibold mt-1">Chỉnh sửa sản phẩm</h1>
+          <h1 className="text-2xl font-semibold mt-1 dark:text-gray-900">
+            Chỉnh sửa sản phẩm
+          </h1>
         </div>
 
         <div className="flex gap-3">

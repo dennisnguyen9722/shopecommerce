@@ -153,7 +153,7 @@ export default function EditPostPage() {
       {/* HEADER */}
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">
+          <h1 className="text-2xl font-semibold tracking-tight dark:text-gray-900">
             Chỉnh sửa bài viết
           </h1>
           <p className="text-xs text-muted-foreground mt-1">
@@ -219,7 +219,7 @@ export default function EditPostPage() {
           {/* EDITOR */}
           <GlassCard className="p-5 space-y-3">
             <Label className="font-medium">Nội dung chi tiết</Label>
-            <div className="border rounded-xl overflow-hidden bg-white">
+            <div className="border rounded-xl overflow-hidden bg-white dark:bg-gray-900">
               <Editor value={content} onChange={setContent} />
             </div>
           </GlassCard>

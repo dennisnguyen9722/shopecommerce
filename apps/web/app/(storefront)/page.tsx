@@ -65,9 +65,9 @@ export default async function HomePage() {
             <input
               type="email"
               placeholder="Nhập email của bạn..."
-              className="flex-1 px-6 py-4 rounded-2xl border-2 border-white/30 bg-white/10 backdrop-blur-xl text-white placeholder-white/60 focus:outline-none focus:border-white/60 transition-all"
+              className="flex-1 px-6 py-4 rounded-2xl border-2 border-white/30! bg-white/10! backdrop-blur-xl! text-white! placeholder-white/60! focus:outline-none focus:border-white/60! transition-all"
             />
-            <button className="px-8 py-4 rounded-2xl font-bold bg-white text-orange-500 hover:bg-gray-100 hover:scale-105 transition-all duration-300 shadow-2xl">
+            <button className="px-8 py-4 rounded-2xl font-bold bg-white text-orange-500! hover:bg-gray-100 hover:scale-105 transition-all duration-300 shadow-2xl">
               Đăng ký ngay
             </button>
           </div>

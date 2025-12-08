@@ -74,7 +74,9 @@ export default function CreateCategoryPage() {
           <div className="text-sm text-muted-foreground">
             Danh mục / Tạo mới
           </div>
-          <h1 className="text-2xl font-semibold mt-1">Tạo danh mục</h1>
+          <h1 className="text-2xl font-semibold mt-1 dark:text-gray-900">
+            Tạo danh mục
+          </h1>
         </div>
         <Button onClick={() => mut.mutate()} disabled={mut.isPending}>
           {mut.isPending ? 'Đang tạo...' : 'Tạo danh mục'}

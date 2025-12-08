@@ -71,7 +71,9 @@ export default function EditTagPage() {
   return (
     <div className="p-6 max-w-2xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Chỉnh sửa tag</h1>
+        <h1 className="text-2xl font-semibold dark:text-gray-900">
+          Chỉnh sửa tag
+        </h1>
         <Button variant="destructive" onClick={deleteTag} disabled={deleting}>
           {deleting ? 'Đang xoá...' : 'Xoá'}
         </Button>

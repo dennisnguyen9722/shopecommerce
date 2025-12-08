@@ -36,6 +36,7 @@ import {
   AlertDialogTitle
 } from '@/components/ui/alert-dialog'
 import GlassCard from '@/src/components/admin/GlassCard'
+import { useRouter } from 'next/navigation'
 
 interface BlogTag {
   _id: string
@@ -50,6 +51,8 @@ export default function BlogTagsPage() {
 
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [deleting, setDeleting] = useState(false)
+
+  const router = useRouter()
 
   async function load() {
     try {
@@ -85,16 +88,14 @@ export default function BlogTagsPage() {
       {/* HEADER */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold">Tags</h1>
+          <h1 className="text-2xl font-semibold dark:text-gray-900">Tags</h1>
           <p className="text-sm text-muted-foreground">
             Quản lý tag cho bài viết.
           </p>
         </div>
 
-        <Button asChild>
-          <Link href="/admin/blog/tags/new">
-            <Plus className="mr-2 h-4 w-4" /> Tạo tag
-          </Link>
+        <Button onClick={() => router.push('/admin/blog/tags/new')}>
+          <Plus className="w-4 h-4 mr-2" /> Tạo danh mục
         </Button>
       </div>
 
