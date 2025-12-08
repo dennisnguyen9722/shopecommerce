@@ -1,4 +1,6 @@
 import axios from 'axios'
+// 👇 1. Import store để lấy token
+import { useAuthStore } from '@/src/store/authStore'
 
 function normalizeBaseURL(url?: string) {
   try {
@@ -19,8 +21,35 @@ const rawBaseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
 const baseURL = normalizeBaseURL(rawBaseURL)
 
 const serverApi = axios.create({
-  baseURL
-  // không interceptor token
+  baseURL,
+  headers: {
+    'Content-Type': 'application/json'
+  }
 })
+
+// 👇 2. THÊM ĐOẠN INTERCEPTOR NÀY (QUAN TRỌNG NHẤT)
+// Tác dụng: Trước khi gửi request đi, nó tự động lấy Token từ kho (Store) dán vào Header
+serverApi.interceptors.request.use(
+  (config) => {
+    // Lấy token trực tiếp từ State của Zustand (cách lấy khi không ở trong Component React)
+    const token = useAuthStore.getState().token
+
+    console.log(
+      '🚀 Request Token:',
+      token ? 'CÓ TOKEN' : 'KHÔNG CÓ TOKEN',
+      config.url
+    )
+
+    if (token) {
+      // Gắn vào Header: Authorization: Bearer <token>
+      config.headers.Authorization = `Bearer ${token}`
+    }
+
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
+  }
+)
 
 export default serverApi

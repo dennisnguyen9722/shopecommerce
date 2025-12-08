@@ -1,3 +1,5 @@
+// backend/src/constants/permissions.ts
+
 export const PERMISSIONS = {
   DASHBOARD: {
     VIEW: 'dashboard.view'
@@ -40,10 +42,17 @@ export const PERMISSIONS = {
   REWARDS: {
     MANAGE: 'rewards.manage'
   },
-
-  // ⭐️ THÊM BLOCK COUPONS Ở ĐÂY
   COUPONS: {
     MANAGE: 'coupons.manage'
+  },
+
+  // 🌟 THÊM MỚI - REVIEWS
+  REVIEWS: {
+    READ: 'reviews.read',
+    CREATE: 'reviews.create',
+    UPDATE: 'reviews.update',
+    DELETE: 'reviews.delete',
+    MANAGE: 'reviews.manage' // Bao gồm approve/reject/reply
   },
 
   SETTINGS: {

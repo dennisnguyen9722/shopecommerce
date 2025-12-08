@@ -25,7 +25,8 @@ export default function NavbarCategories() {
   }, [])
 
   return (
-    <div className="w-full bg-white border-b border-gray-100 shadow-sm">
+    // 👇 Nền trong suốt để ăn theo hiệu ứng blur của cha
+    <div className="w-full bg-transparent">
       <div className="container mx-auto px-4">
         <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-3">
           {/* Nút Tất cả sản phẩm */}
@@ -48,7 +49,7 @@ export default function NavbarCategories() {
             <Link
               key={cat._id}
               href={`/category/${cat.slug}`}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-gradient-to-r hover:from-orange-50 hover:to-red-50 text-gray-600 hover:text-orange-700 text-sm font-medium transition-all duration-200 whitespace-nowrap shrink-0 border border-transparent hover:border-orange-200"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-orange-50/80 text-gray-700 hover:text-orange-700 text-sm font-medium transition-all duration-200 whitespace-nowrap shrink-0 border border-transparent hover:border-orange-200"
             >
               {cat.icon?.url ? (
                 <img

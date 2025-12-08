@@ -101,8 +101,28 @@ const ProductSchema = new Schema(
     // Thống kê (Dùng để sort hoặc filter)
     sold: { type: Number, default: 0 }, // Đã bán
     viewCount: { type: Number, default: 0 }, // Lượt xem
-    rating: { type: Number, default: 0 }, // Điểm đánh giá trung bình
-    numReviews: { type: Number, default: 0 } // Số lượng đánh giá
+
+    // ===== 🌟 RATING FIELDS - MỚI CẬP NHẬT =====
+    averageRating: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 5,
+      index: true // Để sort by rating
+    },
+    totalReviews: {
+      type: Number,
+      default: 0,
+      index: true
+    },
+    ratingDistribution: {
+      5: { type: Number, default: 0 },
+      4: { type: Number, default: 0 },
+      3: { type: Number, default: 0 },
+      2: { type: Number, default: 0 },
+      1: { type: Number, default: 0 }
+    }
+    // ==========================================
   },
   {
     timestamps: true // Tự động tạo createdAt, updatedAt

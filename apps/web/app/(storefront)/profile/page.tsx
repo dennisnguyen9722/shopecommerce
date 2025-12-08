@@ -108,7 +108,7 @@ export default function ProfilePage() {
       }
 
       const payload = { ...formData, avatar: finalAvatarUrl }
-      const res = await serverApi.put('/zpublic/profile', payload)
+      const res = await serverApi.put('/public/profile', payload)
 
       updateUser(res.data)
       toast.success('Cập nhật thành công!')
@@ -214,7 +214,8 @@ export default function ProfilePage() {
                   </Button>
                 </DialogTrigger>
 
-                <DialogContent className="sm:max-w-[500px] bg-white text-gray-900 border-gray-200 shadow-xl">
+                <DialogContent className="sm:max-w-[500px] bg-white text-gray-900 border-gray-200 shadow-xl z-[9999]">
+                  {/* 🔥 FIX: Thêm z-[9999] ở đây */}
                   <DialogHeader>
                     <DialogTitle className="text-gray-900 font-bold text-xl">
                       Cập nhật hồ sơ

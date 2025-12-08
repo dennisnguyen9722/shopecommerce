@@ -26,6 +26,7 @@ const PRODUCT_FIELDS = `
   isHot
   isFeatured
   isPublished
+  stock
 `
 
 // ======================================================

@@ -53,6 +53,8 @@ import publicBlog from './routes/public/blog'
 import publicOrders from './routes/public/orders'
 import publicPostsRouter from './routes/public/posts'
 import publicBlogCategoriesRouter from './routes/public/blog-categories'
+import publicReviewsRoutes from './routes/public/reviews'
+import adminReviewsRoutes from './routes/admin/reviews'
 
 import publicAuthRoutes from './routes/public/auth'
 import publicProfileRouter from './routes/public/profile'
@@ -109,6 +111,9 @@ app.use('/admin/notifications', notificationsRoutes)
 app.use('/admin/profile', profileRoutes)
 app.use('/admin/metrics', metricsRoutes)
 
+// 👇 SỬA LẠI DÒNG NÀY: Bỏ chữ /api đi để khớp với frontend
+app.use('/admin/reviews', adminReviewsRoutes)
+
 // ⭐ NEW: ADMIN ORDERS
 app.use('/admin/orders', ordersRouter)
 app.use('/admin/coupons', couponRoutes)
@@ -137,6 +142,9 @@ app.use('/public/auth', publicAuthRoutes)
 app.use('/public/posts', publicPostsRouter)
 app.use('/public/blog-categories', publicBlogCategoriesRouter)
 
+// 👇 SỬA LẠI DÒNG NÀY: Đổi thành /public/reviews để khớp với reviewsApi.ts
+app.use('/public/reviews', publicReviewsRoutes)
+
 // 🆕 NEW: PUBLIC LOYALTY SYSTEM
 app.use('/public/loyalty', publicLoyaltyRoutes)
 
@@ -153,12 +161,8 @@ const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/ecommerce'
 mongoose
   .connect(MONGO_URI)
   .then(async () => {
-    // 👈 Thêm từ khóa 'async' ở đây
     log.info('📦 MongoDB connected')
-
-    // 👇 THÊM DÒNG NÀY: Để nó tự động cập nhật quyền Super Admin
     await seedSuperAdmin()
-
     server.listen(4000, () =>
       log.info('🚀 API running + Socket.IO on http://localhost:4000')
     )

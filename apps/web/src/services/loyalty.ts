@@ -1,5 +1,6 @@
 // src/lib/api/loyalty.ts
 import api from '@/src/lib/api'
+import serverApi from '@/src/lib/serverApi'
 
 export const loyaltyApi = {
   // Lấy thông tin tổng quan (Dashboard)
@@ -87,7 +88,13 @@ export const loyaltyApi = {
   trackOrder: async (email: string, orderNumber: string) => {
     const res = await api.post('/public/orders/track', { email, orderNumber })
     return res.data
-  }
+  },
+
+  getMyOrders: (email: string) =>
+    serverApi.get('/public/orders/my-orders', {
+      // Thêm /public
+      params: { customerEmail: email }
+    })
 }
 
 // Type definitions cho response

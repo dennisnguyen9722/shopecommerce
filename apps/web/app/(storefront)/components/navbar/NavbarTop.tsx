@@ -8,7 +8,9 @@ import {
   LogOut,
   Gift,
   User,
-  Package
+  Package,
+  Loader2,
+  X
 } from 'lucide-react'
 import Link from 'next/link'
 import { useWishlist } from '@/app/contexts/WishlistContext'
@@ -24,8 +26,9 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { loyaltyApi } from '@/src/services/loyalty'
+import serverApi from '@/src/lib/serverApi'
 
 interface NavbarTopProps {
   scrolled: boolean
@@ -36,6 +39,14 @@ export default function NavbarTop({ scrolled }: NavbarTopProps) {
   const { cartCount } = useCart()
   const { user, isAuthenticated, logout, updateUser, token } = useAuthStore()
   const [mounted, setMounted] = useState(false)
+
+  // 🔥 REALTIME SEARCH STATES
+  const [searchText, setSearchText] = useState('')
+  const [searchResults, setSearchResults] = useState<any[]>([])
+  const [isSearching, setIsSearching] = useState(false)
+  const [showResults, setShowResults] = useState(false)
+  const searchRef = useRef<HTMLDivElement>(null)
+  const searchTimer = useRef<any>(null)
 
   useEffect(() => setMounted(true), [])
 
@@ -59,6 +70,58 @@ export default function NavbarTop({ scrolled }: NavbarTopProps) {
     }
     syncLoyaltyData()
   }, [isAuthenticated, token, updateUser])
+
+  // 🔥 REALTIME SEARCH với Debounce
+  useEffect(() => {
+    if (searchTimer.current) clearTimeout(searchTimer.current)
+
+    if (!searchText.trim()) {
+      setSearchResults([])
+      setShowResults(false)
+      return
+    }
+
+    setIsSearching(true)
+
+    searchTimer.current = setTimeout(async () => {
+      try {
+        const { data } = await serverApi.get('/public/products/search', {
+          params: { query: searchText }
+        })
+        setSearchResults(data || [])
+        setShowResults(true)
+      } catch (error) {
+        console.error('Search error:', error)
+        setSearchResults([])
+      } finally {
+        setIsSearching(false)
+      }
+    }, 250)
+
+    return () => {
+      if (searchTimer.current) {
+        clearTimeout(searchTimer.current)
+      }
+    }
+  }, [searchText])
+
+  // Click outside to close
+  useEffect(() => {
+    const handler = (e: any) => {
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
+        setShowResults(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
+  // Clear search
+  const clearSearch = () => {
+    setSearchText('')
+    setSearchResults([])
+    setShowResults(false)
+  }
 
   return (
     <div
@@ -84,17 +147,108 @@ export default function NavbarTop({ scrolled }: NavbarTopProps) {
             </div>
           </Link>
 
-          {/* 2. SEARCH BAR (Modern & Wide) */}
-          <div className="hidden md:flex flex-1 max-w-2xl relative">
+          {/* 2. SEARCH BAR - REALTIME SEARCH */}
+          <div
+            className="hidden md:flex flex-1 max-w-2xl relative"
+            ref={searchRef}
+          >
             <div className="relative w-full group">
               <input
                 type="text"
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                onFocus={() => searchText && setShowResults(true)}
                 placeholder="Bạn muốn tìm gì hôm nay?..."
                 className="w-full pl-5 pr-14 py-3 bg-gray-50! text-gray-900! border border-gray-200! focus:bg-white! focus:border-orange-400 focus:ring-2 focus:ring-orange-100 rounded-full outline-none transition-all duration-300 text-sm placeholder:text-gray-400!"
               />
+
+              {/* Clear button */}
+              {searchText && (
+                <button
+                  type="button"
+                  onClick={clearSearch}
+                  className="absolute right-12 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-400 hover:text-gray-600 transition-colors flex items-center justify-center"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+
               <button className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-full flex items-center justify-center transition-all shadow-md hover:shadow-lg active:scale-95">
-                <Search className="w-4 h-4" />
+                {isSearching ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Search className="w-4 h-4" />
+                )}
               </button>
+
+              {/* 🔥 DROPDOWN RESULTS */}
+              {showResults && (
+                <div className="absolute left-0 right-0 top-full mt-2 bg-white rounded-2xl border border-gray-100 shadow-2xl z-50 overflow-hidden max-h-[500px] overflow-y-auto">
+                  {isSearching && (
+                    <div className="p-8 flex items-center justify-center text-gray-500">
+                      <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                      <span className="text-sm">Đang tìm kiếm...</span>
+                    </div>
+                  )}
+
+                  {!isSearching && searchResults.length === 0 && (
+                    <div className="p-8 text-center">
+                      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <Search className="w-8 h-8 text-gray-400" />
+                      </div>
+                      <p className="text-gray-500 font-medium mb-1">
+                        Không tìm thấy sản phẩm
+                      </p>
+                      <p className="text-sm text-gray-400">
+                        Thử tìm kiếm với từ khóa khác
+                      </p>
+                    </div>
+                  )}
+
+                  {!isSearching && searchResults.length > 0 && (
+                    <div className="p-2">
+                      <div className="px-3 py-2 mb-2">
+                        <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                          {searchResults.length} kết quả
+                        </span>
+                      </div>
+                      {searchResults.map((p: any) => (
+                        <Link
+                          key={p._id}
+                          href={`/products/${p.slug}`}
+                          className="flex items-center gap-4 p-3 hover:bg-gray-50 rounded-xl transition-colors group"
+                          onClick={() => {
+                            setShowResults(false)
+                            setSearchText('')
+                            setSearchResults([])
+                          }}
+                        >
+                          <img
+                            src={p.images?.[0]?.url ?? '/placeholder.png'}
+                            alt={p.name}
+                            className="w-16 h-16 object-cover rounded-lg border border-gray-100 group-hover:border-orange-200"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-semibold text-gray-900 text-sm mb-1 truncate group-hover:text-orange-600">
+                              {p.name}
+                            </h4>
+                            {p.category && (
+                              <p className="text-xs text-gray-500 mb-1">
+                                {typeof p.category === 'string'
+                                  ? p.category
+                                  : p.category.name}
+                              </p>
+                            )}
+                            <p className="text-orange-600 font-bold text-sm">
+                              {p.price?.toLocaleString('vi-VN')}₫
+                            </p>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
