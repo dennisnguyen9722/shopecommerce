@@ -1,29 +1,23 @@
-// app/admin/(dashboard)/reviews/page.tsx
 'use client'
 
-import React, { useState } from 'react'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import {
-  Star,
-  CheckCircle,
-  XCircle,
-  MessageSquare,
-  Search,
-  Filter,
-  MoreVertical,
-  Trash2,
-  Eye,
-  Clock,
-  TrendingUp,
-  Users,
-  BarChart3
-} from 'lucide-react'
+import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import api from '@/src/lib/api'
+import Link from 'next/link'
 import Image from 'next/image'
 import { format } from 'date-fns'
 import { vi } from 'date-fns/locale'
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
 import {
   Select,
   SelectContent,
@@ -31,605 +25,485 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
+import { Badge } from '@/components/ui/badge'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import { Card } from '@/components/ui/card'
-import { Skeleton } from '@/components/ui/skeleton'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription
-} from '@/components/ui/dialog'
-import { Textarea } from '@/components/ui/textarea'
-import {
-  getAdminReviews,
-  getReviewStats,
-  updateReviewStatus,
-  deleteAdminReview,
-  replyToReview,
-  bulkApproveReviews,
-  bulkDeleteReviews,
-  Review
-} from '@/src/services/reviewsApi'
-import { cn } from '@/lib/utils'
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from '@/components/ui/tooltip'
+
+import GlassCard from '@/src/components/admin/GlassCard'
+import ConfirmDeleteDialog from '@/src/components/admin/ConfirmDeleteDialog'
+import ReviewDetailDialog from '@/src/components/admin/ReviewDetailDialog'
+
 import { toast } from 'sonner'
+import { Star, CheckCircle2, Eye, Trash2, Search, Filter } from 'lucide-react'
 
-export default function AdminReviewsPage() {
-  const queryClient = useQueryClient()
+// ===============================================
+// UTILS
+// ===============================================
+const getStatusBadge = (status: string) => {
+  switch (status) {
+    case 'approved':
+      return (
+        <Badge className="bg-green-100 text-green-700 hover:bg-green-200 border-green-200 shadow-none uppercase text-[10px] tracking-wider">
+          Đã duyệt
+        </Badge>
+      )
+    case 'pending':
+      return (
+        <Badge className="bg-yellow-100 text-yellow-700 hover:bg-yellow-200 border-yellow-200 shadow-none uppercase text-[10px] tracking-wider">
+          Chờ duyệt
+        </Badge>
+      )
+    case 'rejected':
+      return (
+        <Badge className="bg-red-100 text-red-700 hover:bg-red-200 border-red-200 shadow-none uppercase text-[10px] tracking-wider">
+          Từ chối
+        </Badge>
+      )
+    default:
+      return <Badge variant="outline">{status}</Badge>
+  }
+}
 
-  // States
-  const [searchQuery, setSearchQuery] = useState('')
-  const [statusFilter, setStatusFilter] = useState<
-    'all' | 'pending' | 'approved'
-  >('all')
-  const [ratingFilter, setRatingFilter] = useState<string>('all')
-  const [currentPage, setCurrentPage] = useState(1)
-  const [selectedReviews, setSelectedReviews] = useState<string[]>([])
-  const [replyDialogOpen, setReplyDialogOpen] = useState(false)
-  const [selectedReview, setSelectedReview] = useState<Review | null>(null)
-  const [replyMessage, setReplyMessage] = useState('')
+export default function ReviewsPage() {
+  const [selectedId, setSelectedId] = useState<string | null>(null)
 
-  // Query: Stats
-  const { data: statsData } = useQuery({
-    queryKey: ['admin-review-stats'],
-    queryFn: getReviewStats
-  })
+  // ===============================================
+  // FILTERS
+  // ===============================================
+  const [page, setPage] = useState(1)
+  const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState('all')
+  const pageSize = 10
 
-  // Query: Reviews
-  const { data: reviewsData, isLoading } = useQuery({
-    queryKey: [
-      'admin-reviews',
-      statusFilter,
-      ratingFilter,
-      searchQuery,
-      currentPage
-    ],
-    queryFn: () =>
-      getAdminReviews({
-        page: currentPage,
-        limit: 20,
-        status: statusFilter === 'all' ? undefined : statusFilter,
-        rating: ratingFilter === 'all' ? undefined : parseInt(ratingFilter),
-        search: searchQuery || undefined,
-        sortBy: '-createdAt'
+  // ===============================================
+  // FETCH REVIEWS
+  // ===============================================
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ['admin-reviews', search, statusFilter, page],
+    queryFn: async () => {
+      const res = await api.get('/admin/reviews', {
+        params: {
+          search,
+          status: statusFilter !== 'all' ? statusFilter : undefined,
+          page,
+          limit: pageSize
+        }
       })
-  })
-
-  // Mutations
-  const approveReviewMutation = useMutation({
-    mutationFn: (reviewId: string) => updateReviewStatus(reviewId, true),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-reviews'] })
-      queryClient.invalidateQueries({ queryKey: ['admin-review-stats'] })
-      toast.success('Đã duyệt đánh giá')
+      return res.data
     }
   })
 
-  const rejectReviewMutation = useMutation({
-    mutationFn: (reviewId: string) => updateReviewStatus(reviewId, false),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-reviews'] })
-      queryClient.invalidateQueries({ queryKey: ['admin-review-stats'] })
-      toast.success('Đã từ chối đánh giá')
-    }
-  })
-
-  const deleteReviewMutation = useMutation({
-    mutationFn: deleteAdminReview,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-reviews'] })
-      queryClient.invalidateQueries({ queryKey: ['admin-review-stats'] })
-      toast.success('Đã xóa đánh giá')
-    }
-  })
-
-  const replyMutation = useMutation({
-    mutationFn: ({
-      reviewId,
-      message
-    }: {
-      reviewId: string
-      message: string
-    }) => replyToReview(reviewId, message),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-reviews'] })
-      setReplyDialogOpen(false)
-      setReplyMessage('')
-      toast.success('Đã gửi phản hồi')
-    }
-  })
-
-  const bulkApproveMutation = useMutation({
-    mutationFn: bulkApproveReviews,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-reviews'] })
-      queryClient.invalidateQueries({ queryKey: ['admin-review-stats'] })
-      setSelectedReviews([])
-      toast.success('Đã duyệt hàng loạt')
-    }
-  })
-
-  const bulkDeleteMutation = useMutation({
-    mutationFn: bulkDeleteReviews,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-reviews'] })
-      queryClient.invalidateQueries({ queryKey: ['admin-review-stats'] })
-      setSelectedReviews([])
-      toast.success('Đã xóa hàng loạt')
-    }
-  })
-
-  // Handlers
-  const handleSelectReview = (reviewId: string) => {
-    setSelectedReviews((prev) =>
-      prev.includes(reviewId)
-        ? prev.filter((id) => id !== reviewId)
-        : [...prev, reviewId]
-    )
-  }
-
-  const handleSelectAll = () => {
-    if (selectedReviews.length === reviews.length) {
-      setSelectedReviews([])
-    } else {
-      setSelectedReviews(reviews.map((r: any) => r._id))
+  // ===============================================
+  // ACTIONS
+  // ===============================================
+  const deleteReview = async (id: string) => {
+    try {
+      await api.delete(`/admin/reviews/${id}`)
+      toast.success('Đã xoá đánh giá')
+      refetch()
+    } catch (e) {
+      toast.error('Lỗi xoá đánh giá')
     }
   }
 
-  const handleReply = (review: Review) => {
-    setSelectedReview(review)
-    setReplyMessage(review.adminReply?.message || '')
-    setReplyDialogOpen(true)
-  }
+  const toggleStatus = async (id: string, current: string) => {
+    try {
+      const newStatus = current === 'approved' ? 'rejected' : 'approved'
+      const statusToSend = current === 'pending' ? 'approved' : newStatus
 
-  const handleDelete = (reviewId: string) => {
-    if (confirm('Bạn có chắc muốn xóa đánh giá này?')) {
-      deleteReviewMutation.mutate(reviewId)
+      await api.put(`/admin/reviews/${id}/status`, { status: statusToSend })
+
+      const msg =
+        statusToSend === 'approved' ? 'Đã duyệt đánh giá' : 'Đã ẩn đánh giá'
+      toast.success(msg)
+      refetch()
+    } catch (e) {
+      toast.error('Lỗi cập nhật trạng thái')
     }
   }
 
-  const handleBulkApprove = () => {
-    if (selectedReviews.length === 0) return
-    bulkApproveMutation.mutate(selectedReviews)
-  }
+  const items = data?.items || []
+  const pagination = data?.pagination || { page: 1, pages: 1, total: 0 }
 
-  const handleBulkDelete = () => {
-    if (selectedReviews.length === 0) return
-    if (confirm(`Xóa ${selectedReviews.length} đánh giá đã chọn?`)) {
-      bulkDeleteMutation.mutate(selectedReviews)
-    }
-  }
+  if (isError) return <div className="p-6 text-red-600">Lỗi tải dữ liệu.</div>
 
-  const reviews = reviewsData?.data?.reviews || []
-  const stats = statsData?.data || {
-    total: 0,
-    pending: 0,
-    approved: 0,
-    averageRating: 0
-  }
-  const pagination = reviewsData?.data?.pagination || {
-    page: 1,
-    totalPages: 1,
-    total: 0
-  }
-
+  // ===============================================
+  // UI
+  // ===============================================
   return (
-    <div className="space-y-6 p-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Quản lý đánh giá
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">
-            Duyệt và quản lý đánh giá sản phẩm từ khách hàng
-          </p>
-        </div>
+    <div className="p-6 space-y-6 max-w-[1600px] mx-auto">
+      {/* HEADER */}
+      <div className="flex flex-col gap-2">
+        <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
+          Đánh giá sản phẩm
+        </h1>
+        <p className="text-muted-foreground">
+          Quản lý và phản hồi ý kiến khách hàng.
+        </p>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Tổng đánh giá
-              </p>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">
-                {stats.total}
-              </p>
-            </div>
-            <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center">
-              <BarChart3 className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Chờ duyệt
-              </p>
-              <p className="text-3xl font-bold text-orange-600 dark:text-orange-400 mt-2">
-                {stats.pending}
-              </p>
-            </div>
-            <div className="w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/20 flex items-center justify-center">
-              <Clock className="w-6 h-6 text-orange-600 dark:text-orange-400" />
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Đã duyệt
-              </p>
-              <p className="text-3xl font-bold text-green-600 dark:text-green-400 mt-2">
-                {stats.approved}
-              </p>
-            </div>
-            <div className="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
-              <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Rating TB
-              </p>
-              <p className="text-3xl font-bold text-yellow-600 dark:text-yellow-400 mt-2">
-                {stats.averageRating.toFixed(1)}
-              </p>
-            </div>
-            <div className="w-12 h-12 rounded-full bg-yellow-100 dark:bg-yellow-900/20 flex items-center justify-center">
-              <Star className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
-            </div>
-          </div>
-        </Card>
-      </div>
-
-      {/* Filters */}
-      <Card className="p-6">
-        <div className="flex flex-col sm:flex-row gap-4">
-          {/* Search */}
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+      {/* FILTER BAR */}
+      <GlassCard className="p-4">
+        <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+          <div className="relative w-full md:w-96">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Tìm kiếm trong đánh giá..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
+              placeholder="Tìm theo nội dung, tên khách, email..."
+              className="pl-9 bg-white dark:bg-gray-900/50"
+              value={search}
+              onChange={(e) => {
+                setPage(1)
+                setSearch(e.target.value)
+              }}
             />
           </div>
 
-          {/* Status Filter */}
-          <Select
-            value={statusFilter}
-            onValueChange={(v) => setStatusFilter(v as any)}
-          >
-            <SelectTrigger className="w-full sm:w-40">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Tất cả</SelectItem>
-              <SelectItem value="pending">Chờ duyệt</SelectItem>
-              <SelectItem value="approved">Đã duyệt</SelectItem>
-            </SelectContent>
-          </Select>
-
-          {/* Rating Filter */}
-          <Select value={ratingFilter} onValueChange={setRatingFilter}>
-            <SelectTrigger className="w-full sm:w-40">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Tất cả sao</SelectItem>
-              <SelectItem value="5">5 sao</SelectItem>
-              <SelectItem value="4">4 sao</SelectItem>
-              <SelectItem value="3">3 sao</SelectItem>
-              <SelectItem value="2">2 sao</SelectItem>
-              <SelectItem value="1">1 sao</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Bulk Actions */}
-        {selectedReviews.length > 0 && (
-          <div className="flex items-center gap-3 mt-4 pt-4 border-t">
-            <span className="text-sm text-gray-600 dark:text-gray-400">
-              Đã chọn {selectedReviews.length} đánh giá
-            </span>
-            <Button size="sm" onClick={handleBulkApprove}>
-              <CheckCircle className="w-4 h-4 mr-2" />
-              Duyệt hàng loạt
-            </Button>
-            <Button size="sm" variant="destructive" onClick={handleBulkDelete}>
-              <Trash2 className="w-4 h-4 mr-2" />
-              Xóa hàng loạt
-            </Button>
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            <Filter className="h-4 w-4 text-muted-foreground hidden md:block" />
+            <Select
+              value={statusFilter}
+              onValueChange={(v) => {
+                setPage(1)
+                setStatusFilter(v)
+              }}
+            >
+              <SelectTrigger className="w-full md:w-[180px] bg-white dark:bg-gray-900/50">
+                <SelectValue placeholder="Trạng thái" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Tất cả trạng thái</SelectItem>
+                <SelectItem value="approved">Đã duyệt</SelectItem>
+                <SelectItem value="pending">Chờ duyệt</SelectItem>
+                <SelectItem value="rejected">Đã từ chối</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-        )}
-      </Card>
+        </div>
+      </GlassCard>
 
-      {/* Reviews Table */}
-      <Card>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50 dark:bg-gray-800 border-b">
-              <tr>
-                <th className="px-6 py-3 text-left">
-                  <input
-                    type="checkbox"
-                    checked={
-                      selectedReviews.length === reviews.length &&
-                      reviews.length > 0
-                    }
-                    onChange={handleSelectAll}
-                    className="rounded"
-                  />
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
-                  Sản phẩm
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
-                  Khách hàng
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
-                  Rating
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
-                  Nội dung
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
-                  Trạng thái
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
-                  Ngày tạo
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
-                  Thao tác
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-              {isLoading ? (
-                [...Array(5)].map((_, i) => (
-                  <tr key={i}>
-                    <td className="px-6 py-4" colSpan={8}>
-                      <Skeleton className="h-16 w-full" />
-                    </td>
-                  </tr>
-                ))
-              ) : reviews.length === 0 ? (
-                <tr>
-                  <td colSpan={8} className="px-6 py-12 text-center">
-                    <MessageSquare className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                    <p className="text-gray-500">Không có đánh giá nào</p>
-                  </td>
-                </tr>
-              ) : (
-                reviews.map((review: any) => {
-                  const product =
-                    typeof review.product === 'object' ? review.product : null
-                  const customer =
-                    typeof review.customer === 'object' ? review.customer : null
+      {/* TABLE */}
+      <GlassCard className="overflow-hidden p-0">
+        <Table>
+          <TableHeader className="bg-gray-50 dark:bg-gray-900/50">
+            <TableRow>
+              <TableHead className="w-[300px]">Sản phẩm</TableHead>
+              <TableHead className="w-[250px]">Người đánh giá</TableHead>
+              <TableHead className="w-[120px]">Rating</TableHead>
+              <TableHead>Nội dung</TableHead>
+              <TableHead className="w-[150px]">Thời gian</TableHead>
+              <TableHead className="w-[120px]">Trạng thái</TableHead>
+              <TableHead className="w-[120px] text-right">Thao tác</TableHead>
+            </TableRow>
+          </TableHeader>
 
-                  return (
-                    <tr
-                      key={review._id}
-                      className="hover:bg-gray-50 dark:hover:bg-gray-800/50"
-                    >
-                      <td className="px-6 py-4">
-                        <input
-                          type="checkbox"
-                          checked={selectedReviews.includes(review._id)}
-                          onChange={() => handleSelectReview(review._id)}
-                          className="rounded"
-                        />
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          {product && product.images && product.images[0] && (
+          <TableBody>
+            {isLoading ? (
+              // Loading Skeleton
+              Array.from({ length: 5 }).map((_, i) => (
+                <TableRow key={i}>
+                  <TableCell
+                    colSpan={7}
+                    className="h-16 text-center text-muted-foreground animate-pulse"
+                  >
+                    Đang tải dữ liệu...
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : items.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={7}
+                  className="h-32 text-center text-muted-foreground"
+                >
+                  Không tìm thấy đánh giá nào phù hợp.
+                </TableCell>
+              </TableRow>
+            ) : (
+              items.map((item: any) => {
+                // ========================================================
+                // 1️⃣ LOGIC LẤY ẢNH (FIXED FOR OBJECT STRUCTURE)
+                // ========================================================
+
+                const rawImg = item.product?.images?.[0]
+                let validProductImg: string | null = null
+
+                // Case 1: Nếu là string (format cũ)
+                if (typeof rawImg === 'string' && rawImg.trim() !== '') {
+                  validProductImg = rawImg
+                }
+                // Case 2: Nếu là object chứa url (format Cloudinary như trong hình)
+                else if (rawImg && typeof rawImg === 'object' && rawImg.url) {
+                  validProductImg = rawImg.url
+                }
+
+                const productName = item.product?.name || 'Sản phẩm đã xoá'
+
+                // Tương tự với Avatar nếu cần
+                const rawAvatar = item.customerAvatar
+                let validAvatar: string | null = null
+                if (typeof rawAvatar === 'string' && rawAvatar.trim() !== '') {
+                  validAvatar = rawAvatar
+                } else if (
+                  rawAvatar &&
+                  typeof rawAvatar === 'object' &&
+                  rawAvatar.url
+                ) {
+                  validAvatar = rawAvatar.url
+                }
+                // ========================================================
+
+                return (
+                  <TableRow
+                    key={item._id}
+                    className="hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors"
+                  >
+                    {/* CỘT SẢN PHẨM */}
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <div className="relative h-12 w-12 rounded-md overflow-hidden border bg-gray-100 flex-shrink-0">
+                          {/* Chỉ render Image component nếu validProductImg hợp lệ */}
+                          {validProductImg ? (
                             <Image
-                              src={product.images[0].url}
-                              alt={product.name}
-                              width={40}
-                              height={40}
-                              className="rounded object-cover"
+                              src={validProductImg}
+                              alt={productName}
+                              fill
+                              className="object-cover"
+                              sizes="48px"
                             />
+                          ) : (
+                            <div className="h-full w-full flex items-center justify-center text-xs text-gray-400 bg-gray-200">
+                              No img
+                            </div>
                           )}
-                          <div className="max-w-xs">
-                            <p className="font-medium text-gray-900 dark:text-white truncate">
-                              {product?.name || 'N/A'}
-                            </p>
+                        </div>
+
+                        <div className="flex flex-col">
+                          {item.product ? (
+                            <Link
+                              href={`/admin/products/${item.product._id}`}
+                              className="font-medium text-sm text-gray-900 dark:text-gray-100 hover:text-blue-600 hover:underline line-clamp-1"
+                              title={productName}
+                            >
+                              {productName}
+                            </Link>
+                          ) : (
+                            <span className="font-medium text-sm text-gray-400 italic">
+                              Sản phẩm đã xoá
+                            </span>
+                          )}
+                          <span className="text-xs text-muted-foreground">
+                            ID: {item.product?._id?.slice(-6) || 'N/A'}
+                          </span>
+                        </div>
+                      </div>
+                    </TableCell>
+
+                    {/* CỘT NGƯỜI ĐÁNH GIÁ */}
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-9 w-9 border">
+                          {validAvatar && <AvatarImage src={validAvatar} />}
+                          <AvatarFallback className="text-xs font-bold bg-orange-100 text-orange-700">
+                            {item.isAnonymous
+                              ? 'A'
+                              : item.customerName?.[0] || 'U'}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex flex-col">
+                          {item.isAnonymous ? (
+                            <span className="font-medium text-sm italic text-gray-500">
+                              Ẩn danh
+                            </span>
+                          ) : (
+                            <>
+                              <span className="font-medium text-sm">
+                                {item.customerName || 'Khách hàng'}
+                              </span>
+                              <span
+                                className="text-xs text-muted-foreground truncate max-w-[140px]"
+                                title={item.customerEmail}
+                              >
+                                {item.customerEmail}
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </TableCell>
+
+                    {/* RATING */}
+                    <TableCell>
+                      <div className="flex gap-0.5">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <Star
+                            key={i}
+                            size={14}
+                            className={
+                              i < item.rating
+                                ? 'fill-yellow-400 text-yellow-400'
+                                : 'fill-gray-100 text-gray-300'
+                            }
+                          />
+                        ))}
+                      </div>
+                    </TableCell>
+
+                    {/* NỘI DUNG */}
+                    <TableCell>
+                      <div
+                        className="max-w-[300px] text-sm text-gray-600 dark:text-gray-300 line-clamp-2"
+                        title={item.content}
+                      >
+                        {item.content}
+                      </div>
+                      {item.images?.length > 0 && (
+                        <div className="flex gap-1 mt-1">
+                          <div className="px-1.5 py-0.5 bg-gray-100 rounded text-[10px] text-gray-500 border inline-flex items-center gap-1">
+                            📷 Có {item.images.length} ảnh review
                           </div>
                         </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div>
-                          <p className="font-medium text-gray-900 dark:text-white">
-                            {customer?.name || 'N/A'}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            {customer?.email || ''}
-                          </p>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-1">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className={cn(
-                                'w-4 h-4',
-                                i < review.rating
-                                  ? 'text-yellow-400 fill-yellow-400'
-                                  : 'text-gray-300'
-                              )}
-                            />
-                          ))}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="max-w-xs">
-                          <p className="font-medium text-gray-900 dark:text-white truncate">
-                            {review.title}
-                          </p>
-                          <p className="text-sm text-gray-500 truncate">
-                            {review.comment}
-                          </p>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        {review.isApproved ? (
-                          <Badge className="bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400">
-                            <CheckCircle className="w-3 h-3 mr-1" />
-                            Đã duyệt
-                          </Badge>
-                        ) : (
-                          <Badge className="bg-orange-100 text-orange-700 dark:bg-orange-900/20 dark:text-orange-400">
-                            <Clock className="w-3 h-3 mr-1" />
-                            Chờ duyệt
-                          </Badge>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-500">
-                        {format(new Date(review.createdAt), 'dd/MM/yyyy', {
-                          locale: vi
-                        })}
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon">
-                              <MoreVertical className="w-4 h-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            {!review.isApproved && (
-                              <DropdownMenuItem
-                                onClick={() =>
-                                  approveReviewMutation.mutate(review._id)
-                                }
-                              >
-                                <CheckCircle className="w-4 h-4 mr-2" />
-                                Duyệt
-                              </DropdownMenuItem>
-                            )}
-                            {review.isApproved && (
-                              <DropdownMenuItem
-                                onClick={() =>
-                                  rejectReviewMutation.mutate(review._id)
-                                }
-                              >
-                                <XCircle className="w-4 h-4 mr-2" />
-                                Từ chối
-                              </DropdownMenuItem>
-                            )}
-                            <DropdownMenuItem
-                              onClick={() => handleReply(review)}
-                            >
-                              <MessageSquare className="w-4 h-4 mr-2" />
-                              Phản hồi
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => handleDelete(review._id)}
-                              className="text-red-600"
-                            >
-                              <Trash2 className="w-4 h-4 mr-2" />
-                              Xóa
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </td>
-                    </tr>
-                  )
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
+                      )}
+                    </TableCell>
 
-        {/* Pagination */}
-        {pagination.totalPages > 1 && (
-          <div className="flex items-center justify-between px-6 py-4 border-t">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Trang {pagination.page} / {pagination.totalPages}
-            </p>
+                    {/* THỜI GIAN */}
+                    <TableCell className="text-sm text-gray-500">
+                      <div className="flex flex-col">
+                        <span>
+                          {format(new Date(item.createdAt), 'dd/MM/yyyy', {
+                            locale: vi
+                          })}
+                        </span>
+                        <span className="text-xs">
+                          {format(new Date(item.createdAt), 'HH:mm', {
+                            locale: vi
+                          })}
+                        </span>
+                      </div>
+                    </TableCell>
+
+                    {/* TRẠNG THÁI */}
+                    <TableCell>{getStatusBadge(item.status)}</TableCell>
+
+                    {/* THAO TÁC */}
+                    <TableCell className="text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className={`h-8 w-8 ${
+                                  item.status === 'approved'
+                                    ? 'text-green-600 hover:text-green-700 hover:bg-green-50'
+                                    : 'text-gray-400 hover:text-green-600 hover:bg-green-50'
+                                }`}
+                                onClick={() =>
+                                  toggleStatus(item._id, item.status)
+                                }
+                              >
+                                <CheckCircle2 size={16} />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>
+                                {item.status === 'approved'
+                                  ? 'Từ chối hiển thị'
+                                  : 'Duyệt hiển thị'}
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                                onClick={() => setSelectedId(item._id)}
+                              >
+                                <Eye size={16} />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Xem chi tiết & Trả lời</p>
+                            </TooltipContent>
+                          </Tooltip>
+
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              {/* Wrap div để tránh lỗi ref tooltip */}
+                              <div>
+                                <ConfirmDeleteDialog
+                                  trigger={
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50"
+                                    >
+                                      <Trash2 size={16} />
+                                    </Button>
+                                  }
+                                  title="Xoá đánh giá?"
+                                  description="Hành động này sẽ xoá vĩnh viễn đánh giá này khỏi hệ thống."
+                                  onConfirm={() => deleteReview(item._id)}
+                                />
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Xoá vĩnh viễn</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                )
+              })
+            )}
+          </TableBody>
+        </Table>
+
+        {/* PAGINATION */}
+        {pagination.pages > 1 && (
+          <div className="flex items-center justify-between p-4 border-t bg-gray-50/50">
+            <div className="text-sm text-muted-foreground">
+              Trang {pagination.page} / {pagination.pages}
+            </div>
             <div className="flex gap-2">
               <Button
                 variant="outline"
                 size="sm"
-                disabled={currentPage === 1}
-                onClick={() => setCurrentPage((p) => p - 1)}
+                disabled={page <= 1}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
               >
                 Trước
               </Button>
+
               <Button
                 variant="outline"
                 size="sm"
-                disabled={currentPage === pagination.totalPages}
-                onClick={() => setCurrentPage((p) => p + 1)}
+                disabled={page >= pagination.pages}
+                onClick={() =>
+                  setPage((p) => Math.min(pagination.pages, p + 1))
+                }
               >
                 Sau
               </Button>
             </div>
           </div>
         )}
-      </Card>
+      </GlassCard>
 
-      {/* Reply Dialog */}
-      <Dialog open={replyDialogOpen} onOpenChange={setReplyDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Phản hồi đánh giá</DialogTitle>
-            <DialogDescription>
-              Gửi phản hồi của shop cho khách hàng
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 mt-4">
-            <Textarea
-              placeholder="Nhập nội dung phản hồi..."
-              rows={5}
-              value={replyMessage}
-              onChange={(e) => setReplyMessage(e.target.value)}
-            />
-            <div className="flex justify-end gap-2">
-              <Button
-                variant="outline"
-                onClick={() => setReplyDialogOpen(false)}
-              >
-                Hủy
-              </Button>
-              <Button
-                onClick={() => {
-                  if (selectedReview && replyMessage.trim()) {
-                    replyMutation.mutate({
-                      reviewId: selectedReview._id,
-                      message: replyMessage.trim()
-                    })
-                  }
-                }}
-                disabled={!replyMessage.trim() || replyMutation.isPending}
-              >
-                {replyMutation.isPending ? 'Đang gửi...' : 'Gửi phản hồi'}
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <ReviewDetailDialog
+        reviewId={selectedId}
+        onClose={() => setSelectedId(null)}
+      />
     </div>
   )
 }

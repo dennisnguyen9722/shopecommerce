@@ -21,7 +21,8 @@ import {
   CreditCard,
   Truck,
   UserCircle,
-  Gift
+  Gift,
+  Star
 } from 'lucide-react'
 
 import { motion, AnimatePresence } from 'framer-motion'
@@ -79,6 +80,7 @@ export function Sidebar({
   const canShipping = useAdminPermission(PERMISSIONS.SETTINGS.MANAGE)
   const canUsers = useAdminPermission(PERMISSIONS.SYSTEM.MANAGE_USERS)
   const canRoles = useAdminPermission(PERMISSIONS.SYSTEM.MANAGE_ROLES)
+  const canReviews = useAdminPermission(PERMISSIONS.REVIEWS.READ)
 
   return (
     <TooltipProvider delayDuration={80}>
@@ -153,6 +155,16 @@ export function Sidebar({
               icon={Users}
               label="Khách hàng"
               active={pathname.startsWith('/admin/customers')}
+              collapsed={collapsed}
+            />
+          )}
+
+          {canReviews && (
+            <NavItem
+              href="/admin/reviews"
+              icon={Star}
+              label="Đánh giá SP"
+              active={pathname.startsWith('/admin/reviews')}
               collapsed={collapsed}
             />
           )}

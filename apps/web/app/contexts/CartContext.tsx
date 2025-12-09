@@ -4,6 +4,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
+// ⭐ CẬP NHẬT: Thêm đầy đủ thông tin variant
 export type CartItem = {
   _id: string
   name: string
@@ -11,8 +12,14 @@ export type CartItem = {
   price: number
   image?: string
   quantity: number
+
+  // ⭐ THÔNG TIN VARIANT (nếu có)
   variantId?: string
-  variantName?: string
+  variantName?: string // Tên hiển thị: "Đỏ - XL"
+  sku?: string // SKU của variant
+  color?: string // Màu sắc
+  size?: string // Kích thước
+  variantOptions?: Record<string, string> // { "Màu sắc": "Đỏ", "Size": "XL" }
 }
 
 type CartContextType = {
@@ -26,7 +33,7 @@ type CartContextType = {
     variantId?: string
   ) => void
   clearCart: () => void
-  totalPrice: number // 👈 Đã sửa từ cartTotal thành totalPrice
+  totalPrice: number
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
@@ -58,21 +65,26 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   // LOGIC THÊM GIỎ HÀNG
   const addToCart = (newItem: CartItem) => {
     setCart((prev) => {
+      // ⭐ So sánh cả productId VÀ variantId
       const existingItem = prev.find(
         (item) =>
           item._id === newItem._id && item.variantId === newItem.variantId
       )
 
       if (existingItem) {
+        // Nếu đã có -> Tăng số lượng
         return prev.map((item) =>
           item._id === newItem._id && item.variantId === newItem.variantId
             ? { ...item, quantity: item.quantity + newItem.quantity }
             : item
         )
       }
+
+      // Nếu chưa có -> Thêm mới
       return [...prev, newItem]
     })
-    // toast.success('Đã thêm vào giỏ hàng')
+
+    toast.success('Đã thêm vào giỏ hàng')
   }
 
   // XÓA SẢN PHẨM
@@ -105,13 +117,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem('cart')
   }
 
-  // 🔥 ĐỔI TÊN Ở ĐÂY: cartTotal -> totalPrice
   const totalPrice = cart.reduce(
     (total, item) => total + item.price * item.quantity,
     0
   )
 
-  // Tính tổng số lượng item
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0)
 
   return (
@@ -123,7 +133,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         removeFromCart,
         updateQuantity,
         clearCart,
-        totalPrice // 👈 Truyền totalPrice vào context
+        totalPrice
       }}
     >
       {children}

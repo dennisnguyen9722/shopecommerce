@@ -34,12 +34,6 @@ serverApi.interceptors.request.use(
     // Lấy token trực tiếp từ State của Zustand (cách lấy khi không ở trong Component React)
     const token = useAuthStore.getState().token
 
-    console.log(
-      '🚀 Request Token:',
-      token ? 'CÓ TOKEN' : 'KHÔNG CÓ TOKEN',
-      config.url
-    )
-
     if (token) {
       // Gắn vào Header: Authorization: Bearer <token>
       config.headers.Authorization = `Bearer ${token}`

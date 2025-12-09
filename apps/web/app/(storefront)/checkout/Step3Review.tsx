@@ -3,7 +3,7 @@
 import { useCart } from '@/app/contexts/CartContext'
 import serverApi from '@/src/lib/serverApi'
 import { loyaltyApi } from '@/src/services/loyalty'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Loader2, Tag, X } from 'lucide-react'
 import { toast } from 'sonner'
 import { Input } from '@/components/ui/input'
@@ -92,6 +92,9 @@ export default function Step3Confirm({ back, address, payment }: Step3Props) {
     setLoading(true)
 
     try {
+      // ⭐ DEBUG: Log ra để kiểm tra
+      console.log('🛒 Cart items trước khi gửi:', JSON.stringify(cart, null, 2))
+
       const payload = {
         customerName: address.name,
         customerEmail: address.email,
@@ -99,13 +102,23 @@ export default function Step3Confirm({ back, address, payment }: Step3Props) {
         customerAddress: address.address,
         paymentMethod: payment,
 
+        // ⭐ FIX: Gửi đầy đủ thông tin variant
         items: cart.map((i) => ({
           productId: i._id,
           name: i.name,
           quantity: i.quantity,
           price: i.price,
           image: i.image,
-          slug: i.slug
+          slug: i.slug,
+
+          // ⭐ THÊM THÔNG TIN VARIANT (nếu có)
+          ...(i.variantId && {
+            variantId: i.variantId,
+            sku: i.sku,
+            color: i.color,
+            size: i.size,
+            variantOptions: i.variantOptions || {}
+          })
         })),
 
         subtotal: totalPrice,
@@ -117,6 +130,11 @@ export default function Step3Confirm({ back, address, payment }: Step3Props) {
         couponCode: appliedCoupon?.code || null
       }
 
+      console.log(
+        '📦 Payload gửi lên backend:',
+        JSON.stringify(payload, null, 2)
+      )
+
       const { data } = await serverApi.post('/public/orders', payload)
 
       clearCart()
@@ -126,6 +144,7 @@ export default function Step3Confirm({ back, address, payment }: Step3Props) {
       const orderId = data.data?._id || data._id
       window.location.href = '/orders/' + orderId
     } catch (err: any) {
+      console.error('❌ Lỗi đặt hàng:', err)
       toast.error(err.response?.data?.error || 'Không thể đặt hàng!')
     } finally {
       setLoading(false)
@@ -178,7 +197,7 @@ export default function Step3Confirm({ back, address, payment }: Step3Props) {
         <div className="p-4 space-y-3">
           {cart.map((i) => (
             <div
-              key={i._id}
+              key={`${i._id}-${i.variantId || 'default'}`}
               className="flex justify-between text-sm items-center"
             >
               <div className="flex gap-3 items-center">
@@ -189,6 +208,12 @@ export default function Step3Confirm({ back, address, payment }: Step3Props) {
                 />
                 <div>
                   <p className="font-medium !text-gray-900">{i.name}</p>
+                  {/* ⭐ HIỂN THỊ VARIANT INFO */}
+                  {i.variantName && (
+                    <p className="text-xs !text-gray-500">
+                      Phân loại: {i.variantName}
+                    </p>
+                  )}
                   <p className="text-xs !text-gray-500">SL: {i.quantity}</p>
                 </div>
               </div>

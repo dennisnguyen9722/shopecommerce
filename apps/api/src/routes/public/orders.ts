@@ -13,7 +13,6 @@ import { calculatePointsFromOrder } from '../../utils/loyaltyUtils'
 
 const router = express.Router()
 
-// Helper format tiền
 function formatCurrency(n: number) {
   return n.toLocaleString('vi-VN')
 }
@@ -65,13 +64,11 @@ router.post('/validate-voucher', async (req: Request, res: Response) => {
     }
 
     if (reward.minOrderValue && subtotal < reward.minOrderValue) {
-      return res
-        .status(400)
-        .json({
-          error: `Đơn hàng cần tối thiểu ${formatCurrency(
-            reward.minOrderValue
-          )}₫ để dùng mã này`
-        })
+      return res.status(400).json({
+        error: `Đơn hàng cần tối thiểu ${formatCurrency(
+          reward.minOrderValue
+        )}₫ để dùng mã này`
+      })
     }
 
     let discountAmount = 0
@@ -137,11 +134,9 @@ router.post('/validate-coupon', async (req: Request, res: Response) => {
     }
 
     if (coupon.minOrderAmount && subtotal < coupon.minOrderAmount) {
-      return res
-        .status(400)
-        .json({
-          error: `Đơn tối thiểu ${formatCurrency(coupon.minOrderAmount)}₫`
-        })
+      return res.status(400).json({
+        error: `Đơn tối thiểu ${formatCurrency(coupon.minOrderAmount)}₫`
+      })
     }
 
     let discount = 0
@@ -172,18 +167,15 @@ router.post('/validate-coupon', async (req: Request, res: Response) => {
 // ==================================================
 router.post('/preview', async (req: Request, res: Response) => {
   try {
-    const { items, customerEmail, voucherCode, couponCode } = req.body
+    const { items, customerEmail } = req.body
     const subtotal = items.reduce(
       (sum: number, item: any) => sum + item.price * item.quantity,
       0
     )
 
-    let discount = 0
     let shippingFee = 30000
     let pointsWillEarn = 0
     let tier: LoyaltyTier = 'bronze'
-    let voucherInfo = null
-    let couponInfo = null
 
     if (customerEmail) {
       const customer = await Customer.findOne({
@@ -198,8 +190,8 @@ router.post('/preview', async (req: Request, res: Response) => {
     return res.json({
       subtotal,
       shippingFee,
-      discount,
-      total: subtotal + shippingFee - discount,
+      discount: 0,
+      total: subtotal + shippingFee,
       pointsWillEarn,
       tier,
       message: pointsWillEarn > 0 ? `Nhận ${pointsWillEarn} điểm` : ''
@@ -210,7 +202,7 @@ router.post('/preview', async (req: Request, res: Response) => {
 })
 
 // ==================================================
-// 4. CREATE ORDER (FIXED: MAP productId)
+// 4. ⭐ CREATE ORDER - FIXED VARIANT STOCK
 // ==================================================
 router.post('/', async (req: Request, res: Response) => {
   const session = await mongoose.startSession()
@@ -231,52 +223,74 @@ router.post('/', async (req: Request, res: Response) => {
       discount = 0
     } = req.body
 
-    console.log('📦 [DEBUG] Items received:', JSON.stringify(items, null, 2))
+    console.log('📦 [CREATE ORDER] Bắt đầu tạo đơn hàng')
+    console.log('📦 Items nhận được:', JSON.stringify(items, null, 2))
 
-    // --- 🚨 BƯỚC 1: KIỂM TRA TỒN KHO ---
+    // --- 🔥 BƯỚC 1: VALIDATE & CHECK STOCK ---
     for (const item of items) {
-      // 🔥 FIX QUAN TRỌNG: Thêm item.productId vào danh sách kiểm tra
-      const productId = item.productId || item.product || item._id || item.id
+      const productId = item.productId || item.product || item._id
 
       if (!productId) {
-        throw new Error(`Item "${item.name}" bị thiếu ID sản phẩm!`)
+        throw new Error(`❌ Item "${item.name}" thiếu productId`)
       }
 
       const product = await Product.findById(productId).session(session)
 
       if (!product) {
-        throw new Error(
-          `Sản phẩm "${item.name}" (ID: ${productId}) không tồn tại.`
-        )
+        throw new Error(`❌ Sản phẩm "${item.name}" không tồn tại`)
       }
 
-      // Check variant stock
+      // ⭐ CHECK VARIANT STOCK
       if (item.variantId) {
+        console.log(`🔍 Kiểm tra variant: ${item.variantId}`)
+
         const variant = product.variants?.find(
-          (v: any) => v._id.toString() === item.variantId
+          (v: any) => v._id.toString() === item.variantId.toString()
         )
+
         if (!variant) {
-          throw new Error(`Phân loại hàng của "${item.name}" không tồn tại`)
+          throw new Error(`❌ Biến thể của "${item.name}" không tồn tại`)
         }
+
+        console.log(
+          `📊 Variant stock hiện tại: ${variant.stock}, Đặt: ${item.quantity}`
+        )
+
         if (variant.stock < item.quantity) {
+          // Lấy thông tin màu/size để hiển thị lỗi rõ ràng
+          const colorInfo =
+            variant.options?.get('Màu sắc') ||
+            variant.options?.get('Color') ||
+            ''
+          const sizeInfo =
+            variant.options?.get('Kích thước') ||
+            variant.options?.get('Size') ||
+            ''
+          const variantName = [colorInfo, sizeInfo].filter(Boolean).join(' - ')
+
           throw new Error(
-            `Phân loại "${variant.sku}" của "${item.name}" không đủ hàng (Còn: ${variant.stock})`
+            `❌ "${item.name}" ${
+              variantName ? `(${variantName})` : ''
+            } không đủ hàng. Còn: ${variant.stock}, Đặt: ${item.quantity}`
           )
         }
       } else {
-        // Check main stock
+        // CHECK MAIN STOCK
+        console.log(`📊 Product stock: ${product.stock}, Đặt: ${item.quantity}`)
+
         if ((product.stock || 0) < item.quantity) {
           throw new Error(
-            `Sản phẩm "${item.name}" không đủ hàng (Còn: ${product.stock})`
+            `❌ "${item.name}" không đủ hàng. Còn: ${product.stock}, Đặt: ${item.quantity}`
           )
         }
       }
     }
 
-    let appliedVoucher = null
-    let appliedCoupon = null
-    let finalDiscount = discount
+    console.log('✅ Stock validation passed!')
+
+    // --- BƯỚC 2: XỬ LÝ VOUCHER & COUPON (giữ nguyên logic cũ) ---
     let customer = null
+    let finalDiscount = discount
 
     if (customerEmail) {
       customer = await Customer.findOne({
@@ -284,18 +298,42 @@ router.post('/', async (req: Request, res: Response) => {
       }).session(session)
     }
 
-    // --- XỬ LÝ VOUCHER & COUPON (Rút gọn) ---
-    // ... Logic giữ nguyên ...
+    // Logic voucher/coupon... (giữ nguyên)
 
     const finalTotal = subtotal + shippingFee - finalDiscount
 
-    // --- 🚨 BƯỚC 2: TẠO ĐƠN HÀNG ---
-    const orderItems = items.map((item: any) => ({
-      ...item,
-      // 🔥 FIX QUAN TRỌNG: Map productId vào product để lưu DB đúng
-      product: item.productId || item.product || item._id || item.id
-    }))
+    // --- 🔥 BƯỚC 3: MAP ITEMS CHO ORDER ---
+    const orderItems = items.map((item: any) => {
+      const productId = item.productId || item.product || item._id
 
+      const mappedItem: any = {
+        product: productId,
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+        image: item.image,
+        slug: item.slug
+      }
+
+      // ⭐ NẾU CÓ VARIANT - LƯU ĐẦY ĐỦ THÔNG TIN
+      if (item.variantId) {
+        mappedItem.variantId = item.variantId
+
+        // Lưu thông tin variant để hiển thị sau này
+        mappedItem.variantInfo = {
+          sku: item.sku || item.variantSku,
+          color: item.color,
+          size: item.size,
+          options: item.variantOptions || {}
+        }
+      }
+
+      return mappedItem
+    })
+
+    console.log('📝 Order items đã map:', JSON.stringify(orderItems, null, 2))
+
+    // --- BƯỚC 4: TẠO ORDER ---
     const order = await Order.create(
       [
         {
@@ -316,36 +354,90 @@ router.post('/', async (req: Request, res: Response) => {
       { session }
     )
 
-    // --- 🚨 BƯỚC 3: TRỪ TỒN KHO NGAY LẬP TỨC ---
+    console.log('✅ Order created:', order[0]._id)
+
+    // --- 🔥 BƯỚC 5: TRỪ STOCK ---
     for (const item of orderItems) {
       if (item.variantId) {
-        // Trừ stock variant & stock tổng
-        await Product.updateOne(
-          { _id: item.product, 'variants._id': item.variantId },
+        // ⭐ TRỪ STOCK VARIANT
+        console.log(
+          `📉 Trừ stock variant: ${item.variantId} x ${item.quantity}`
+        )
+
+        const result = await Product.updateOne(
           {
-            $inc: { 'variants.$.stock': -item.quantity, stock: -item.quantity }
+            _id: item.product,
+            'variants._id': item.variantId
+          },
+          {
+            $inc: {
+              'variants.$.stock': -item.quantity,
+              stock: -item.quantity
+            }
           },
           { session }
         )
+
+        console.log(
+          `✅ Variant stock updated: matched=${result.matchedCount}, modified=${result.modifiedCount}`
+        )
+
+        // ⭐ LẤY STOCK MỚI SAU KHI TRỪ
+        const updatedProduct = await Product.findOne(
+          { _id: item.product, 'variants._id': item.variantId },
+          { 'variants.$': 1 }
+        ).session(session)
+
+        const newVariantStock = updatedProduct?.variants?.[0]?.stock || 0
+
+        // ⭐ EMIT REAL-TIME EVENT
+        io.emit('product:stock-updated', {
+          productId: item.product.toString(),
+          variantId: item.variantId.toString(),
+          newStock: newVariantStock,
+          type: 'variant'
+        })
+
+        console.log(
+          `📡 Emitted stock update: variant ${item.variantId} → ${newVariantStock}`
+        )
       } else {
-        // Trừ stock thường
-        await Product.findByIdAndUpdate(
+        // TRỪ STOCK THƯỜNG
+        console.log(`📉 Trừ stock thường: ${item.product} x ${item.quantity}`)
+
+        const updatedProduct = await Product.findByIdAndUpdate(
           item.product,
           { $inc: { stock: -item.quantity } },
-          { session }
+          { session, new: true }
         )
+
+        console.log('✅ Product stock updated')
+
+        // ⭐ EMIT REAL-TIME EVENT
+        if (updatedProduct) {
+          io.emit('product:stock-updated', {
+            productId: item.product.toString(),
+            variantId: null,
+            newStock: updatedProduct.stock,
+            type: 'product'
+          })
+
+          console.log(
+            `📡 Emitted stock update: product ${item.product} → ${updatedProduct.stock}`
+          )
+        }
       }
     }
 
-    // --- CÁC BƯỚC PHỤ ---
+    // --- BƯỚC 6: CÁC XỬ LÝ PHỤ ---
     if (customerEmail) {
       updateCustomerStats(customerEmail).catch((e) =>
-        console.log('Stats error:', e)
+        console.log('Stats update error:', e)
       )
     }
 
     try {
-      const notification = await Notification.create(
+      await Notification.create(
         [
           {
             title: 'Đơn hàng mới',
@@ -357,10 +449,11 @@ router.post('/', async (req: Request, res: Response) => {
         { session }
       )
     } catch (e) {
-      console.log('Notif error:', e)
+      console.log('Notification error:', e)
     }
 
     await session.commitTransaction()
+    console.log('✅ Transaction committed')
 
     io.emit('notification:new', {
       title: 'Đơn hàng mới',
@@ -371,7 +464,7 @@ router.post('/', async (req: Request, res: Response) => {
     return res.json(order[0])
   } catch (err: any) {
     await session.abortTransaction()
-    console.error('❌ [POST /orders] ERROR:', err.message)
+    console.error('❌ [CREATE ORDER] ERROR:', err.message)
     return res.status(400).json({ error: err.message || 'Lỗi tạo đơn hàng' })
   } finally {
     session.endSession()

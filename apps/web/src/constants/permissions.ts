@@ -40,6 +40,13 @@ export const PERMISSIONS = {
   REWARDS: {
     MANAGE: 'rewards.manage' // Loyalty
   },
+  REVIEWS: {
+    READ: 'reviews.read',
+    CREATE: 'reviews.create',
+    UPDATE: 'reviews.update',
+    DELETE: 'reviews.delete',
+    MANAGE: 'reviews.manage'
+  },
   COUPONS: {
     MANAGE: 'coupons.manage'
   },

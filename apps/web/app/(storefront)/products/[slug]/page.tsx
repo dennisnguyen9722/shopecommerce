@@ -1,5 +1,6 @@
 'use client'
 
+import { useRealtimeStock } from '@/src/hooks/useRealtimeStock'
 import { useEffect, useState, use, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import serverApi from '@/src/lib/serverApi'
@@ -27,8 +28,8 @@ import { useToast } from '@/app/(storefront)/components/ToastProvider'
 
 import ProductVariantSelector from './components/ProductVariantSelector'
 import ProductSpecs from './components/ProductSpecs'
-// 👇 IMPORT COMPONENT REVIEW MỚI
-import ProductReviewsSection from './components/ProductReviewsSection'
+import { toast } from 'sonner'
+import ReviewSection from '@/src/components/store/ReviewSection'
 
 type Product = {
   _id: string
@@ -71,6 +72,54 @@ export default function ProductDetailPage({
   const { addToCart } = useCart()
   const { showToast } = useToast()
   const router = useRouter()
+
+  useRealtimeStock({
+    productId: product?._id || '',
+    activeVariantId: activeVariant?._id,
+    enabled: !!product, // Chỉ enable khi đã load xong product
+    onStockUpdate: (data) => {
+      console.log('🔄 [UI] Updating stock:', data)
+
+      setProduct((prev) => {
+        if (!prev) return prev
+
+        // ⭐ UPDATE VARIANT STOCK
+        if (data.type === 'variant' && data.variantId) {
+          const updatedVariants = prev.variants?.map((v: any) =>
+            v._id === data.variantId ? { ...v, stock: data.newStock } : v
+          )
+
+          // Nếu đang xem variant này, cập nhật activeVariant
+          if (activeVariant && activeVariant._id === data.variantId) {
+            setActiveVariant((prevVariant: any) => ({
+              ...prevVariant,
+              stock: data.newStock
+            }))
+          }
+
+          return {
+            ...prev,
+            variants: updatedVariants
+          }
+        }
+
+        // ⭐ UPDATE PRODUCT STOCK
+        if (data.type === 'product') {
+          return {
+            ...prev,
+            stock: data.newStock
+          }
+        }
+
+        return prev
+      })
+
+      // ⭐ OPTIONAL: Hiển thị toast thông báo
+      if (data.newStock === 0) {
+        toast.error('Sản phẩm vừa hết hàng!')
+      }
+    }
+  })
 
   useEffect(() => {
     let mounted = true
@@ -200,18 +249,38 @@ export default function ProductDetailPage({
       return
     }
 
-    addToCart({
+    // ⭐ BUILD CART ITEM VỚI ĐẦY ĐỦ THÔNG TIN VARIANT
+    const cartItem: any = {
       _id: product._id,
       name: product.name,
       slug: product.slug,
       price: displayPrice,
       quantity: 1,
-      image: currentDisplayImage,
-      variantId: activeVariant?._id,
-      variantName: activeVariant
-        ? Object.values(activeVariant.options).join(' / ')
-        : ''
-    })
+      image: currentDisplayImage
+    }
+
+    // ⭐ NẾU CÓ VARIANT - THÊM ĐẦY ĐỦ THÔNG TIN
+    if (activeVariant) {
+      cartItem.variantId = activeVariant._id
+      cartItem.sku = activeVariant.sku
+      cartItem.variantName = Object.values(activeVariant.options || {}).join(
+        ' / '
+      )
+
+      // Lấy thông tin màu sắc và size từ options
+      const options = activeVariant.options || {}
+      cartItem.color =
+        options['Màu sắc'] || options['Color'] || options['Màu'] || null
+      cartItem.size =
+        options['Kích thước'] || options['Size'] || options['Kích cỡ'] || null
+
+      // Lưu toàn bộ options
+      cartItem.variantOptions = options
+    }
+
+    console.log('🛒 Adding to cart:', cartItem)
+
+    addToCart(cartItem)
     showToast(product.name, currentDisplayImage)
   }
 
@@ -517,12 +586,9 @@ export default function ProductDetailPage({
               </div>
             )}
 
-            {/* 👇 RENDER PHẦN REVIEW TẠI ĐÂY */}
+            {/* ⭐ THÊM TAB REVIEW TẠI ĐÂY */}
             {activeTab === 'reviews' && (
-              <ProductReviewsSection
-                productId={product._id}
-                productName={product.name}
-              />
+              <ReviewSection productId={product._id} />
             )}
           </div>
         </div>

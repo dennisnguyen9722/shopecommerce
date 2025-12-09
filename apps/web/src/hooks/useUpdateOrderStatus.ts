@@ -20,7 +20,7 @@ export function useUpdateOrderStatus() {
       status: OrderStatus
     }) => {
       // ✅ SỬA: Dùng ngoặc đơn () thay vì backtick ``
-      const res = await api.patch(`/admin/orders/${orderId}/status`, { status })
+      const res = await api.put(`/admin/orders/${orderId}/status`, { status })
       return res.data
     },
     onSuccess: () => {

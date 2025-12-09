@@ -18,6 +18,10 @@ export const PERMISSION_ROUTES = [
     route: '/admin/customers'
   },
   {
+    perms: [PERMISSIONS.REVIEWS.READ],
+    route: '/admin/reviews'
+  },
+  {
     perms: [PERMISSIONS.BANNERS.MANAGE],
     route: '/admin/banners'
   },

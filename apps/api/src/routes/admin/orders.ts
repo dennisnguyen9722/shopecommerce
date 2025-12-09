@@ -1,6 +1,7 @@
-// routes/admin/orders.ts
 import express, { Request, Response } from 'express'
+import mongoose from 'mongoose'
 import Order from '../../models/Order'
+import Product from '../../models/Product'
 import Notification from '../../models/Notification'
 import { io } from '../../index'
 import { updateCustomerStats } from '../../utils/updateCustomerStats'
@@ -8,7 +9,7 @@ import {
   awardPointsForOrder,
   refundPointsForOrder
 } from '../../utils/orderPointsHook'
-import { sendInvoiceEmail } from '../../services/emailService' // ✅ THÊM IMPORT NÀY
+import { sendInvoiceEmail } from '../../services/emailService'
 
 const router = express.Router()
 
@@ -16,8 +17,97 @@ function formatCurrency(n: number) {
   return n.toLocaleString('vi-VN')
 }
 
+// Hàm hỗ trợ Log (để console đỡ rối)
+const log = (msg: string) => console.log(`[ORDER-ADMIN] ${msg}`)
+
+// =====================================================================
+// 🔥 HÀM XỬ LÝ HOÀN KHO (Tách ra để dùng chung cho cả 2 API)
+// =====================================================================
+async function handleRestockLogic(order: any) {
+  log(`📦 BẮT ĐẦU HOÀN KHO cho đơn: ${order._id}`)
+
+  for (const item of order.items) {
+    const rawItem = item as any
+    let rawId =
+      rawItem.product || rawItem.productId || rawItem._id || rawItem.id
+
+    if (rawId && typeof rawId === 'object' && rawId._id) {
+      rawId = rawId._id
+    }
+
+    if (!rawId) {
+      console.error(
+        `   ❌ LỖI: Item "${item.name}" không tìm thấy ID sản phẩm!`
+      )
+      continue
+    }
+
+    try {
+      const productId = new mongoose.Types.ObjectId(String(rawId))
+
+      if (item.variantId) {
+        // ⭐ HOÀN KHO BIẾN THỂ
+        const variantId = new mongoose.Types.ObjectId(String(item.variantId))
+        const res = await Product.updateOne(
+          { _id: productId, 'variants._id': variantId },
+          {
+            $inc: {
+              'variants.$.stock': item.quantity,
+              stock: item.quantity
+            }
+          }
+        )
+        log(
+          `   🔄 Hoàn kho Biến thể (${item.name}): Matched=${res.matchedCount}, Mod=${res.modifiedCount}`
+        )
+
+        // ⭐ LẤY STOCK MỚI SAU KHI HOÀN
+        const updatedProduct = await Product.findOne(
+          { _id: productId, 'variants._id': variantId },
+          { 'variants.$': 1 }
+        )
+
+        const newVariantStock = updatedProduct?.variants?.[0]?.stock || 0
+
+        // ⭐ EMIT REAL-TIME EVENT
+        io.emit('product:stock-updated', {
+          productId: productId.toString(),
+          variantId: variantId.toString(),
+          newStock: newVariantStock,
+          type: 'variant'
+        })
+
+        log(`   📡 Emitted restock: variant ${variantId} → ${newVariantStock}`)
+      } else {
+        // ⭐ HOÀN KHO SẢN PHẨM THƯỜNG
+        const res = await Product.findByIdAndUpdate(
+          productId,
+          { $inc: { stock: item.quantity } },
+          { new: true }
+        )
+        log(`   🔄 Hoàn kho Thường (${item.name}): ${res ? 'OK' : 'Fail'}`)
+
+        // ⭐ EMIT REAL-TIME EVENT
+        if (res) {
+          io.emit('product:stock-updated', {
+            productId: productId.toString(),
+            variantId: null,
+            newStock: res.stock,
+            type: 'product'
+          })
+
+          log(`   📡 Emitted restock: product ${productId} → ${res.stock}`)
+        }
+      }
+    } catch (e: any) {
+      console.error(`   ❌ Lỗi hoàn kho item ${item.name}:`, e.message)
+    }
+  }
+  log('✅ KẾT THÚC HOÀN KHO')
+}
+
 // ======================
-// CREATE ORDER (ADMIN)
+// CREATE ORDER
 // ======================
 router.post('/', async (req: Request, res: Response) => {
   try {
@@ -30,7 +120,6 @@ router.post('/', async (req: Request, res: Response) => {
       items,
       totalPrice
     } = req.body
-
     const order = await Order.create({
       customerName,
       customerEmail,
@@ -41,233 +130,206 @@ router.post('/', async (req: Request, res: Response) => {
       totalPrice
     })
 
-    // 🆕 Auto update customer stats
-    if (customerEmail) {
-      try {
-        await updateCustomerStats(customerEmail)
-      } catch (cusErr) {
-        console.error('❌ Error updating customer stats:', cusErr)
-      }
-    }
+    if (customerEmail) updateCustomerStats(customerEmail).catch(console.error)
 
-    // 📢 Notification
     try {
       const notification = await Notification.create({
-        title: 'Đơn hàng mới',
-        message: `${customerName} vừa đặt đơn hàng ${formatCurrency(
-          totalPrice
-        )}₫`,
+        title: 'Đơn hàng mới (Admin)',
+        message: `${customerName} lên đơn ${formatCurrency(totalPrice)}`,
         type: 'order',
         orderId: order._id
       })
-
-      io.emit('notification:new', {
-        _id: String(notification._id),
-        title: notification.title,
-        message: notification.message,
-        type: notification.type,
-        isRead: notification.isRead,
-        createdAt: notification.createdAt
-      })
-    } catch (notifErr) {
-      console.error('❌ Error creating notification:', notifErr)
-    }
+      io.emit('notification:new', notification)
+    } catch (e) {}
 
     res.json(order)
   } catch (err) {
-    console.error('❌ [POST /admin/orders] ERROR:', err)
+    console.error('❌ POST /admin/orders:', err)
     res.status(500).json({ error: 'Server error' })
   }
 })
 
 // ======================
-// GET ALL ORDERS
+// GET ALL
 // ======================
 router.get('/', async (_req, res) => {
   try {
     const orders = await Order.find().sort({ createdAt: -1 })
     res.json(orders)
   } catch (err) {
-    console.error('❌ [GET /admin/orders] ERROR:', err)
     res.status(500).json({ error: 'Server error' })
   }
 })
 
 // ======================
-// GET ORDER BY ID
+// GET ONE
 // ======================
 router.get('/:id', async (req: Request, res: Response) => {
   try {
     const order = await Order.findById(req.params.id)
-
     if (!order) return res.status(404).json({ error: 'Order not found' })
-
     res.json(order)
   } catch (err) {
-    console.error('❌ [GET /admin/orders/:id] ERROR:', err)
     res.status(500).json({ error: 'Server error' })
   }
 })
 
 // ======================
-// UPDATE ORDER STATUS (⭐ TÍCH HỢP LOYALTY + EMAIL)
+// ✅ UPDATE STATUS (API RIÊNG) - FIXED
 // ======================
 router.put('/:id/status', async (req: Request, res: Response) => {
   try {
     const { status } = req.body
 
+    // ✅ FIX: Lấy đơn hàng CŨ trước khi update (để có đầy đủ items cho hoàn kho)
     const order = await Order.findById(req.params.id)
     if (!order) return res.status(404).json({ error: 'Order not found' })
 
-    console.log('🔍 Order TRƯỚC khi update:', {
-      id: order._id,
-      status: order.status,
-      customerEmail: order.customerEmail,
-      hasItems: !!order.items,
-      itemsCount: order.items?.length
-    })
+    const oldStatus = order.status.toLowerCase().trim()
+    const newStatus = status.toLowerCase().trim()
 
-    const oldStatus = order.status
+    // Nếu trạng thái không đổi, return luôn
+    if (newStatus === oldStatus) return res.json(order)
 
-    // Update status
+    // CHECK HOÀN KHO
+    const cancelStatuses = [
+      'cancelled',
+      'refunded',
+      'returned',
+      'đã hủy',
+      'hủy'
+    ]
+
+    if (
+      cancelStatuses.includes(newStatus) &&
+      !cancelStatuses.includes(oldStatus)
+    ) {
+      log(`🚨 Phát hiện HỦY ĐỠN từ API /status - Bắt đầu hoàn kho`)
+      // ✅ Dùng order hiện tại (có đầy đủ items)
+      await handleRestockLogic(order)
+    }
+
+    // Update trạng thái
     order.status = status
     await order.save()
 
-    console.log('✅ Order ĐÃ update status:', {
-      id: order._id,
-      newStatus: status,
-      oldStatus: oldStatus
-    })
-
-    // ⭐ LOYALTY: Tích điểm khi order hoàn thành
-    if (
-      (status === 'completed' || status === 'delivered') &&
-      oldStatus !== 'completed' &&
-      oldStatus !== 'delivered'
-    ) {
-      console.log('💰 Bắt đầu xử lý loyalty + email...')
-
-      if (order.customerEmail) {
-        // Tích điểm
-        try {
-          await awardPointsForOrder(
-            order._id.toString(),
-            order.customerEmail,
-            order.totalPrice
-          )
-          console.log(`✅ Awarded points for order ${order._id}`)
-        } catch (pointsErr) {
-          console.error('❌ Error awarding points:', pointsErr)
-        }
-
-        // ✅ GỬI EMAIL - QUAN TRỌNG: Convert sang plain object
-        console.log('📧 Bắt đầu gửi email...')
-        console.log('📧 Order data trước khi gửi:', {
-          _id: order._id,
-          customerEmail: order.customerEmail,
-          customerName: order.customerName,
-          totalPrice: order.totalPrice,
-          itemsCount: order.items?.length
-        })
-
-        try {
-          // ✅ QUAN TRỌNG: Convert Mongoose document sang plain object
-          const orderData = order.toObject()
-
-          console.log('📧 Calling sendInvoiceEmail...')
-          await sendInvoiceEmail(orderData)
-
-          console.log(
-            `📧 ✅ Email hóa đơn đã gửi thành công đến: ${order.customerEmail}`
-          )
-        } catch (emailErr: any) {
-          console.error('⚠️ CHI TIẾT LỖI EMAIL:', {
-            message: emailErr.message,
-            stack: emailErr.stack,
-            name: emailErr.name
-          })
-        }
-      } else {
-        console.log('⚠️ Order không có customerEmail!')
-      }
-    }
-
-    // ⭐ LOYALTY: Hoàn điểm khi order bị hủy
-    if (
-      (status === 'cancelled' || status === 'refunded') &&
-      (oldStatus === 'completed' || oldStatus === 'delivered')
-    ) {
-      if (order.customerEmail) {
-        try {
-          await refundPointsForOrder(
-            order._id.toString(),
-            order.customerEmail,
-            order.totalPrice
-          )
-          console.log(`♻️ Refunded points for order ${order._id}`)
-        } catch (pointsErr) {
-          console.error('❌ Error refunding points:', pointsErr)
-        }
-      }
-    }
-
-    // 🆕 Auto update customer stats khi completed hoặc cancelled
-    if (order.customerEmail && ['completed', 'cancelled'].includes(status)) {
-      try {
-        await updateCustomerStats(order.customerEmail)
-      } catch (cusErr) {
-        console.error('❌ Error updating customer stats:', cusErr)
-      }
-    }
+    // Xử lý Loyalty/Email
+    handlePostUpdateActions(order, newStatus, oldStatus)
 
     res.json(order)
   } catch (err) {
-    console.error('❌ [PUT /admin/orders/:id/status] ERROR:', err)
+    console.error('❌ PUT /admin/orders/:id/status:', err)
     res.status(500).json({ error: 'Server error' })
   }
 })
 
 // ======================
-// UPDATE ORDER
+// ✅ UPDATE GENERAL (API CHUNG) - FIXED
 // ======================
 router.put('/:id', async (req: Request, res: Response) => {
   try {
-    const order = await Order.findByIdAndUpdate(req.params.id, req.body, {
-      new: true
-    })
+    // 1. Lấy đơn cũ trước khi update (để có items cho hoàn kho)
+    const oldOrder = await Order.findById(req.params.id)
+    if (!oldOrder) return res.status(404).json({ error: 'Order not found' })
 
-    if (!order) return res.status(404).json({ error: 'Order not found' })
+    const oldStatus = oldOrder.status.toLowerCase().trim()
 
-    res.json(order)
+    // 2. Update dữ liệu mới
+    const updatedOrder = await Order.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    )
+
+    if (!updatedOrder) return res.status(404).json({ error: 'Update failed' })
+
+    const newStatus = updatedOrder.status.toLowerCase().trim()
+
+    // 3. CHECK HOÀN KHO
+    const cancelStatuses = [
+      'cancelled',
+      'refunded',
+      'returned',
+      'đã hủy',
+      'hủy'
+    ]
+
+    // Nếu trạng thái MỚI là hủy, và trạng thái CŨ chưa hủy => Hoàn kho
+    if (
+      cancelStatuses.includes(newStatus) &&
+      !cancelStatuses.includes(oldStatus)
+    ) {
+      log(`🚨 Phát hiện HỦY ĐƠN từ API Update Chung - Bắt đầu hoàn kho`)
+      // ✅ FIX: Dùng oldOrder (có đầy đủ items) thay vì updatedOrder
+      await handleRestockLogic(oldOrder)
+    }
+
+    // 4. Xử lý Loyalty/Email
+    handlePostUpdateActions(updatedOrder, newStatus, oldStatus)
+
+    res.json(updatedOrder)
   } catch (err) {
-    console.error('❌ [PUT /admin/orders/:id] ERROR:', err)
+    console.error('❌ PUT /admin/orders/:id:', err)
     res.status(500).json({ error: 'Server error' })
   }
 })
 
 // ======================
-// DELETE ORDER
+// DELETE
 // ======================
 router.delete('/:id', async (req: Request, res: Response) => {
   try {
     const order = await Order.findByIdAndDelete(req.params.id)
-
     if (!order) return res.status(404).json({ error: 'Order not found' })
-
-    // Update customer stats sau khi xóa
-    if (order.customerEmail) {
-      try {
-        await updateCustomerStats(order.customerEmail)
-      } catch (cusErr) {
-        console.error('❌ Error updating customer stats:', cusErr)
-      }
-    }
-
+    if (order.customerEmail)
+      updateCustomerStats(order.customerEmail).catch(console.error)
     res.json({ message: 'Order deleted' })
   } catch (err) {
-    console.error('❌ [DELETE /admin/orders/:id] ERROR:', err)
     res.status(500).json({ error: 'Server error' })
   }
 })
+
+// --- Helper Functions ---
+
+async function handlePostUpdateActions(
+  order: any,
+  newStatus: string,
+  oldStatus: string
+) {
+  const completeStatuses = ['completed', 'delivered', 'hoàn thành', 'đã giao']
+  const cancelStatuses = ['cancelled', 'refunded', 'returned', 'đã hủy', 'hủy']
+
+  if (order.customerEmail) {
+    // Tích điểm
+    if (
+      completeStatuses.includes(newStatus) &&
+      !completeStatuses.includes(oldStatus)
+    ) {
+      awardPointsForOrder(
+        order._id.toString(),
+        order.customerEmail,
+        order.totalPrice
+      ).catch(console.error)
+      try {
+        await sendInvoiceEmail(order.toObject())
+      } catch (e) {
+        console.error(e)
+      }
+    }
+    // Trừ điểm
+    if (
+      cancelStatuses.includes(newStatus) &&
+      completeStatuses.includes(oldStatus)
+    ) {
+      refundPointsForOrder(
+        order._id.toString(),
+        order.customerEmail,
+        order.totalPrice
+      ).catch(console.error)
+    }
+    // Update stats
+    updateCustomerStats(order.customerEmail).catch(console.error)
+  }
+}
 
 export default router
