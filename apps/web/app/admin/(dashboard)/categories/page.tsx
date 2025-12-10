@@ -24,8 +24,14 @@ import {
 } from '@/components/ui/select'
 import GlassCard from '@/src/components/admin/GlassCard'
 import ConfirmDeleteDialog from '@/src/components/admin/ConfirmDeleteDialog'
-import { Plus } from 'lucide-react'
+import { Pencil, Plus } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from '@/components/ui/tooltip'
 
 // Types
 interface Category {
@@ -205,122 +211,134 @@ export default function CategoriesPage() {
       )}
 
       {/* TABLE — GLASS */}
-      <GlassCard>
-        <div className="border-b border-white/20 pb-4 mb-4">
-          <h2 className="text-lg font-semibold">Danh sách danh mục</h2>
-        </div>
-
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>
-                <input
-                  type="checkbox"
-                  checked={selected.length === items.length && items.length > 0}
-                  onChange={selectAll}
-                />
-              </TableHead>
-
-              <TableHead>Icon</TableHead>
-              <TableHead>Tên</TableHead>
-              <TableHead>Slug</TableHead>
-              <TableHead>Trạng thái</TableHead>
-              <TableHead>Danh mục cha</TableHead>
-              <TableHead className="text-right">Hành động</TableHead>
-            </TableRow>
-          </TableHeader>
-
-          <TableBody>
-            {items.map((cat) => (
-              <TableRow key={cat._id}>
-                <TableCell>
+      <GlassCard className="overflow-hidden p-0">
+        <div className="w-full overflow-x-auto pb-2">
+          <Table className="min-w-[1000px]">
+            <TableHeader className="bg-gray-50 dark:bg-gray-900/50">
+              <TableRow>
+                <TableHead className="w-[40px]">
                   <input
                     type="checkbox"
-                    checked={selected.includes(cat._id)}
-                    onChange={() => toggleSelect(cat._id)}
+                    checked={
+                      selected.length === items.length && items.length > 0
+                    }
+                    onChange={selectAll}
                   />
-                </TableCell>
+                </TableHead>
 
-                {/* ICON */}
-                <TableCell>
-                  {cat.icon?.url ? (
-                    <img
-                      src={cat.icon.url}
-                      alt={`${cat.name} icon`}
-                      className="w-10 h-10 object-contain rounded-md bg-white p-1 border"
-                    />
-                  ) : (
-                    <div className="w-10 h-10 flex items-center justify-center text-xs text-gray-400 bg-gray-100 rounded-md">
-                      —
-                    </div>
-                  )}
-                </TableCell>
-
-                <TableCell className="font-medium">{cat.name}</TableCell>
-
-                <TableCell className="text-muted-foreground">
-                  {cat.slug}
-                </TableCell>
-
-                <TableCell>
-                  {cat.isActive ? (
-                    <Badge className="bg-green-100 text-green-700">
-                      Hiển thị
-                    </Badge>
-                  ) : (
-                    <Badge variant="secondary">Ẩn</Badge>
-                  )}
-                </TableCell>
-
-                <TableCell>
-                  {cat.parent ? (
-                    <span className="text-gray-700">
-                      {items.find((x) => x._id === cat.parent)?.name || '—'}
-                    </span>
-                  ) : (
-                    <span className="text-gray-400 italic">—</span>
-                  )}
-                </TableCell>
-
-                <TableCell className="text-right">
-                  <Link href={`/admin/categories/${cat._id}`}>
-                    <Button variant="outline" size="sm">
-                      Sửa
-                    </Button>
-                  </Link>
-                </TableCell>
+                <TableHead>Icon</TableHead>
+                <TableHead>Tên</TableHead>
+                <TableHead>Slug</TableHead>
+                <TableHead>Trạng thái</TableHead>
+                <TableHead>Danh mục cha</TableHead>
+                <TableHead className="text-right">Hành động</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+
+            <TableBody>
+              {items.map((cat) => (
+                <TableRow key={cat._id}>
+                  <TableCell>
+                    <input
+                      type="checkbox"
+                      checked={selected.includes(cat._id)}
+                      onChange={() => toggleSelect(cat._id)}
+                    />
+                  </TableCell>
+
+                  {/* ICON */}
+                  <TableCell>
+                    {cat.icon?.url ? (
+                      <img
+                        src={cat.icon.url}
+                        alt={`${cat.name} icon`}
+                        className="w-10 h-10 object-contain rounded-md bg-white p-1 border"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 flex items-center justify-center text-xs text-gray-400 bg-gray-100 rounded-md">
+                        —
+                      </div>
+                    )}
+                  </TableCell>
+
+                  <TableCell className="font-medium">{cat.name}</TableCell>
+
+                  <TableCell className="text-muted-foreground">
+                    {cat.slug}
+                  </TableCell>
+
+                  <TableCell>
+                    {cat.isActive ? (
+                      <Badge className="bg-green-100 text-green-700">
+                        Hiển thị
+                      </Badge>
+                    ) : (
+                      <Badge variant="secondary">Ẩn</Badge>
+                    )}
+                  </TableCell>
+
+                  <TableCell>
+                    {cat.parent ? (
+                      <span className="text-gray-700">
+                        {items.find((x) => x._id === cat.parent)?.name || '—'}
+                      </span>
+                    ) : (
+                      <span className="text-gray-400 italic">—</span>
+                    )}
+                  </TableCell>
+
+                  <TableCell className="text-right">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Link href={`/admin/categories/${cat._id}`}>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                            >
+                              <Pencil size={16} />
+                            </Button>
+                          </Link>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Chỉnh sửa</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+
+        {/* PAGINATION */}
+        <div className="flex justify-between items-center p-4 border-t">
+          <div className="text-xs text-muted-foreground">
+            Trang {pagination.page}/{pagination.pages} · Tổng {pagination.total}{' '}
+            SP
+          </div>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={page <= 1}
+              onClick={() => setPage((p) => p - 1)}
+            >
+              ‹ Trước
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={page >= pagination.pages}
+              onClick={() => setPage((p) => p + 1)}
+            >
+              Sau ›
+            </Button>
+          </div>
+        </div>
       </GlassCard>
-
-      {/* PAGINATION */}
-      <div className="flex justify-between text-sm text-muted-foreground">
-        <div>
-          Trang {pagination.page} / {pagination.pages}
-        </div>
-
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={page <= 1}
-            onClick={() => setPage((p) => p - 1)}
-          >
-            ‹ Trước
-          </Button>
-
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={pagination.page >= pagination.pages}
-            onClick={() => setPage((p) => p + 1)}
-          >
-            Sau ›
-          </Button>
-        </div>
-      </div>
     </div>
   )
 }

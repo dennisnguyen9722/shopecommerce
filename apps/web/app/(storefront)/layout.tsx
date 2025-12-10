@@ -5,6 +5,12 @@ import { CartProvider } from '@/app/contexts/CartContext'
 import { ToastProvider } from '@/app/(storefront)/components/ToastProvider'
 // 👇 1. Import Providers
 import Providers from '@/app/providers/providers'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Dennis Shop',
+  description: 'Techshop uy tín chất lượng'
+}
 
 export default function StorefrontLayout({
   children

@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useSearchParams, useRouter } from 'next/navigation'
 import api from '@/src/lib/api'
-import dynamic from 'next/dynamic'
 
 import {
   Table,
@@ -28,11 +27,7 @@ import {
 import GlassCard from '@/src/components/admin/GlassCard'
 import OrderDetailDialog from '@/src/components/admin/OrderDetailDialog'
 
-const InvoicePDFClient = dynamic(
-  () => import('@/src/components/admin/InvoicePDF.client'),
-  { ssr: false }
-)
-
+// --- UTILS ---
 const formatCurrency = (n: number | undefined) => {
   if (typeof n !== 'number') return '-'
   return n.toLocaleString('vi-VN') + ' ₫'
@@ -56,20 +51,17 @@ const formatDate = (date: string | undefined) => {
 const getStatusColor = (status: string) => {
   const colors: Record<string, string> = {
     pending:
-      'bg-yellow-100 text-yellow-800 border-yellow-300 dark:bg-yellow-500/20 dark:text-yellow-300 dark:border-yellow-500/50',
+      'bg-yellow-100 text-yellow-800 border-yellow-300 dark:bg-yellow-500/20 dark:text-yellow-300',
     processing:
-      'bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-500/20 dark:text-blue-300 dark:border-blue-500/50',
+      'bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-500/20 dark:text-blue-300',
     shipped:
-      'bg-purple-100 text-purple-800 border-purple-300 dark:bg-purple-500/20 dark:text-purple-300 dark:border-purple-500/50',
+      'bg-purple-100 text-purple-800 border-purple-300 dark:bg-purple-500/20 dark:text-purple-300',
     completed:
-      'bg-green-100 text-green-800 border-green-300 dark:bg-green-500/20 dark:text-green-300 dark:border-green-500/50',
+      'bg-green-100 text-green-800 border-green-300 dark:bg-green-500/20 dark:text-green-300',
     cancelled:
-      'bg-red-100 text-red-800 border-red-300 dark:bg-red-500/20 dark:text-red-300 dark:border-red-500/50'
+      'bg-red-100 text-red-800 border-red-300 dark:bg-red-500/20 dark:text-red-300'
   }
-  return (
-    colors[status] ||
-    'bg-gray-100 text-gray-800 border-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600'
-  )
+  return colors[status] || 'bg-gray-100 text-gray-800 border-gray-300'
 }
 
 const getStatusLabel = (status: string) => {
@@ -114,16 +106,12 @@ export default function OrdersPage() {
     queryFn: async () => {
       const res = await api.get('/admin/orders')
       const rawData = res.data
-
       let allItems: any[] = []
 
       if (Array.isArray(rawData)) {
         allItems = rawData
       } else if (rawData && Array.isArray(rawData.orders)) {
         allItems = rawData.orders
-      } else {
-        console.warn('⚠️ API trả về định dạng lạ:', rawData)
-        allItems = []
       }
 
       if (search) {
@@ -167,32 +155,15 @@ export default function OrdersPage() {
 
       return {
         items: paginatedItems,
-        pagination: {
-          page,
-          pages: totalPages || 1,
-          total
-        }
+        pagination: { page, pages: totalPages || 1, total }
       }
     }
   })
 
   if (isLoading)
-    return (
-      <div className="p-6 text-gray-600 dark:text-gray-300">
-        Đang tải danh sách đơn hàng...
-      </div>
-    )
+    return <div className="p-6">Đang tải danh sách đơn hàng...</div>
   if (isError)
-    return (
-      <div className="p-6 text-center">
-        <div className="text-red-600 dark:text-red-400 mb-2">
-          Lỗi tải danh sách đơn hàng.
-        </div>
-        <Button onClick={() => refetch()} variant="outline">
-          Thử lại
-        </Button>
-      </div>
-    )
+    return <div className="p-6 text-red-600">Lỗi tải danh sách đơn hàng.</div>
 
   const items = data?.items || []
   const pagination = data?.pagination || { page: 1, pages: 1, total: 0 }
@@ -209,27 +180,24 @@ export default function OrdersPage() {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 md:p-6 space-y-6 w-full max-w-[100vw] overflow-hidden">
       {/* HEADER */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-900">
+          <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
             Đơn hàng
           </h1>
-          <p className="text-sm text-gray-600 dark:text-gray-600">
-            Quản lý và xử lý đơn đặt hàng từ khách
-          </p>
         </div>
       </div>
 
       {/* FILTER BAR */}
-      <GlassCard className="py-4">
-        <div className="flex flex-col md:flex-row gap-4 md:items-center">
-          <div className="relative w-full md:w-80">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 dark:text-gray-400" />
+      <GlassCard className="p-4">
+        <div className="flex flex-col lg:flex-row gap-4 justify-between">
+          <div className="relative w-full lg:w-96">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Tìm tên khách, SĐT, mã đơn..."
-              className="pl-9 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400"
+              className="pl-9 bg-white dark:bg-gray-900/50"
               value={search}
               onChange={(e) => {
                 setPage(1)
@@ -238,64 +206,65 @@ export default function OrdersPage() {
             />
           </div>
 
-          <Select
-            value={statusFilter}
-            onValueChange={(v) => {
-              setPage(1)
-              setStatusFilter(v)
-            }}
-          >
-            <SelectTrigger className="w-48 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
-              <div className="flex items-center gap-2">
-                <Filter className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-                <SelectValue placeholder="Trạng thái" />
-              </div>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Tất cả trạng thái</SelectItem>
-              <SelectItem value="pending">Chờ xử lý</SelectItem>
-              <SelectItem value="processing">Đang xử lý</SelectItem>
-              <SelectItem value="shipped">Đang giao</SelectItem>
-              <SelectItem value="completed">Hoàn thành</SelectItem>
-              <SelectItem value="cancelled">Đã hủy</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="flex flex-wrap gap-2 lg:gap-4 items-center">
+            <Select
+              value={statusFilter}
+              onValueChange={(v) => {
+                setPage(1)
+                setStatusFilter(v)
+              }}
+            >
+              <SelectTrigger className="w-full lg:w-40 bg-white dark:bg-gray-900/50">
+                <div className="flex items-center gap-2">
+                  <Filter className="w-4 h-4 text-muted-foreground" />
+                  <SelectValue placeholder="Trạng thái" />
+                </div>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Tất cả</SelectItem>
+                <SelectItem value="pending">Chờ xử lý</SelectItem>
+                <SelectItem value="processing">Đang xử lý</SelectItem>
+                <SelectItem value="shipped">Đang giao</SelectItem>
+                <SelectItem value="completed">Hoàn thành</SelectItem>
+                <SelectItem value="cancelled">Đã hủy</SelectItem>
+              </SelectContent>
+            </Select>
 
-          <Select
-            value={sort}
-            onValueChange={(v) => {
-              setPage(1)
-              setSort(v)
-            }}
-          >
-            <SelectTrigger className="w-48 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
-              <SelectValue placeholder="Sắp xếp" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="newest">Mới nhất</SelectItem>
-              <SelectItem value="oldest">Cũ nhất</SelectItem>
-              <SelectItem value="total-desc">Giá trị cao → thấp</SelectItem>
-              <SelectItem value="total-asc">Giá trị thấp → cao</SelectItem>
-            </SelectContent>
-          </Select>
+            <Select
+              value={sort}
+              onValueChange={(v) => {
+                setPage(1)
+                setSort(v)
+              }}
+            >
+              <SelectTrigger className="w-full lg:w-40 bg-white dark:bg-gray-900/50">
+                <SelectValue placeholder="Sắp xếp" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest">Mới nhất</SelectItem>
+                <SelectItem value="oldest">Cũ nhất</SelectItem>
+                <SelectItem value="total-desc">Giá trị cao → thấp</SelectItem>
+                <SelectItem value="total-asc">Giá trị thấp → cao</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </GlassCard>
 
       {/* TABLE */}
-      <GlassCard>
-        <div className="border-b border-gray-300 dark:border-gray-700 pb-4 mb-4 flex justify-between items-center">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-            Danh sách đơn hàng
-          </h2>
-          <span className="text-xs text-gray-600 dark:text-gray-300 bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded">
+      <GlassCard className="p-0 overflow-hidden">
+        <div className="border-b border-gray-200 dark:border-gray-800 p-4 flex justify-between items-center">
+          <h2 className="text-lg font-semibold">Danh sách đơn hàng</h2>
+          <span className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
             Total: {pagination.total}
           </span>
         </div>
 
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow className="border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800">
+        {/* ⭐ FLUID TABLE: Bỏ min-w và overflow-scroll để ép co giãn */}
+        <div className="w-full">
+          <Table className="w-full table-fixed">
+            <TableHeader className="bg-gray-50 dark:bg-gray-900/50">
+              <TableRow>
                 <TableHead className="w-[40px]">
                   <input
                     type="checkbox"
@@ -303,33 +272,26 @@ export default function OrdersPage() {
                       selected.length === items.length && items.length > 0
                     }
                     onChange={selectAll}
-                    className="rounded border-gray-400 dark:border-gray-500 text-orange-600 focus:ring-orange-500 bg-white dark:bg-gray-700"
+                    className="rounded border-gray-400 text-orange-600 focus:ring-orange-500"
                   />
                 </TableHead>
-                <TableHead className="text-gray-900 dark:text-gray-100 font-semibold">
+                {/* Ẩn Mã đơn trên mobile nếu quá chật */}
+                <TableHead className="w-[90px] hidden sm:table-cell">
                   Mã đơn
                 </TableHead>
-                <TableHead className="text-gray-900 dark:text-gray-100 font-semibold">
-                  Khách hàng
-                </TableHead>
-                <TableHead className="text-gray-900 dark:text-gray-100 font-semibold">
+                <TableHead className="w-[25%]">Khách hàng</TableHead>
+                {/* Ẩn Địa chỉ trên laptop nhỏ để tiết kiệm chỗ */}
+                <TableHead className="w-[30%] hidden xl:table-cell">
                   Địa chỉ
                 </TableHead>
-                <TableHead className="text-center text-gray-900 dark:text-gray-100 font-semibold">
-                  SP
-                </TableHead>
-                <TableHead className="text-gray-900 dark:text-gray-100 font-semibold">
-                  Tổng tiền
-                </TableHead>
-                <TableHead className="text-gray-900 dark:text-gray-100 font-semibold">
-                  Trạng thái
-                </TableHead>
-                <TableHead className="text-gray-900 dark:text-gray-100 font-semibold">
+                <TableHead className="w-[60px] text-center">SP</TableHead>
+                <TableHead className="w-[120px]">Tổng tiền</TableHead>
+                <TableHead className="w-[110px]">Trạng thái</TableHead>
+                {/* Ẩn Ngày đặt trên màn hình nhỏ */}
+                <TableHead className="w-[120px] hidden lg:table-cell">
                   Ngày đặt
                 </TableHead>
-                <TableHead className="text-right text-gray-900 dark:text-gray-100 font-semibold">
-                  Thao tác
-                </TableHead>
+                <TableHead className="w-[60px] text-right sticky right-0 z-10 "></TableHead>
               </TableRow>
             </TableHeader>
 
@@ -337,10 +299,10 @@ export default function OrdersPage() {
               {items.map((order: any) => (
                 <TableRow
                   key={order._id}
-                  className={`border-gray-300 dark:border-gray-700 ${
+                  className={`hover:bg-gray-50/50 dark:hover:bg-gray-800/50 ${
                     selected.includes(order._id)
-                      ? 'bg-orange-100 dark:bg-orange-900/30'
-                      : 'bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800'
+                      ? 'bg-orange-50 dark:bg-orange-900/20'
+                      : ''
                   }`}
                 >
                   <TableCell>
@@ -348,71 +310,88 @@ export default function OrdersPage() {
                       type="checkbox"
                       checked={selected.includes(order._id)}
                       onChange={() => toggleSelect(order._id)}
-                      className="rounded border-gray-400 dark:border-gray-500 text-orange-600 focus:ring-orange-500 bg-white dark:bg-gray-700"
+                      className="rounded border-gray-400 text-orange-600 focus:ring-orange-500"
                     />
                   </TableCell>
-                  <TableCell>
-                    <span className="font-mono text-xs font-medium text-gray-700 dark:text-gray-200 bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded">
+
+                  <TableCell className="hidden sm:table-cell">
+                    <span className="font-mono text-xs font-medium bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded border dark:border-gray-700 block w-fit">
                       #{order._id?.slice(-6).toUpperCase()}
                     </span>
                   </TableCell>
+
+                  {/* Khách hàng + SĐT */}
                   <TableCell>
-                    <div className="font-medium text-sm text-gray-900 dark:text-white">
-                      {order.customerName}
-                    </div>
-                    <div className="text-xs text-gray-600 dark:text-gray-400">
-                      {order.customerPhone}
+                    <div className="flex flex-col max-w-full">
+                      <div
+                        className="font-medium text-sm truncate"
+                        title={order.customerName}
+                      >
+                        {order.customerName}
+                      </div>
+                      <div className="text-xs text-gray-500 truncate">
+                        {order.customerPhone}
+                      </div>
+                      {/* Hiện địa chỉ nhỏ ở dưới nếu bị ẩn cột địa chỉ chính */}
+                      <div className="text-[10px] text-gray-400 truncate xl:hidden block mt-0.5">
+                        {order.customerAddress}
+                      </div>
                     </div>
                   </TableCell>
-                  <TableCell>
+
+                  {/* Địa chỉ (Chỉ hiện trên màn hình lớn) */}
+                  <TableCell className="hidden xl:table-cell">
                     <div
-                      className="max-w-[200px] truncate text-sm text-gray-700 dark:text-gray-300"
+                      className="truncate max-w-full text-sm text-gray-600 dark:text-gray-300"
                       title={order.customerAddress}
                     >
                       {order.customerAddress || '—'}
                     </div>
                   </TableCell>
-                  <TableCell className="text-center text-sm text-gray-900 dark:text-white">
+
+                  <TableCell className="text-center text-sm">
                     {order.items?.length || 0}
                   </TableCell>
+
                   <TableCell>
-                    <span className="font-bold text-orange-600 dark:text-orange-400 text-sm">
+                    <span className="font-bold text-orange-600 text-sm whitespace-nowrap">
                       {formatCurrency(order.totalPrice)}
                     </span>
                   </TableCell>
+
                   <TableCell>
                     <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusColor(
+                      className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium border whitespace-nowrap ${getStatusColor(
                         order.status || 'pending'
                       )}`}
                     >
                       {getStatusLabel(order.status || 'pending')}
                     </span>
                   </TableCell>
-                  <TableCell className="text-sm text-gray-700 dark:text-gray-300">
+
+                  <TableCell className="text-sm text-gray-500 whitespace-nowrap hidden lg:table-cell">
                     {formatDate(order.createdAt)}
                   </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <InvoicePDFClient order={order} />
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-8 w-8 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
-                        onClick={() => setSelectedOrderId(order._id)}
-                      >
-                        <Eye className="w-4 h-4 text-gray-700 dark:text-gray-300" />
-                      </Button>
-                    </div>
+
+                  {/* ACTIONS: Bỏ nút PDF, Sửa style nút Eye */}
+                  <TableCell className="text-right sticky right-0 ">
+                    <Button
+                      variant="ghost" // Dùng ghost để trong suốt
+                      size="icon"
+                      className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-5"
+                      onClick={() => setSelectedOrderId(order._id)}
+                    >
+                      <Eye className="w-4 h-4" />
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
 
               {items.length === 0 && (
-                <TableRow className="bg-white dark:bg-gray-900">
+                <TableRow>
                   <TableCell
                     colSpan={9}
-                    className="text-center py-12 text-gray-600 dark:text-gray-400"
+                    className="text-center py-12 text-muted-foreground"
                   >
                     {isLoading
                       ? 'Đang tải...'
@@ -425,9 +404,9 @@ export default function OrdersPage() {
         </div>
 
         {/* PAGINATION */}
-        <div className="flex justify-between items-center mt-4 text-sm text-gray-700 dark:text-gray-300 border-t border-gray-300 dark:border-gray-700 pt-4">
-          <div>
-            Trang {pagination.page}/{pagination.pages} · Hiển thị {items.length}{' '}
+        <div className="flex justify-between items-center p-4 border-t ">
+          <div className="text-xs text-muted-foreground">
+            Trang {pagination.page}/{pagination.pages} · Tổng {pagination.total}{' '}
             đơn
           </div>
           <div className="flex gap-2">
@@ -436,7 +415,6 @@ export default function OrdersPage() {
               size="sm"
               disabled={page <= 1}
               onClick={() => setPage((p) => Math.max(1, p - 1))}
-              className="border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50"
             >
               ‹ Trước
             </Button>
@@ -445,7 +423,6 @@ export default function OrdersPage() {
               size="sm"
               disabled={page >= pagination.pages}
               onClick={() => setPage((p) => Math.min(pagination.pages, p + 1))}
-              className="border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50"
             >
               Sau ›
             </Button>
