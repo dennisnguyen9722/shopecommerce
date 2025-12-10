@@ -93,7 +93,7 @@ export default function LoginPage() {
                   Mật khẩu
                 </Label>
                 <Link
-                  href="#"
+                  href="/forgot-password" // 👈 Trỏ tới trang chúng ta vừa làm
                   className="text-xs text-orange-600 hover:text-orange-700 hover:underline font-medium"
                 >
                   Quên mật khẩu?
