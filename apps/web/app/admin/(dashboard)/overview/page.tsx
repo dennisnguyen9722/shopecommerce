@@ -1,8 +1,6 @@
 import React from 'react'
 import ReactQueryProvider from '@/src/providers/ReactQueryProvider'
 import MetricsPanel from '@/src/components/admin/MetricsPanel'
-import RevenueChart from '@/src/components/admin/RevenueChart'
-import DashboardTabs from '@/src/components/admin/DashboardTabs'
 
 import InventoryOverviewWidget from '@/src/components/admin/InventoryOverviewWidget'
 import BestSellingProductsWidget from '@/src/components/admin/BestSellingProductsWidget'

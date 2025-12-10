@@ -34,6 +34,10 @@ export const PERMISSION_ROUTES = [
     route: '/admin/coupons'
   },
   {
+    perms: [PERMISSIONS.SETTINGS.VIEW_ANALYTICS],
+    route: '/admin/analytics'
+  },
+  {
     perms: [PERMISSIONS.SYSTEM.MANAGE_ROLES],
     route: '/admin/settings/roles'
   },

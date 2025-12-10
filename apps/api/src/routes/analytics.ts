@@ -191,4 +191,293 @@ router.get('/new-customers', protect, CAN_VIEW, async (_req, res) => {
   }
 })
 
+// Thêm vào cuối file src/routes/analytics.ts
+
+/* ============================================================
+   A8. Order Status Distribution (for Pie Chart)
+============================================================ */
+router.get(
+  '/order-status-distribution',
+  protect,
+  CAN_VIEW,
+  async (req, res) => {
+    try {
+      const days = Number(req.query.days || 30)
+      const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000)
+
+      const distribution = await Order.aggregate([
+        { $match: { createdAt: { $gte: since } } },
+        {
+          $group: {
+            _id: '$status',
+            count: { $sum: 1 }
+          }
+        }
+      ])
+
+      // Format để dễ sử dụng với chart
+      const statusLabels: Record<string, string> = {
+        pending: 'Chờ xử lý',
+        processing: 'Đang xử lý',
+        shipped: 'Đang giao',
+        completed: 'Hoàn thành',
+        cancelled: 'Đã hủy'
+      }
+
+      const formatted = distribution.map((item) => ({
+        status: item._id,
+        count: item.count,
+        label: statusLabels[item._id] || item._id
+      }))
+
+      res.json(formatted)
+    } catch (err: any) {
+      res.status(500).json({ error: err.message })
+    }
+  }
+)
+
+/* ============================================================
+   A9. Recent Orders (for Real-time widget)
+============================================================ */
+router.get('/recent-orders', protect, CAN_VIEW, async (req, res) => {
+  try {
+    const limit = Number(req.query.limit || 10)
+
+    const orders = await Order.find()
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .select(
+        'orderNumber customerName customerPhone totalPrice status createdAt'
+      )
+      .lean()
+
+    res.json(orders)
+  } catch (err: any) {
+    res.status(500).json({ error: err.message })
+  }
+})
+
+/* ============================================================
+   A10. Average Order Value (AOV)
+============================================================ */
+router.get('/average-order-value', protect, CAN_VIEW, async (req, res) => {
+  try {
+    const days = Number(req.query.days || 30)
+    const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000)
+
+    // Current period
+    const currentAOV = await Order.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: since },
+          status: { $ne: 'cancelled' }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          avgOrderValue: { $avg: '$totalPrice' },
+          totalOrders: { $sum: 1 },
+          totalRevenue: { $sum: '$totalPrice' }
+        }
+      }
+    ])
+
+    // Previous period (for comparison)
+    const previousSince = new Date(since.getTime() - days * 24 * 60 * 60 * 1000)
+    const previousAOV = await Order.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: previousSince, $lt: since },
+          status: { $ne: 'cancelled' }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          avgOrderValue: { $avg: '$totalPrice' }
+        }
+      }
+    ])
+
+    const current = currentAOV[0] || {
+      avgOrderValue: 0,
+      totalOrders: 0,
+      totalRevenue: 0
+    }
+    const previous = previousAOV[0]?.avgOrderValue || 0
+
+    const growth =
+      previous > 0 ? ((current.avgOrderValue - previous) / previous) * 100 : 0
+
+    res.json({
+      current: Math.round(current.avgOrderValue),
+      previous: Math.round(previous),
+      growth: Math.round(growth * 10) / 10, // 1 số thập phân
+      totalOrders: current.totalOrders,
+      totalRevenue: current.totalRevenue
+    })
+  } catch (err: any) {
+    res.status(500).json({ error: err.message })
+  }
+})
+
+/* ============================================================
+   A11. Sales by Category (for Bar Chart)
+============================================================ */
+router.get('/sales-by-category', protect, CAN_VIEW, async (req, res) => {
+  try {
+    const days = Number(req.query.days || 30)
+    const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000)
+
+    const sales = await Order.aggregate([
+      { $match: { createdAt: { $gte: since } } },
+      { $unwind: '$items' },
+      {
+        $lookup: {
+          from: 'products',
+          localField: 'items.product',
+          foreignField: '_id',
+          as: 'productInfo'
+        }
+      },
+      { $unwind: { path: '$productInfo', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: 'categories',
+          localField: 'productInfo.category',
+          foreignField: '_id',
+          as: 'categoryInfo'
+        }
+      },
+      { $unwind: { path: '$categoryInfo', preserveNullAndEmptyArrays: true } },
+      {
+        $group: {
+          _id: '$categoryInfo._id',
+          categoryName: { $first: '$categoryInfo.name' },
+          totalRevenue: {
+            $sum: { $multiply: ['$items.quantity', '$items.price'] }
+          },
+          totalQuantity: { $sum: '$items.quantity' }
+        }
+      },
+      { $sort: { totalRevenue: -1 } },
+      { $limit: 10 }
+    ])
+
+    res.json(
+      sales.map((item) => ({
+        category: item.categoryName || 'Chưa phân loại',
+        revenue: item.totalRevenue,
+        quantity: item.totalQuantity
+      }))
+    )
+  } catch (err: any) {
+    res.status(500).json({ error: err.message })
+  }
+})
+
+/* ============================================================
+   A12. Dashboard Overview (All stats in one call)
+============================================================ */
+router.get('/dashboard-overview', protect, CAN_VIEW, async (req, res) => {
+  try {
+    const days = Number(req.query.days || 30)
+    const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000)
+    const previousSince = new Date(since.getTime() - days * 24 * 60 * 60 * 1000)
+
+    const [
+      currentStats,
+      previousStats,
+      totalProducts,
+      totalCustomers,
+      lowStockCount
+    ] = await Promise.all([
+      // Current period stats
+      Order.aggregate([
+        {
+          $match: {
+            createdAt: { $gte: since },
+            status: { $ne: 'cancelled' }
+          }
+        },
+        {
+          $group: {
+            _id: null,
+            totalRevenue: { $sum: '$totalPrice' },
+            totalOrders: { $sum: 1 },
+            avgOrderValue: { $avg: '$totalPrice' }
+          }
+        }
+      ]),
+
+      // Previous period stats
+      Order.aggregate([
+        {
+          $match: {
+            createdAt: { $gte: previousSince, $lt: since },
+            status: { $ne: 'cancelled' }
+          }
+        },
+        {
+          $group: {
+            _id: null,
+            totalRevenue: { $sum: '$totalPrice' },
+            totalOrders: { $sum: 1 },
+            avgOrderValue: { $avg: '$totalPrice' }
+          }
+        }
+      ]),
+
+      Product.countDocuments(),
+      Customer.countDocuments(),
+      Product.countDocuments({ stock: { $gt: 0, $lt: 5 } })
+    ])
+
+    const current = currentStats[0] || {
+      totalRevenue: 0,
+      totalOrders: 0,
+      avgOrderValue: 0
+    }
+    const previous = previousStats[0] || {
+      totalRevenue: 0,
+      totalOrders: 0,
+      avgOrderValue: 0
+    }
+
+    const calculateGrowth = (current: number, previous: number) => {
+      if (previous === 0) return 0
+      return ((current - previous) / previous) * 100
+    }
+
+    res.json({
+      revenue: {
+        value: current.totalRevenue,
+        growth: calculateGrowth(current.totalRevenue, previous.totalRevenue),
+        previous: previous.totalRevenue
+      },
+      orders: {
+        value: current.totalOrders,
+        growth: calculateGrowth(current.totalOrders, previous.totalOrders),
+        previous: previous.totalOrders
+      },
+      avgOrderValue: {
+        value: Math.round(current.avgOrderValue),
+        growth: calculateGrowth(current.avgOrderValue, previous.avgOrderValue),
+        previous: Math.round(previous.avgOrderValue)
+      },
+      products: {
+        total: totalProducts,
+        lowStock: lowStockCount
+      },
+      customers: {
+        total: totalCustomers
+      }
+    })
+  } catch (err: any) {
+    res.status(500).json({ error: err.message })
+  }
+})
+
 export default router

@@ -22,7 +22,8 @@ import {
   Truck,
   UserCircle,
   Gift,
-  Star
+  Star,
+  BarChart3 // 🆕 Icon cho Analytics
 } from 'lucide-react'
 
 import { motion, AnimatePresence } from 'framer-motion'
@@ -68,6 +69,7 @@ export function Sidebar({
   }, [])
 
   // Permissions
+  const canDashboard = useAdminPermission(PERMISSIONS.DASHBOARD.VIEW)
   const canOrders = useAdminPermission(PERMISSIONS.ORDERS.READ)
   const canProducts = useAdminPermission(PERMISSIONS.PRODUCTS.READ)
   const canCategories = useAdminPermission(PERMISSIONS.CATEGORIES.READ)
@@ -81,6 +83,7 @@ export function Sidebar({
   const canUsers = useAdminPermission(PERMISSIONS.SYSTEM.MANAGE_USERS)
   const canRoles = useAdminPermission(PERMISSIONS.SYSTEM.MANAGE_ROLES)
   const canReviews = useAdminPermission(PERMISSIONS.REVIEWS.READ)
+  const canAnalytics = useAdminPermission(PERMISSIONS.SETTINGS.VIEW_ANALYTICS) // 🆕
 
   return (
     <TooltipProvider delayDuration={80}>
@@ -89,7 +92,6 @@ export function Sidebar({
         transition={{ duration: 0.28, ease: 'easeInOut' }}
         className={cn(
           'h-screen flex flex-col',
-          // 👇 SỬA MÀU NỀN & VIỀN: Dùng biến sidebar chuẩn
           'bg-sidebar border-r border-sidebar-border relative z-20 shadow-xl'
         )}
       >
@@ -111,13 +113,26 @@ export function Sidebar({
 
         {/* NAV */}
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto no-scrollbar">
-          <NavItem
-            href="/admin/overview"
-            icon={LayoutDashboard}
-            label="Tổng quan"
-            active={pathname === '/admin/overview'}
-            collapsed={collapsed}
-          />
+          {canDashboard && (
+            <NavItem
+              href="/admin/overview"
+              icon={LayoutDashboard}
+              label="Tổng quan"
+              active={pathname === '/admin/overview'}
+              collapsed={collapsed}
+            />
+          )}
+
+          {/* 🆕 Analytics - Đặt ngay sau Overview */}
+          {canAnalytics && (
+            <NavItem
+              href="/admin/analytics"
+              icon={BarChart3}
+              label="Analytics"
+              active={pathname.startsWith('/admin/analytics')}
+              collapsed={collapsed}
+            />
+          )}
 
           {canOrders && (
             <NavItem
@@ -326,7 +341,7 @@ export function Sidebar({
   )
 }
 
-// === CÁC COMPONENT CON (Đã sửa màu) ===
+// === CÁC COMPONENT CON ===
 
 function NavItem({ href, label, icon: Icon, active, collapsed }: any) {
   const Component = (
@@ -334,7 +349,6 @@ function NavItem({ href, label, icon: Icon, active, collapsed }: any) {
       href={href}
       className={cn(
         'relative flex items-center gap-3 p-3 rounded-lg transition-all group overflow-hidden',
-        // 👇 SỬA MÀU ACTIVE/HOVER
         active
           ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium'
           : 'text-sidebar-foreground/80 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
