@@ -58,6 +58,16 @@ export const PERMISSION_GROUPS = [
     ]
   },
   {
+    label: 'Đánh giá sản phẩm',
+    permissions: [
+      { key: PERMISSIONS.REVIEWS.READ, label: 'Xem đánh giá' },
+      { key: PERMISSIONS.REVIEWS.CREATE, label: 'Tạo đánh giá' },
+      { key: PERMISSIONS.REVIEWS.UPDATE, label: 'Sửa đánh giá' },
+      { key: PERMISSIONS.REVIEWS.DELETE, label: 'Xóa đánh giá' },
+      { key: PERMISSIONS.REVIEWS.MANAGE, label: 'Duyệt/Ẩn đánh giá' }
+    ]
+  },
+  {
     label: 'Marketing & Loyalty',
     permissions: [
       { key: PERMISSIONS.BANNERS.MANAGE, label: 'Quản lý Banner/Slider' },
@@ -79,7 +89,11 @@ export const PERMISSION_GROUPS = [
       },
       {
         key: PERMISSIONS.SETTINGS.VIEW_ANALYTICS,
-        label: 'Xem báo cáo doanh thu'
+        label: 'Xem báo cáo Analytics'
+      },
+      {
+        key: PERMISSIONS.SETTINGS.EXPORT_DATA, // 👈 THÊM DÒNG NÀY
+        label: 'Xuất dữ liệu (Export Excel/CSV)'
       },
       {
         key: PERMISSIONS.SYSTEM.MANAGE_USERS,

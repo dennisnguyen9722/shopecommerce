@@ -38,6 +38,10 @@ export const PERMISSION_ROUTES = [
     route: '/admin/analytics'
   },
   {
+    perms: [PERMISSIONS.SETTINGS.EXPORT_DATA], // 👈 THÊM DÒNG NÀY
+    route: '/admin/export'
+  },
+  {
     perms: [PERMISSIONS.SYSTEM.MANAGE_ROLES],
     route: '/admin/settings/roles'
   },

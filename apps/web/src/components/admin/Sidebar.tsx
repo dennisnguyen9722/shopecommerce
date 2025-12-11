@@ -23,7 +23,8 @@ import {
   UserCircle,
   Gift,
   Star,
-  BarChart3 // 🆕 Icon cho Analytics
+  BarChart3,
+  Download
 } from 'lucide-react'
 
 import { motion, AnimatePresence } from 'framer-motion'
@@ -83,7 +84,8 @@ export function Sidebar({
   const canUsers = useAdminPermission(PERMISSIONS.SYSTEM.MANAGE_USERS)
   const canRoles = useAdminPermission(PERMISSIONS.SYSTEM.MANAGE_ROLES)
   const canReviews = useAdminPermission(PERMISSIONS.REVIEWS.READ)
-  const canAnalytics = useAdminPermission(PERMISSIONS.SETTINGS.VIEW_ANALYTICS) // 🆕
+  const canAnalytics = useAdminPermission(PERMISSIONS.SETTINGS.VIEW_ANALYTICS)
+  const canExport = useAdminPermission(PERMISSIONS.SETTINGS.EXPORT_DATA)
 
   return (
     <TooltipProvider delayDuration={80}>
@@ -123,13 +125,24 @@ export function Sidebar({
             />
           )}
 
-          {/* 🆕 Analytics - Đặt ngay sau Overview */}
+          {/* Analytics */}
           {canAnalytics && (
             <NavItem
               href="/admin/analytics"
               icon={BarChart3}
               label="Analytics"
               active={pathname.startsWith('/admin/analytics')}
+              collapsed={collapsed}
+            />
+          )}
+
+          {/* 🎯 XUẤT DỮ LIỆU - ĐÃ SỬA */}
+          {canExport && (
+            <NavItem
+              href="/admin/export"
+              icon={Download}
+              label="Xuất dữ liệu"
+              active={pathname.startsWith('/admin/export')}
               collapsed={collapsed}
             />
           )}

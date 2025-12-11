@@ -45,6 +45,8 @@ import adminPointsRoutes from './routes/admin/points'
 
 import adminReviewsRoutes from './routes/admin/reviews'
 
+import exportRoutes from './routes/admin/export'
+
 import { seedSuperAdmin } from './seed/superAdminSeed'
 
 // PUBLIC STORE FRONT
@@ -130,6 +132,8 @@ app.use('/admin/reviews', adminReviewsRoutes)
 app.use('/admin/blog/posts', posts)
 app.use('/admin/blog/categories', categories)
 app.use('/admin/blog/tags', tags)
+
+app.use('/admin/export', exportRoutes)
 
 // UPLOAD ROUTES
 app.use('/uploads', uploadsRoutes)

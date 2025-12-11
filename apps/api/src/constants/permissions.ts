@@ -57,7 +57,8 @@ export const PERMISSIONS = {
 
   SETTINGS: {
     MANAGE: 'settings.manage',
-    VIEW_ANALYTICS: 'settings.view_analytics'
+    VIEW_ANALYTICS: 'settings.view_analytics',
+    EXPORT_DATA: 'settings.export_data'
   },
   SYSTEM: {
     MANAGE_USERS: 'users.manage',
