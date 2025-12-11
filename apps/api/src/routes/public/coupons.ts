@@ -8,7 +8,62 @@ import mongoose from 'mongoose'
 const router = express.Router()
 
 // =====================================================================
-// ⭐ 1. Validate coupon code
+// ⭐ 1. Lấy tất cả coupons (PUBLIC - cho trang profile/coupons)
+// =====================================================================
+router.get('/', async (req, res) => {
+  try {
+    const now = new Date()
+    const { customerId } = req.query
+
+    // Lấy tất cả coupon đang active và còn hạn
+    let coupons = await Coupon.find({
+      isActive: true,
+      startDate: { $lte: now },
+      endDate: { $gte: now },
+      $or: [
+        { usageLimit: { $exists: false } },
+        { $expr: { $lt: ['$usedCount', '$usageLimit'] } }
+      ]
+    })
+      .select(
+        'code description discountType discountValue maxDiscountAmount minOrderAmount endDate customerType usageLimitPerUser'
+      )
+      .sort({ createdAt: -1 })
+      .lean()
+
+    // Nếu có customerId, filter theo usage limit per user
+    if (customerId) {
+      const usage = await CouponUsage.aggregate([
+        {
+          $match: {
+            customer: new mongoose.Types.ObjectId(customerId as string)
+          }
+        },
+        {
+          $group: {
+            _id: '$coupon',
+            count: { $sum: 1 }
+          }
+        }
+      ])
+
+      const usageMap = new Map(usage.map((u) => [u._id.toString(), u.count]))
+
+      coupons = coupons.filter((coupon) => {
+        const used = usageMap.get(coupon._id.toString()) || 0
+        return !coupon.usageLimitPerUser || used < coupon.usageLimitPerUser
+      })
+    }
+
+    res.json(coupons)
+  } catch (error) {
+    console.error('❌ Get all coupons error:', error)
+    res.status(500).json({ message: 'Lỗi khi lấy danh sách mã giảm giá' })
+  }
+})
+
+// =====================================================================
+// ⭐ 2. Validate coupon code
 // =====================================================================
 router.post('/validate', async (req, res) => {
   try {
@@ -132,7 +187,6 @@ router.post('/validate', async (req, res) => {
 
     // Applicable product rule
     if (cartItems && cartItems.length > 0) {
-      // SAFETY: ensure arrays exist before using .length / .map
       const applicableProducts = Array.isArray(coupon.applicableProducts)
         ? coupon.applicableProducts
         : []
@@ -193,7 +247,6 @@ router.post('/validate', async (req, res) => {
     }
 
     // ⭐ NEW: maxUsagePerOrder
-    // Note: this setting usually restricts usage count per order; we keep a simple check
     if (coupon.maxUsagePerOrder && coupon.maxUsagePerOrder < 1) {
       return res.status(400).json({
         valid: false,
@@ -243,7 +296,7 @@ router.post('/validate', async (req, res) => {
 })
 
 // =====================================================================
-// ⭐ 2. Lấy danh sách coupon khả dụng
+// ⭐ 3. Lấy danh sách coupon khả dụng
 // =====================================================================
 router.get('/available', async (req, res) => {
   try {
@@ -298,7 +351,7 @@ router.get('/available', async (req, res) => {
 })
 
 // =====================================================================
-// ⭐ 3. Lấy coupon auto-apply
+// ⭐ 4. Lấy coupon auto-apply
 // =====================================================================
 router.get('/auto-apply', async (req, res) => {
   try {

@@ -10,6 +10,7 @@ import Product from '../../models/Product'
 import { io } from '../../index'
 import { updateCustomerStats } from '../../utils/updateCustomerStats'
 import { calculatePointsFromOrder } from '../../utils/loyaltyUtils'
+import { protect } from '../../middleware/auth'
 
 const router = express.Router()
 
@@ -474,25 +475,56 @@ router.post('/', async (req: Request, res: Response) => {
 // ==================================================
 // 5. GET MY ORDERS, GET BY ID, TRACK
 // ==================================================
-router.get('/my-orders', async (req: Request, res: Response) => {
+router.get('/', protect, async (req: any, res: Response) => {
   try {
-    const { customerEmail } = req.query
-    if (!customerEmail) return res.status(400).json({ error: 'Thiếu email' })
+    const userId = req.user.id
+
+    console.log('📥 [GET /orders] User ID:', userId)
+
+    // Lấy thông tin Customer
+    const customer = await Customer.findById(userId)
+
+    if (!customer) {
+      console.error('❌ Customer not found:', userId)
+      return res
+        .status(404)
+        .json({ error: 'Không tìm thấy thông tin khách hàng' })
+    }
+
+    console.log('✅ Customer found:', customer.email)
+
+    // Tìm orders theo cả email VÀ customerId
     const orders = await Order.find({
-      customerEmail: (customerEmail as string).toLowerCase()
+      $or: [
+        { customerEmail: customer.email.toLowerCase() },
+        { customerId: userId }
+      ]
     })
       .sort({ createdAt: -1 })
       .lean()
-    return res.json({ orders, total: orders.length })
-  } catch (err) {
-    return res.status(500).json({ error: 'Server error' })
+
+    console.log(`✅ Found ${orders.length} orders`)
+
+    return res.json(orders)
+  } catch (err: any) {
+    console.error('❌ [GET /orders] ERROR:', err)
+    return res.status(500).json({
+      error: 'Lỗi server khi lấy danh sách đơn',
+      details: process.env.NODE_ENV === 'development' ? err.message : undefined
+    })
   }
 })
 
-router.get('/:id', async (req: Request, res: Response) => {
+router.get('/:id', protect, async (req: any, res: Response) => {
   try {
-    const order = await Order.findById(req.params.id)
-    if (!order) return res.status(404).json({ error: 'Không tìm thấy' })
+    const order = await Order.findOne({
+      _id: req.params.id,
+      // Chỉ cho phép xem nếu email khớp với user đang login
+      customerEmail: req.user.email.toLowerCase()
+    })
+
+    if (!order)
+      return res.status(404).json({ error: 'Không tìm thấy đơn hàng' })
     return res.json(order)
   } catch (err) {
     return res.status(500).json({ error: 'Server error' })
