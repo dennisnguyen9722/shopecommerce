@@ -7,7 +7,7 @@ const ImageSchema = new Schema(
   {
     url: { type: String, required: true },
     public_id: { type: String, required: true },
-    alt: { type: String, default: '' } // Nên có default rỗng
+    alt: { type: String, default: '' }
   },
   { _id: false }
 )
@@ -16,19 +16,10 @@ const ImageSchema = new Schema(
 // 2. VARIANT SCHEMA
 // =========================================================
 const VariantSchema = new Schema({
-  // SKU: Mã định danh duy nhất cho biến thể (VD: SKU-IP15-DEN-256)
   sku: { type: String, required: true },
-
   price: { type: Number, required: true },
-
-  // Tồn kho riêng cho biến thể này
   stock: { type: Number, default: 0 },
-
-  // 🔥 QUAN TRỌNG: Ảnh đại diện cho biến thể (để đổi màu khi click)
-  // Lưu URL string cho đơn giản và khớp với Frontend hiện tại
   image: { type: String, default: '' },
-
-  // Map options: { "Màu sắc": "Đỏ", "Size": "XL" }
   options: {
     type: Map,
     of: String
@@ -36,12 +27,11 @@ const VariantSchema = new Schema({
 })
 
 // =========================================================
-// 3. PRODUCT SCHEMA (MAIN)
+// 3. PRODUCT SCHEMA (MAIN) - ✅ UPDATED WITH BRAND
 // =========================================================
 const ProductSchema = new Schema(
   {
     name: { type: String, required: true, trim: true },
-    // Slug bắt buộc unique để URL không bị trùng
     slug: {
       type: String,
       required: true,
@@ -51,64 +41,62 @@ const ProductSchema = new Schema(
     },
 
     description: { type: String, default: '' },
-    brand: { type: String, default: 'No Brand' },
 
-    // Giá hiển thị đại diện
+    // ✅ UPDATED: Brand as ObjectId reference
+    brand: {
+      type: Schema.Types.ObjectId,
+      ref: 'Brand',
+      default: null
+    },
+
     price: { type: Number, required: true },
     comparePrice: { type: Number, default: 0 },
-
-    // Tổng tồn kho (Nếu có variants thì cộng dồn, nếu không thì nhập tay)
     stock: { type: Number, default: 0 },
 
-    // Liên kết Category
+    // Category reference
     category: { type: Schema.Types.ObjectId, ref: 'Category', default: null },
 
-    // Mảng ảnh (Ảnh đầu tiên thường là ảnh đại diện)
     images: [ImageSchema],
 
-    // 🟢 CẤU HÌNH BIẾN THỂ
+    // Variant configuration
     hasVariants: { type: Boolean, default: false },
-
-    // Định nghĩa nhóm: [{ name: "Màu sắc", values: ["Đỏ", "Xanh"] }]
     variantGroups: [
       {
         name: String,
         values: [String]
       }
     ],
-
-    // Danh sách biến thể chi tiết
     variants: [VariantSchema],
 
-    // 🟢 THÔNG SỐ KỸ THUẬT (Specs)
+    // Specs
     specs: [
       {
         key: String,
         value: String,
-        _id: false // Không cần tạo ID cho từng dòng spec
+        _id: false
       }
     ],
 
-    // 🟢 SEO FIELDS (BỔ SUNG QUAN TRỌNG CHO BÁN HÀNG)
-    metaTitle: { type: String }, // Tiêu đề hiển thị trên Google
-    metaDescription: { type: String }, // Mô tả hiển thị trên Google
+    // SEO
+    metaTitle: { type: String },
+    metaDescription: { type: String },
 
-    // Trạng thái
-    isPublished: { type: Boolean, default: true, index: true }, // Có đang bán không
-    isFeatured: { type: Boolean, default: false, index: true }, // Có phải SP nổi bật không
-    isHot: { type: Boolean, default: false }, // SP đang Hot/Bán chạy
+    // Status
+    isPublished: { type: Boolean, default: true, index: true },
+    isFeatured: { type: Boolean, default: false, index: true },
+    isHot: { type: Boolean, default: false },
 
-    // Thống kê (Dùng để sort hoặc filter)
-    sold: { type: Number, default: 0 }, // Đã bán
-    viewCount: { type: Number, default: 0 }, // Lượt xem
+    // Stats
+    sold: { type: Number, default: 0 },
+    viewCount: { type: Number, default: 0 },
 
-    // ===== 🌟 RATING FIELDS - MỚI CẬP NHẬT =====
+    // Rating
     averageRating: {
       type: Number,
       default: 0,
       min: 0,
       max: 5,
-      index: true // Để sort by rating
+      index: true
     },
     totalReviews: {
       type: Number,
@@ -122,18 +110,15 @@ const ProductSchema = new Schema(
       2: { type: Number, default: 0 },
       1: { type: Number, default: 0 }
     }
-    // ==========================================
   },
   {
-    timestamps: true // Tự động tạo createdAt, updatedAt
+    timestamps: true
   }
 )
 
 // =========================================================
-// 4. VIRTUAL FIELDS (Trường ảo - Không lưu DB nhưng tính toán được)
+// 4. VIRTUAL FIELDS
 // =========================================================
-
-// Kiểm tra xem có đang giảm giá không
 ProductSchema.virtual('hasDiscount').get(function () {
   return (
     typeof this.comparePrice === 'number' &&
@@ -142,26 +127,48 @@ ProductSchema.virtual('hasDiscount').get(function () {
   )
 })
 
-// Tính phần trăm giảm giá (VD: 20%)
 ProductSchema.virtual('discountPercent').get(function () {
   if (!this.comparePrice || this.comparePrice <= this.price) return 0
   const percent = ((this.comparePrice - this.price) / this.comparePrice) * 100
   return Math.round(percent)
 })
 
-// Config để khi res.json() sẽ bao gồm cả virtuals
 ProductSchema.set('toJSON', { virtuals: true })
 ProductSchema.set('toObject', { virtuals: true })
 
 // =========================================================
-// 5. INDEXES (Tối ưu tốc độ tìm kiếm)
+// 5. INDEXES
 // =========================================================
-ProductSchema.index({ name: 'text', brand: 'text', description: 'text' }) // Tìm kiếm Full-text
-// ProductSchema.index({ slug: 1 }) // Tìm theo slug nhanh
-ProductSchema.index({ category: 1 }) // Lọc theo danh mục nhanh
-ProductSchema.index({ price: 1 }) // Sắp xếp theo giá
-ProductSchema.index({ createdAt: -1 }) // Sắp xếp mới nhất
+ProductSchema.index({ name: 'text', description: 'text' })
+ProductSchema.index({ category: 1 })
+ProductSchema.index({ brand: 1 }) // ✅ NEW: Index for brand
+ProductSchema.index({ price: 1 })
+ProductSchema.index({ createdAt: -1 })
 
-// Ngăn lỗi OverwriteModelError trong Next.js (Hot Reload)
+// =========================================================
+// 6. MIDDLEWARE - Update Brand productsCount
+// =========================================================
+// When product is saved with brand
+ProductSchema.post('save', async function () {
+  if (this.brand) {
+    const Brand = mongoose.model('Brand')
+    const count = await mongoose
+      .model('Product')
+      .countDocuments({ brand: this.brand })
+    await Brand.findByIdAndUpdate(this.brand, { productsCount: count })
+  }
+})
+
+// When product is deleted
+ProductSchema.post('findOneAndDelete', async function (doc) {
+  if (doc && doc.brand) {
+    const Brand = mongoose.model('Brand')
+    const count = await mongoose
+      .model('Product')
+      .countDocuments({ brand: doc.brand })
+    await Brand.findByIdAndUpdate(doc.brand, { productsCount: count })
+  }
+})
+
 export default mongoose.models.Product ||
   mongoose.model('Product', ProductSchema)

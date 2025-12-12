@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 import { useAuthStore } from '@/src/store/authStore'
 import serverApi from '@/src/lib/api'
 import { toast } from 'sonner'
-import { MapPin, Plus, Loader2, CheckCircle2, Circle } from 'lucide-react'
+import { MapPin, Plus, CheckCircle2, Circle, Mail } from 'lucide-react' // Thêm icon Mail
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -39,7 +39,6 @@ type LocationOption = {
 export default function Step1Shipping({ next }: { next: (data: any) => void }) {
   const { isAuthenticated, user } = useAuthStore()
 
-  // State quản lý chế độ (Dùng địa chỉ lưu sẵn hay nhập mới)
   const [useSavedAddress, setUseSavedAddress] = useState(isAuthenticated)
   const [savedAddresses, setSavedAddresses] = useState<Address[]>([])
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(
@@ -47,9 +46,10 @@ export default function Step1Shipping({ next }: { next: (data: any) => void }) {
   )
   const [isLoadingAddresses, setIsLoadingAddresses] = useState(false)
 
-  // State form nhập mới (Guest hoặc New Address)
+  // State form nhập mới
   const [form, setForm] = useState({
     fullName: user?.name || '',
+    email: user?.email || '', // 👇 THÊM EMAIL VÀO STATE
     phone: user?.phone || '',
     addressLine1: '',
     province: '',
@@ -57,7 +57,7 @@ export default function Step1Shipping({ next }: { next: (data: any) => void }) {
     ward: ''
   })
 
-  // State Location Data (API Tỉnh Thành)
+  // State Location Data
   const [provinces, setProvinces] = useState<LocationOption[]>([])
   const [districts, setDistricts] = useState<LocationOption[]>([])
   const [wards, setWards] = useState<LocationOption[]>([])
@@ -65,7 +65,7 @@ export default function Step1Shipping({ next }: { next: (data: any) => void }) {
   const [provId, setProvId] = useState('')
   const [distId, setDistId] = useState('')
 
-  // 1. Load Saved Addresses (Nếu đã login)
+  // 1. Load Saved Addresses
   useEffect(() => {
     if (isAuthenticated) {
       setIsLoadingAddresses(true)
@@ -73,11 +73,10 @@ export default function Step1Shipping({ next }: { next: (data: any) => void }) {
         .get('/public/profile/addresses')
         .then((res) => {
           setSavedAddresses(res.data)
-          // Tự chọn địa chỉ mặc định
           const defaultAddr =
             res.data.find((a: Address) => a.isDefault) || res.data[0]
           if (defaultAddr) setSelectedAddressId(defaultAddr._id)
-          else setUseSavedAddress(false) // Nếu không có địa chỉ nào thì chuyển sang form nhập
+          else setUseSavedAddress(false)
         })
         .catch((err) => console.error(err))
         .finally(() => setIsLoadingAddresses(false))
@@ -86,7 +85,7 @@ export default function Step1Shipping({ next }: { next: (data: any) => void }) {
     }
   }, [isAuthenticated])
 
-  // 2. Load Tỉnh/Thành (Luôn chạy để phục vụ form nhập mới)
+  // 2. Load Tỉnh/Thành
   useEffect(() => {
     fetch('https://esgoo.net/api-tinhthanh/1/0.htm')
       .then((res) => res.json())
@@ -109,7 +108,6 @@ export default function Step1Shipping({ next }: { next: (data: any) => void }) {
     }))
     setDistricts([])
     setWards([])
-
     fetch(`https://esgoo.net/api-tinhthanh/2/${id}.htm`)
       .then((res) => res.json())
       .then((data) => {
@@ -123,7 +121,6 @@ export default function Step1Shipping({ next }: { next: (data: any) => void }) {
     setDistId(id)
     setForm((prev) => ({ ...prev, district: dist.full_name, ward: '' }))
     setWards([])
-
     fetch(`https://esgoo.net/api-tinhthanh/3/${id}.htm`)
       .then((res) => res.json())
       .then((data) => {
@@ -138,22 +135,25 @@ export default function Step1Shipping({ next }: { next: (data: any) => void }) {
 
   // Xử lý Submit
   const handleSubmit = () => {
-    let finalAddress
+    let finalData
 
     if (useSavedAddress && selectedAddressId) {
       // Case 1: Dùng địa chỉ có sẵn
       const selected = savedAddresses.find((a) => a._id === selectedAddressId)
       if (!selected) return toast.error('Vui lòng chọn địa chỉ')
 
-      finalAddress = {
-        fullName: selected.fullName,
+      // 👇 MAP ĐÚNG KEY CHO STEP 3 (name, email, phone, address)
+      finalData = {
+        name: selected.fullName,
+        email: user?.email || '', // Lấy email từ account nếu dùng địa chỉ lưu
         phone: selected.phone,
-        fullAddress: `${selected.addressLine1}, ${selected.ward}, ${selected.district}, ${selected.province}`
+        address: `${selected.addressLine1}, ${selected.ward}, ${selected.district}, ${selected.province}`
       }
     } else {
       // Case 2: Dùng form nhập mới
       if (
         !form.fullName ||
+        !form.email ||
         !form.phone ||
         !form.addressLine1 ||
         !form.province ||
@@ -162,20 +162,23 @@ export default function Step1Shipping({ next }: { next: (data: any) => void }) {
       ) {
         return toast.error('Vui lòng điền đầy đủ thông tin giao hàng')
       }
-      finalAddress = {
-        fullName: form.fullName,
+
+      // 👇 MAP ĐÚNG KEY CHO STEP 3
+      finalData = {
+        name: form.fullName,
+        email: form.email,
         phone: form.phone,
-        fullAddress: `${form.addressLine1}, ${form.ward}, ${form.district}, ${form.province}`
+        address: `${form.addressLine1}, ${form.ward}, ${form.district}, ${form.province}`
       }
     }
 
-    // Gửi data sang bước 2
-    next(finalAddress)
+    // Gửi data sang bước 2 (và sau đó là bước 3)
+    next(finalData)
   }
 
   return (
     <div className="space-y-6">
-      {/* --- PHẦN 1: DANH SÁCH ĐỊA CHỈ ĐÃ LƯU (Chỉ hiện khi đã login) --- */}
+      {/* --- PHẦN 1: LIST ĐỊA CHỈ --- */}
       {isAuthenticated && savedAddresses.length > 0 && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
@@ -246,7 +249,7 @@ export default function Step1Shipping({ next }: { next: (data: any) => void }) {
         </div>
       )}
 
-      {/* --- PHẦN 2: FORM NHẬP ĐỊA CHỈ MỚI (Hiện khi chưa login hoặc chọn nhập mới) --- */}
+      {/* --- PHẦN 2: FORM NHẬP MỚI --- */}
       {(!useSavedAddress || savedAddresses.length === 0) && (
         <div className="space-y-5 animate-in fade-in slide-in-from-top-4 duration-300">
           <div className="flex items-center gap-2 mb-2">
@@ -256,6 +259,7 @@ export default function Step1Shipping({ next }: { next: (data: any) => void }) {
             </h3>
           </div>
 
+          {/* Hàng 1: Tên & SĐT */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Họ và tên</Label>
@@ -277,7 +281,22 @@ export default function Step1Shipping({ next }: { next: (data: any) => void }) {
             </div>
           </div>
 
-          {/* SELECT TỈNH/THÀNH */}
+          {/* 👇 Hàng 2: Email (QUAN TRỌNG: ĐÃ THÊM MỚI) */}
+          <div className="space-y-2">
+            <Label>Địa chỉ Email (để nhận thông báo đơn hàng)</Label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Input
+                type="email"
+                placeholder="example@gmail.com"
+                className="bg-white pl-9"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+              />
+            </div>
+          </div>
+
+          {/* Hàng 3: Chọn địa điểm */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label>Tỉnh / Thành</Label>
@@ -340,7 +359,7 @@ export default function Step1Shipping({ next }: { next: (data: any) => void }) {
         </div>
       )}
 
-      {/* FOOTER BUTTON */}
+      {/* FOOTER */}
       <div className="pt-4">
         <Button
           onClick={handleSubmit}

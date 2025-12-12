@@ -73,7 +73,7 @@ router.get('/revenue-chart', protect, CAN_VIEW, async (req, res) => {
 })
 
 /* ============================================================
-   A3. Best-selling products
+   A3. Best-selling products - FIXED VERSION
 ============================================================ */
 router.get('/best-products', protect, CAN_VIEW, async (req, res) => {
   try {
@@ -82,23 +82,52 @@ router.get('/best-products', protect, CAN_VIEW, async (req, res) => {
     const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000)
 
     const items = await Order.aggregate([
-      { $match: { createdAt: { $gte: since } } },
+      {
+        $match: {
+          createdAt: { $gte: since },
+          status: { $ne: 'cancelled' } // Loại bỏ đơn đã hủy
+        }
+      },
       { $unwind: '$items' },
       {
         $group: {
-          _id: '$items.productId',
+          // Group by product + variant (nếu có)
+          _id: {
+            product: '$items.product',
+            variantId: '$items.variantId'
+          },
+          productId: { $first: '$items.product' },
+          variantId: { $first: '$items.variantId' },
           name: { $first: '$items.name' },
           image: { $first: '$items.image' },
-          totalSold: { $sum: '$items.quantity' },
+          sku: {
+            $first: { $ifNull: ['$items.sku', '$items.variantInfo.sku'] }
+          },
+          variantInfo: { $first: '$items.variantInfo' },
+          quantitySold: { $sum: '$items.quantity' }, // 🔥 FIX: Đổi từ totalSold
           revenue: { $sum: { $multiply: ['$items.quantity', '$items.price'] } }
         }
       },
-      { $sort: { totalSold: -1 } },
-      { $limit: limitNum }
+      { $sort: { quantitySold: -1 } }, // Sort by quantity sold
+      { $limit: limitNum },
+      {
+        $project: {
+          _id: 0, // Loại bỏ _id phức tạp
+          productId: 1,
+          variantId: 1,
+          name: 1,
+          image: 1,
+          sku: 1,
+          variantInfo: 1,
+          quantitySold: 1,
+          revenue: 1
+        }
+      }
     ])
 
     res.json(items)
   } catch (err: any) {
+    console.error('❌ [Best Products] Error:', err)
     res.status(500).json({ error: err.message })
   }
 })

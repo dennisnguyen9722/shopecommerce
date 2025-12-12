@@ -64,8 +64,6 @@ export default function CustomersPage() {
   const [segment, setSegment] = useState('all')
   const [sort, setSort] = useState('newest')
   const [status, setStatus] = useState('all')
-
-  // 🆕 Confirm dialog state
   const [showConfirm, setShowConfirm] = useState(false)
 
   const fetchData = async (page = 1) => {
@@ -83,7 +81,6 @@ export default function CustomersPage() {
       setItems(data.items)
       setPagination(data.pagination)
 
-      // Calculate stats
       setStats({
         total: data.pagination.total,
         active: data.items.filter((c: any) => c.status === 'active').length,
@@ -115,7 +112,7 @@ export default function CustomersPage() {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 md:p-6 space-y-6">
       {/* HEADER */}
       <div className="flex items-center justify-between">
         <div>
@@ -138,7 +135,7 @@ export default function CustomersPage() {
       </div>
 
       {/* STATS CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
         <GlassCard className="bg-gradient-to-br from-blue-50/60 to-cyan-50/60 p-4">
           <div className="space-y-2">
             <div className="text-sm font-medium text-gray-600 flex items-center gap-2">
@@ -189,9 +186,9 @@ export default function CustomersPage() {
       </div>
 
       {/* FILTER BAR */}
-      <GlassCard className="py-4">
-        <div className="flex flex-col md:flex-row items-center gap-4">
-          <div className="relative flex-1 w-full">
+      <GlassCard className="p-4">
+        <div className="flex flex-col xl:flex-row gap-4">
+          <div className="relative flex-1 w-full xl:max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <Input
               placeholder="Tìm theo tên, email, số điện thoại..."
@@ -201,196 +198,208 @@ export default function CustomersPage() {
             />
           </div>
 
-          <Select value={segment} onValueChange={setSegment}>
-            <SelectTrigger className="w-full md:w-44">
-              <SelectValue placeholder="Phân khúc" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Tất cả</SelectItem>
-              <SelectItem value="vip">VIP (≥10M)</SelectItem>
-              <SelectItem value="premium">Premium (≥5M)</SelectItem>
-              <SelectItem value="new">Khách mới</SelectItem>
-              <SelectItem value="inactive">Không hoạt động</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="flex flex-wrap gap-2 items-center">
+            <Select value={segment} onValueChange={setSegment}>
+              <SelectTrigger className="w-full md:w-40">
+                <SelectValue placeholder="Phân khúc" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Tất cả</SelectItem>
+                <SelectItem value="vip">VIP (≥10M)</SelectItem>
+                <SelectItem value="premium">Premium (≥5M)</SelectItem>
+                <SelectItem value="new">Khách mới</SelectItem>
+                <SelectItem value="inactive">Không hoạt động</SelectItem>
+              </SelectContent>
+            </Select>
 
-          <Select value={status} onValueChange={setStatus}>
-            <SelectTrigger className="w-full md:w-44">
-              <SelectValue placeholder="Trạng thái" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Tất cả</SelectItem>
-              <SelectItem value="active">Đang hoạt động</SelectItem>
-              <SelectItem value="blocked">Bị chặn</SelectItem>
-              <SelectItem value="suspended">Tạm ngưng</SelectItem>
-              <SelectItem value="deactivated">Ngưng kích hoạt</SelectItem>
-            </SelectContent>
-          </Select>
+            <Select value={status} onValueChange={setStatus}>
+              <SelectTrigger className="w-full md:w-36">
+                <SelectValue placeholder="Trạng thái" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Tất cả</SelectItem>
+                <SelectItem value="active">Đang hoạt động</SelectItem>
+                <SelectItem value="blocked">Bị chặn</SelectItem>
+                <SelectItem value="suspended">Tạm ngưng</SelectItem>
+                <SelectItem value="deactivated">Ngưng kích hoạt</SelectItem>
+              </SelectContent>
+            </Select>
 
-          <Select value={sort} onValueChange={setSort}>
-            <SelectTrigger className="w-full md:w-44">
-              <SelectValue placeholder="Sắp xếp" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="newest">Mới nhất</SelectItem>
-              <SelectItem value="oldest">Cũ nhất</SelectItem>
-              <SelectItem value="totalSpent">Tổng chi tiêu</SelectItem>
-              <SelectItem value="orders">Số đơn hàng</SelectItem>
-              <SelectItem value="points">Loyalty Points</SelectItem>
-            </SelectContent>
-          </Select>
+            <Select value={sort} onValueChange={setSort}>
+              <SelectTrigger className="w-full md:w-36">
+                <SelectValue placeholder="Sắp xếp" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest">Mới nhất</SelectItem>
+                <SelectItem value="oldest">Cũ nhất</SelectItem>
+                <SelectItem value="totalSpent">Tổng chi tiêu</SelectItem>
+                <SelectItem value="orders">Số đơn hàng</SelectItem>
+                <SelectItem value="points">Loyalty Points</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </GlassCard>
 
       {/* TABLE */}
-      <GlassCard>
-        <div className="border-b border-white/20 pb-4 mb-4">
+      <GlassCard className="overflow-hidden p-0">
+        <div className="px-4 py-4 border-b">
           <h2 className="text-lg font-semibold">Danh sách khách hàng</h2>
         </div>
 
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Khách hàng</TableHead>
-              <TableHead>Liên hệ</TableHead>
-              <TableHead>Loyalty</TableHead>
-              <TableHead className="text-right">Đơn hàng</TableHead>
-              <TableHead className="text-right">Tổng chi</TableHead>
-              <TableHead>Tags</TableHead>
-              <TableHead>Trạng thái</TableHead>
-              <TableHead>Ngày tạo</TableHead>
-              <TableHead className="text-right">Thao tác</TableHead>
-            </TableRow>
-          </TableHeader>
+        {/* 🔥 CRITICAL FIX: Giống hệt Products page */}
+        <div className="w-full overflow-x-auto">
+          <Table className="min-w-[1100px]">
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[180px]">Khách hàng</TableHead>
+                <TableHead className="w-[200px]">Liên hệ</TableHead>
+                <TableHead className="w-[110px]">Loyalty</TableHead>
+                <TableHead className="w-[80px] text-right">Đơn hàng</TableHead>
+                <TableHead className="w-[110px] text-right">Tổng chi</TableHead>
+                <TableHead className="w-[120px]">Tags</TableHead>
+                <TableHead className="w-[120px]">Trạng thái</TableHead>
+                <TableHead className="w-[100px]">Ngày tạo</TableHead>
+                <TableHead className="w-[80px] text-right"></TableHead>
+              </TableRow>
+            </TableHeader>
 
-          <TableBody>
-            {loading ? (
-              <TableRow>
-                <TableCell colSpan={9} className="text-center py-8">
-                  Đang tải...
-                </TableCell>
-              </TableRow>
-            ) : items.length === 0 ? (
-              <TableRow>
-                <TableCell
-                  colSpan={9}
-                  className="text-center py-8 text-gray-500"
-                >
-                  Không có khách hàng nào
-                </TableCell>
-              </TableRow>
-            ) : (
-              items.map((c) => (
-                <TableRow
-                  key={c._id}
-                  className="cursor-pointer hover:bg-white/30 transition"
-                  onClick={() => router.push(`/admin/customers/${c._id}`)}
-                >
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold">
-                        {c.name?.charAt(0).toUpperCase() || '?'}
+            <TableBody>
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={9} className="text-center py-8">
+                    Đang tải...
+                  </TableCell>
+                </TableRow>
+              ) : items.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={9}
+                    className="text-center py-8 text-gray-500"
+                  >
+                    Không có khách hàng nào
+                  </TableCell>
+                </TableRow>
+              ) : (
+                items.map((c) => (
+                  <TableRow
+                    key={c._id}
+                    className="cursor-pointer hover:bg-gray-50/50"
+                    onClick={() => router.push(`/admin/customers/${c._id}`)}
+                  >
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold shrink-0">
+                          {c.name?.charAt(0).toUpperCase() || '?'}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="font-medium text-sm truncate">
+                            {c.name}
+                          </div>
+                          {c.password === null && (
+                            <Badge
+                              variant="outline"
+                              className="text-[10px] mt-0.5"
+                            >
+                              Guest
+                            </Badge>
+                          )}
+                        </div>
                       </div>
-                      <div>
-                        <div className="font-medium">{c.name}</div>
-                        {c.password === null && (
-                          <Badge variant="outline" className="text-xs">
-                            Guest
+                    </TableCell>
+
+                    <TableCell>
+                      <div className="text-xs space-y-0.5">
+                        <div className="text-gray-900 truncate" title={c.email}>
+                          {c.email}
+                        </div>
+                        <div className="text-gray-500">{c.phone || '—'}</div>
+                      </div>
+                    </TableCell>
+
+                    <TableCell>
+                      <div className="space-y-1">
+                        <Badge
+                          className={`${
+                            tierColor[c.loyaltyTier || 'bronze']
+                          } text-[10px] px-1.5 py-0.5`}
+                        >
+                          {(c.loyaltyTier || 'bronze').toUpperCase()}
+                        </Badge>
+                        <div className="text-[10px] text-gray-600">
+                          {(c.loyaltyPoints || 0).toLocaleString()} đ
+                        </div>
+                      </div>
+                    </TableCell>
+
+                    <TableCell className="text-right text-sm font-medium">
+                      {c.ordersCount || 0}
+                    </TableCell>
+
+                    <TableCell className="text-right text-sm font-bold text-green-600">
+                      {Number(c.totalSpent ?? 0).toLocaleString()}₫
+                    </TableCell>
+
+                    <TableCell>
+                      <div className="flex flex-wrap gap-1">
+                        {c.tags?.slice(0, 1).map((t: string) => (
+                          <Badge
+                            key={t}
+                            variant="outline"
+                            className="text-[10px] bg-purple-100 text-purple-700"
+                          >
+                            {t}
+                          </Badge>
+                        ))}
+                        {c.tags?.length > 1 && (
+                          <Badge variant="outline" className="text-[10px]">
+                            +{c.tags.length - 1}
                           </Badge>
                         )}
                       </div>
-                    </div>
-                  </TableCell>
+                    </TableCell>
 
-                  <TableCell>
-                    <div className="text-sm">
-                      <div className="text-gray-900 dark:text-white">
-                        {c.email}
-                      </div>
-                      <div className="text-gray-500 dark:text-white">
-                        {c.phone || '—'}
-                      </div>
-                    </div>
-                  </TableCell>
-
-                  <TableCell>
-                    <div className="space-y-1">
+                    <TableCell>
                       <Badge
-                        className={
-                          tierColor[c.loyaltyTier || 'bronze'] || 'bg-gray-200'
-                        }
+                        className={`${
+                          statusColor[c.status]
+                        } text-[10px] px-1.5`}
                       >
-                        {(c.loyaltyTier || 'bronze').toUpperCase()}
+                        {statusLabel[c.status]}
                       </Badge>
-                      <div className="text-xs text-gray-600">
-                        {(c.loyaltyPoints || 0).toLocaleString()} điểm
-                      </div>
-                    </div>
-                  </TableCell>
+                    </TableCell>
 
-                  <TableCell className="text-right font-medium">
-                    {c.ordersCount || 0}
-                  </TableCell>
+                    <TableCell className="text-xs text-gray-600">
+                      {new Date(c.createdAt).toLocaleDateString('vi-VN')}
+                    </TableCell>
 
-                  <TableCell className="text-right font-bold text-green-600">
-                    {Number(c.totalSpent ?? 0).toLocaleString()}₫
-                  </TableCell>
-
-                  <TableCell>
-                    <div className="flex flex-wrap gap-1">
-                      {c.tags?.slice(0, 2).map((t: string) => (
-                        <Badge
-                          key={t}
-                          variant="outline"
-                          className="text-xs bg-purple-100 text-purple-700"
-                        >
-                          {t}
-                        </Badge>
-                      ))}
-                      {c.tags?.length > 2 && (
-                        <Badge variant="outline" className="text-xs">
-                          +{c.tags.length - 2}
-                        </Badge>
-                      )}
-                    </div>
-                  </TableCell>
-
-                  <TableCell>
-                    <Badge className={statusColor[c.status]}>
-                      {statusLabel[c.status]}
-                    </Badge>
-                  </TableCell>
-
-                  <TableCell className="text-sm text-gray-600 dark:text-white">
-                    {new Date(c.createdAt).toLocaleDateString('vi-VN')}
-                  </TableCell>
-
-                  <TableCell className="text-right">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        router.push(`/admin/customers/${c._id}`)
-                      }}
-                    >
-                      Sửa
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+                    <TableCell className="text-right">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-xs h-7"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          router.push(`/admin/customers/${c._id}`)
+                        }}
+                      >
+                        Sửa
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
 
         {/* PAGINATION */}
         {pagination && (
-          <div className="flex justify-between items-center mt-4 pt-4 border-t border-white/20 text-sm text-gray-600">
+          <div className="flex justify-between items-center p-4 border-t text-xs text-gray-600">
             <div>
               Trang {pagination.page}/{pagination.pages} · Tổng{' '}
-              {pagination.total} khách hàng
+              {pagination.total} SP
             </div>
-
             <div className="flex gap-2">
               <Button
                 variant="outline"
@@ -400,7 +409,6 @@ export default function CustomersPage() {
               >
                 ‹ Trước
               </Button>
-
               <Button
                 variant="outline"
                 size="sm"
@@ -414,7 +422,7 @@ export default function CustomersPage() {
         )}
       </GlassCard>
 
-      {/* 🆕 Confirm Dialog */}
+      {/* Confirm Dialog */}
       <ConfirmDialog
         open={showConfirm}
         onClose={() => setShowConfirm(false)}

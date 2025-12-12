@@ -18,18 +18,23 @@ import {
   SelectValue
 } from '@/components/ui/select'
 
-// Import ImageUploader CŨ của bạn (để up ảnh chính)
 import ImageUploader from '@/src/components/admin/ImageUploader'
 import PriceInputShopifyPlus from '@/src/components/admin/PriceInput'
 import GlassCard from '@/src/components/admin/GlassCard'
 import Editor from '@/src/components/editor/Editor'
-// Import VariantManager MỚI (để up ảnh variant)
 import VariantManager from '@/src/components/admin/VariantManager'
 import SpecsManager from '@/src/components/admin/SpecsManager'
 
-import { ToggleLeft, ToggleRight, Layers, Settings2 } from 'lucide-react'
+import {
+  ToggleLeft,
+  ToggleRight,
+  Layers,
+  Settings2,
+  Building2
+} from 'lucide-react'
 
 type Category = { _id: string; name: string; isActive?: boolean }
+type Brand = { _id: string; name: string; slug: string; logo?: string }
 type CategoriesResponse = { items: Category[] }
 
 export default function CreateProductPage() {
@@ -42,13 +47,12 @@ export default function CreateProductPage() {
   const [stock, setStock] = useState<number>(0)
   const [description, setDescription] = useState('')
 
-  // State cho ảnh chính (Dùng ImageUploader)
   const [images, setImages] = useState<{ url: string; public_id: string }[]>([])
   const [categoryId, setCategoryId] = useState<string>('')
+  const [brandId, setBrandId] = useState<string>('') // ✅ NEW: Brand state
   const [isPublished, setIsPublished] = useState(true)
   const [isFeatured, setIsFeatured] = useState(false)
 
-  // State cho Variant & Specs
   const [hasVariants, setHasVariants] = useState(false)
   const [variantGroups, setVariantGroups] = useState<
     { name: string; values: string[] }[]
@@ -72,6 +76,16 @@ export default function CreateProductPage() {
   const categories = catData?.items ?? []
   const activeCategories = categories.filter((c) => c.isActive !== false)
 
+  // ✅ NEW: Lấy danh sách thương hiệu
+  const { data: brandsData } = useQuery<Brand[]>({
+    queryKey: ['admin-brands-all'],
+    queryFn: async () => {
+      const res = await api.get('/admin/brands/all')
+      return res.data
+    }
+  })
+  const brands = brandsData ?? []
+
   // API Tạo sản phẩm
   const mut = useMutation({
     mutationFn: async () => {
@@ -80,18 +94,18 @@ export default function CreateProductPage() {
         slug,
         price,
         comparePrice,
-        // Nếu có variant thì tổng stock = tổng stock các variants
         stock: hasVariants
           ? variants.reduce((acc, v) => acc + (v.stock || 0), 0)
           : stock,
         description,
         images,
         category: categoryId || undefined,
+        brand: brandId || undefined, // ✅ NEW: Thêm brand vào payload
         isPublished,
         isFeatured,
         hasVariants,
         variantGroups,
-        variants, // Trong này đã có trường 'image' nếu bạn upload
+        variants,
         specs
       }
 
@@ -143,21 +157,64 @@ export default function CreateProductPage() {
               onChange={(e) => setSlug(generateSlug(e.target.value))}
             />
           </div>
-          <div className="space-y-2 max-w-sm">
-            <Label>Danh mục</Label>
-            <Select value={categoryId} onValueChange={setCategoryId}>
-              <SelectTrigger>
-                <SelectValue placeholder="Chọn danh mục" />
-              </SelectTrigger>
-              <SelectContent>
-                {activeCategories.map((c) => (
-                  <SelectItem key={c._id} value={c._id}>
-                    {c.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+
+          {/* ✅ NEW: Grid layout cho Category và Brand */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Danh mục */}
+            <div className="space-y-2">
+              <Label>Danh mục</Label>
+              <Select
+                value={categoryId || 'none'}
+                onValueChange={(v) => setCategoryId(v === 'none' ? '' : v)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Chọn danh mục" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Không chọn</SelectItem>
+                  {activeCategories.map((c) => (
+                    <SelectItem key={c._id} value={c._id}>
+                      {c.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* ✅ NEW: Thương hiệu */}
+            <div className="space-y-2">
+              <Label className="flex items-center gap-2">
+                <Building2 className="w-4 h-4 text-orange-500" />
+                Thương hiệu
+              </Label>
+              <Select
+                value={brandId || 'none'}
+                onValueChange={(v) => setBrandId(v === 'none' ? '' : v)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Chọn thương hiệu" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Không chọn</SelectItem>
+                  {brands.map((brand) => (
+                    <SelectItem key={brand._id} value={brand._id}>
+                      <div className="flex items-center gap-2">
+                        {brand.logo && (
+                          <img
+                            src={brand.logo}
+                            alt={brand.name}
+                            className="w-4 h-4 rounded object-contain"
+                          />
+                        )}
+                        <span>{brand.name}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
+
           <div className="flex gap-6 pt-2">
             <div className="space-y-2">
               <Label>Hiển thị</Label>
@@ -191,7 +248,7 @@ export default function CreateProductPage() {
         </div>
       </GlassCard>
 
-      {/* 2. HÌNH ẢNH CHÍNH (Dùng Component cũ của bạn) */}
+      {/* 2. HÌNH ẢNH */}
       <GlassCard>
         <h2 className="font-semibold mb-4">Hình ảnh sản phẩm (Gallery)</h2>
         <ImageUploader initial={[]} onChange={setImages} />
@@ -224,7 +281,7 @@ export default function CreateProductPage() {
         )}
       </GlassCard>
 
-      {/* 4. BIẾN THỂ (Dùng Component mới đã nâng cấp) */}
+      {/* 4. BIẾN THỂ */}
       <GlassCard>
         <div className="flex items-center justify-between mb-4 border-b pb-4">
           <div className="flex items-center gap-2">

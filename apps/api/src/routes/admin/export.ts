@@ -21,7 +21,7 @@ router.get('/orders', async (req, res) => {
       if (endDate) query.createdAt.$lte = new Date(endDate as string)
     }
 
-    if (status) {
+    if (status && status !== 'all') {
       query.status = status
     }
 
@@ -34,18 +34,52 @@ router.get('/orders', async (req, res) => {
         .json({ message: 'Không có đơn hàng nào để export' })
     }
 
+    // 🆕 Build dynamic title & filename
+    let titleParts: string[] = ['Đơn hàng']
+    let filenameParts: string[] = ['orders']
+
+    if (startDate && endDate) {
+      const start = new Date(startDate as string).toLocaleDateString('vi-VN')
+      const end = new Date(endDate as string).toLocaleDateString('vi-VN')
+      titleParts.push(`từ ${start} đến ${end}`)
+      filenameParts.push(`${startDate}-${endDate}`)
+    } else if (startDate) {
+      const start = new Date(startDate as string).toLocaleDateString('vi-VN')
+      titleParts.push(`từ ${start}`)
+      filenameParts.push(`from-${startDate}`)
+    } else if (endDate) {
+      const end = new Date(endDate as string).toLocaleDateString('vi-VN')
+      titleParts.push(`đến ${end}`)
+      filenameParts.push(`to-${endDate}`)
+    }
+
+    if (status && status !== 'all') {
+      const statusMap: any = {
+        pending: 'Chờ xử lý',
+        processing: 'Đang xử lý',
+        shipped: 'Đang giao',
+        completed: 'Hoàn thành',
+        cancelled: 'Đã hủy'
+      }
+      titleParts.push(`- ${statusMap[status as string] || status}`)
+      filenameParts.push(status as string)
+    }
+
+    const title = titleParts.join(' ')
+    const filenameBase = filenameParts.join('_')
+
     // Generate file based on format
     let buffer: any
     let filename: string
     let contentType: string
 
     if (format === 'csv') {
-      buffer = await exportService.exportOrdersToCSV(orders)
-      filename = `orders-${Date.now()}.csv`
+      buffer = await exportService.exportOrdersToCSV(orders, title)
+      filename = `${filenameBase}.csv`
       contentType = 'text/csv'
     } else {
-      buffer = await exportService.exportOrdersToExcel(orders)
-      filename = `orders-${Date.now()}.xlsx`
+      buffer = await exportService.exportOrdersToExcel(orders, title)
+      filename = `${filenameBase}.xlsx`
       contentType =
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     }
@@ -80,11 +114,11 @@ router.get('/products', async (req, res) => {
     const [products, productSales] = await Promise.all([
       Product.find(query).populate('category', 'name').sort({ createdAt: -1 }),
       Order.aggregate([
-        { $match: { status: { $in: ['completed', 'shipped'] } } },
+        { $match: { status: { $in: ['completed', 'shipped', 'processing'] } } },
         { $unwind: '$items' },
         {
           $group: {
-            _id: '$items.product',
+            _id: '$items.productId',
             totalSold: { $sum: '$items.quantity' }
           }
         }
@@ -97,21 +131,49 @@ router.get('/products', async (req, res) => {
         .json({ message: 'Không có sản phẩm nào để export' })
     }
 
-    // ✅ FIX: Filter null _id
+    // Filter out null _id
     const salesMap = new Map(
       productSales
-        .filter((item: any) => item._id != null) // 🔥 Thêm dòng này
+        .filter((item: any) => item._id != null)
         .map((item: any) => [item._id.toString(), item.totalSold])
     )
 
     const productsWithSales = products.map((product) => {
       const productObj = product.toObject()
-      productObj.actualSold = salesMap.get(product._id.toString()) || 0
+      const productId = product._id.toString()
+      productObj.actualSold = salesMap.get(productId) || 0
       return productObj
     })
 
-    const buffer = await exportService.exportProductsToExcel(productsWithSales)
-    const filename = `products-${Date.now()}.xlsx`
+    // 🆕 Build dynamic title
+    let titleParts: string[] = ['Sản phẩm']
+    let filenameParts: string[] = ['products']
+
+    if (category) {
+      const cat = await Product.findById(category).select('name')
+      if (cat) {
+        titleParts.push(`- ${cat.name}`)
+        filenameParts.push('category')
+      }
+    }
+
+    if (inStock === 'true') {
+      titleParts.push('- Còn hàng')
+      filenameParts.push('in-stock')
+    } else if (inStock === 'false') {
+      titleParts.push('- Hết hàng')
+      filenameParts.push('out-of-stock')
+    }
+
+    const title = titleParts.join(' ')
+    const filename = `${filenameParts.join('_')}_${
+      new Date().toISOString().split('T')[0]
+    }.xlsx`
+
+    const buffer = await exportService.exportProductsToExcel(
+      productsWithSales,
+      title
+    )
 
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`)
     res.setHeader(
@@ -133,7 +195,7 @@ router.get('/customers', async (req, res) => {
     const query: any = {}
 
     if (hasOrders === 'true') {
-      query.orderCount = { $gt: 0 }
+      query.ordersCount = { $gt: 0 }
     }
 
     if (minSpent) {
@@ -163,21 +225,33 @@ router.get('/customers', async (req, res) => {
   }
 })
 
-// 4. Export All Data (Combined) - ✅ FIXED
+// 4. Export All Data (Combined)
 router.get('/all', async (req, res) => {
   try {
     console.log('📦 Starting export all data...')
+
+    // 🔍 DEBUG: Check order items structure
+    const debugOrder = (await Order.findOne({
+      status: { $in: ['completed', 'shipped'] },
+      items: { $exists: true, $ne: [] }
+    }).lean()) as any
+
+    if (debugOrder && debugOrder.items && debugOrder.items.length > 0) {
+      console.log('🔍 DEBUG - Order Items Structure:')
+      console.log(JSON.stringify(debugOrder.items[0], null, 2))
+      console.log('🔍 Available fields:', Object.keys(debugOrder.items[0]))
+    }
 
     const [orders, products, customers, productSales] = await Promise.all([
       Order.find().sort({ createdAt: -1 }),
       Product.find().populate('category', 'name').sort({ createdAt: -1 }),
       Customer.find().sort({ createdAt: -1 }),
       Order.aggregate([
-        { $match: { status: { $in: ['completed', 'shipped'] } } },
+        { $match: { status: { $in: ['completed', 'shipped', 'processing'] } } },
         { $unwind: '$items' },
         {
           $group: {
-            _id: '$items.product',
+            _id: '$items.productId', // ✅ FIX: Đổi từ product → productId
             totalSold: { $sum: '$items.quantity' }
           }
         }
@@ -191,18 +265,39 @@ router.get('/all', async (req, res) => {
       productSales: productSales.length
     })
 
-    // ✅ FIX: Filter out null _id before mapping
+    console.log('📊 Product sales sample:', {
+      first: productSales[0],
+      nullCount: productSales.filter((item: any) => item._id == null).length
+    })
+
+    // Filter out null _id before mapping
     const salesMap = new Map(
       productSales
-        .filter((item: any) => item._id != null) // 🔥 Thêm dòng này
+        .filter((item: any) => item._id != null)
         .map((item: any) => [item._id.toString(), item.totalSold])
+    )
+
+    console.log('🗺️ Sales map size:', salesMap.size)
+    console.log(
+      '🗺️ Sample sales map keys:',
+      Array.from(salesMap.keys()).slice(0, 5)
     )
 
     // Add sold data to each product
     const productsWithSales = products.map((product) => {
       const productObj = product.toObject()
-      productObj.actualSold = salesMap.get(product._id.toString()) || 0
+      const productId = product._id.toString()
+      productObj.actualSold = salesMap.get(productId) || 0
       return productObj
+    })
+
+    console.log('📊 Products with sales:', {
+      total: productsWithSales.length,
+      withSales: productsWithSales.filter((p) => p.actualSold > 0).length,
+      sample: {
+        name: productsWithSales[0]?.name,
+        actualSold: productsWithSales[0]?.actualSold
+      }
     })
 
     console.log('📊 Generating Excel file...')

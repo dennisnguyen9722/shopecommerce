@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import Order from '../models/Order'
 import User from '../models/User'
+import Customer from '../models/Customer' // 👈 THÊM import Customer
 import { updateOrderStatus } from '../services/orderService'
 import { log } from '../utils/logger'
 import { AppError } from '../utils/AppError'
@@ -12,10 +13,12 @@ const router = Router()
 router.use(protect)
 
 /* ============================================================
-   METRICS
+   METRICS - ✅ FIXED: Đếm Customer thay vì User
 ============================================================ */
 router.get('/metrics', async (req, res) => {
   try {
+    console.log('🔥🔥🔥 ADMIN /metrics ENDPOINT CALLED 🔥🔥🔥')
+
     const since = new Date()
     since.setDate(since.getDate() - 30)
 
@@ -30,9 +33,14 @@ router.get('/metrics', async (req, res) => {
       }
     ])
 
-    const customersNew = await User.countDocuments({
+    // ✅ FIX: Đếm Customer thay vì User
+    const customersNew = await Customer.countDocuments({
       createdAt: { $gte: since }
     })
+
+    console.log('📊 [Debug] New customers:', customersNew)
+    console.log('📊 [Debug] Since date:', since)
+
     const totalOrders = await Order.countDocuments()
     const revenue = revenueAgg[0]?.revenue || 0
 
@@ -43,7 +51,7 @@ router.get('/metrics', async (req, res) => {
       totalOrders
     })
   } catch (err) {
-    console.error(err)
+    console.error('❌ Error in /admin/metrics:', err)
     res.status(500).json({ error: 'Internal server error' })
   }
 })
@@ -127,14 +135,15 @@ router.get('/orders-stats', async (req, res) => {
 })
 
 /* ============================================================
-   CUSTOMER STATS
+   CUSTOMER STATS - ✅ FIXED: Dùng Customer thay vì User
 ============================================================ */
 router.get('/customers-stats', async (req, res) => {
   try {
     const since = new Date()
     since.setDate(since.getDate() - 60)
 
-    const data = await User.aggregate([
+    // ✅ FIX: Đếm Customer thay vì User
+    const data = await Customer.aggregate([
       { $match: { createdAt: { $gte: since } } },
       {
         $group: {
@@ -153,11 +162,6 @@ router.get('/customers-stats', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' })
   }
 })
-
-/* ============================================================
-   ❌ XÓA MOCK NOTIFICATIONS - Dùng route thật từ notifications.ts
-============================================================ */
-// ❌ ĐÃ XÓA: router.get('/notifications', ...)
 
 /* ============================================================
    LIST ORDERS
@@ -225,7 +229,9 @@ router.get('/orders/:id', async (req, res) => {
 router.get('/overview', async (req, res) => {
   try {
     const totalOrders = await Order.countDocuments()
-    const totalCustomers = await User.countDocuments()
+
+    // ✅ FIX: Đếm Customer thay vì User
+    const totalCustomers = await Customer.countDocuments()
 
     const revenueAgg = await Order.aggregate([
       { $match: { status: { $ne: 'cancelled' } } },

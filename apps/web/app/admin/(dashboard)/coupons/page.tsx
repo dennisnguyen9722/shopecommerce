@@ -42,9 +42,9 @@ const getDiscountTypeLabel = (type: string) => {
     case 'percentage':
       return 'Giảm %'
     case 'fixed':
-      return 'Giảm tiền mặt'
+      return 'Giảm tiền'
     case 'free_shipping':
-      return 'Miễn phí ship'
+      return 'Free Ship'
     default:
       return type
   }
@@ -55,15 +55,14 @@ const getCustomerTypeLabel = (type: string) => {
     case 'all':
       return 'Tất cả'
     case 'new':
-      return 'Khách mới'
+      return 'Mới'
     case 'existing':
-      return 'Khách cũ'
+      return 'Cũ'
     default:
       return type
   }
 }
 
-// Hàm kiểm tra trạng thái coupon
 const getCouponStatus = (coupon: any) => {
   const now = new Date()
   const start = new Date(coupon.startDate)
@@ -85,23 +84,17 @@ const getCouponStatus = (coupon: any) => {
     return { label: 'Hết lượt', color: 'bg-orange-100 text-orange-800' }
   }
 
-  return { label: 'Đang hoạt động', color: 'bg-green-100 text-green-800' }
+  return { label: 'Hoạt động', color: 'bg-green-100 text-green-800' }
 }
 
 export default function CouponsPage() {
   const router = useRouter()
 
-  // ===============================================
-  // FILTER STATE
-  // ===============================================
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const pageSize = 10
 
-  // ===============================================
-  // FETCH COUPONS
-  // ===============================================
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['admin-coupons', search, statusFilter, page],
     queryFn: async () => {
@@ -124,17 +117,13 @@ export default function CouponsPage() {
   const coupons = data?.coupons || []
   const pagination = data?.pagination || { page: 1, pages: 1, total: 0 }
 
-  // ===============================================
-  // ACTIONS
-  // ===============================================
   const deleteCoupon = async (id: string) => {
     try {
       await api.delete(`/admin/coupons/${id}`)
-      toast.success('Đã xóa mã giảm giá thành công')
+      toast.success('Đã xóa mã giảm giá')
       refetch()
     } catch (e: any) {
-      const msg = e.response?.data?.message || 'Lỗi xóa mã giảm giá'
-      toast.error(msg)
+      toast.error(e.response?.data?.message || 'Lỗi xóa')
     }
   }
 
@@ -146,37 +135,35 @@ export default function CouponsPage() {
       toast.success('Cập nhật trạng thái thành công')
       refetch()
     } catch (e) {
-      toast.error('Lỗi cập nhật trạng thái')
+      toast.error('Lỗi cập nhật')
     }
   }
 
-  // Format giá trị giảm
   const formatDiscount = (coupon: any) => {
     if (coupon.discountType === 'percentage') {
       return (
-        <span className="text-red-600 font-bold">{coupon.discountValue}%</span>
+        <span className="text-red-600 font-bold text-sm">
+          {coupon.discountValue}%
+        </span>
       )
     } else if (coupon.discountType === 'fixed') {
       return (
-        <span className="text-red-600 font-bold">
+        <span className="text-red-600 font-bold text-sm">
           {formatCurrency(coupon.discountValue)}
         </span>
       )
     } else {
-      return <span className="text-green-600 font-bold">Free Ship</span>
+      return <span className="text-green-600 font-bold text-xs">Free Ship</span>
     }
   }
 
-  // ===============================================
-  // UI
-  // ===============================================
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 md:p-6 space-y-6">
       {/* HEADER */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold dark:text-gray-900">
-            Quản lý Mã giảm giá (Coupon)
+            Mã giảm giá
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
             Tạo và quản lý các mã giảm giá marketing
@@ -188,8 +175,8 @@ export default function CouponsPage() {
       </div>
 
       {/* FILTER BAR */}
-      <GlassCard className="py-4">
-        <div className="flex flex-col md:flex-row gap-4 md:items-center">
+      <GlassCard className="p-4">
+        <div className="flex flex-col md:flex-row gap-4">
           <Input
             placeholder="Tìm theo mã coupon..."
             className="w-full md:w-64"
@@ -198,14 +185,8 @@ export default function CouponsPage() {
               setPage(1)
               setSearch(e.target.value)
             }}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                refetch()
-              }
-            }}
           />
 
-          {/* STATUS FILTER */}
           <Select
             value={statusFilter}
             onValueChange={(v) => {
@@ -213,12 +194,12 @@ export default function CouponsPage() {
               setStatusFilter(v)
             }}
           >
-            <SelectTrigger className="w-48">
+            <SelectTrigger className="w-full md:w-40">
               <SelectValue placeholder="Trạng thái" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Tất cả</SelectItem>
-              <SelectItem value="active">Đang hoạt động</SelectItem>
+              <SelectItem value="active">Hoạt động</SelectItem>
               <SelectItem value="inactive">Đã tắt</SelectItem>
               <SelectItem value="expired">Hết hạn</SelectItem>
             </SelectContent>
@@ -227,227 +208,235 @@ export default function CouponsPage() {
       </GlassCard>
 
       {/* TABLE */}
-      <GlassCard>
-        <div className="border-b border-white/20 pb-4 mb-4">
+      <GlassCard className="overflow-hidden p-0">
+        <div className="px-4 py-4 border-b">
           <h2 className="text-lg font-semibold">Danh sách mã giảm giá</h2>
         </div>
 
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Mã</TableHead>
-              <TableHead>Mô tả</TableHead>
-              <TableHead>Loại</TableHead>
-              <TableHead>Giảm giá</TableHead>
-              <TableHead>Đơn tối thiểu</TableHead>
-              <TableHead>Sử dụng</TableHead>
-              <TableHead>Áp dụng cho</TableHead>
-              <TableHead>Thời gian</TableHead>
-              <TableHead>Trạng thái</TableHead>
-              <TableHead className="text-right">Thao tác</TableHead>
-            </TableRow>
-          </TableHeader>
+        {/* 🔥 KEY FIX: Wrapper overflow */}
+        <div className="w-full overflow-x-auto">
+          <Table className="min-w-[1100px]">
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[140px]">Mã</TableHead>
+                <TableHead className="w-[180px]">Mô tả</TableHead>
+                <TableHead className="w-[80px]">Loại</TableHead>
+                <TableHead className="w-[100px]">Giảm giá</TableHead>
+                <TableHead className="w-[100px]">Đơn tối thiểu</TableHead>
+                <TableHead className="w-[80px]">Sử dụng</TableHead>
+                <TableHead className="w-[80px]">Khách</TableHead>
+                <TableHead className="w-[120px]">Thời gian</TableHead>
+                <TableHead className="w-[100px]">Trạng thái</TableHead>
+                <TableHead className="w-[100px] text-right"></TableHead>
+              </TableRow>
+            </TableHeader>
 
-          <TableBody>
-            {coupons.map((coupon: any) => {
-              const status = getCouponStatus(coupon)
-              return (
-                <TableRow key={coupon._id}>
-                  {/* MÃ COUPON */}
-                  <TableCell className="font-medium">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded bg-purple-100 text-purple-600 flex items-center justify-center">
-                        <Ticket size={16} />
-                      </div>
-                      <Badge
-                        variant="outline"
-                        className="font-mono font-bold text-sm bg-purple-50 text-purple-700 border-purple-200"
-                      >
-                        {coupon.code}
-                      </Badge>
-                    </div>
-                  </TableCell>
-
-                  {/* MÔ TÁ */}
-                  <TableCell>
-                    <div className="max-w-[200px]">
-                      <div className="text-sm line-clamp-2">
-                        {coupon.description}
-                      </div>
-                      {coupon.autoApply && (
+            <TableBody>
+              {coupons.map((coupon: any) => {
+                const status = getCouponStatus(coupon)
+                return (
+                  <TableRow key={coupon._id} className="hover:bg-gray-50/50">
+                    {/* MÃ */}
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded bg-purple-100 text-purple-600 flex items-center justify-center shrink-0">
+                          <Ticket size={14} />
+                        </div>
                         <Badge
                           variant="outline"
-                          className="text-xs mt-1 bg-blue-50 text-blue-600 border-blue-200"
+                          className="font-mono text-xs bg-purple-50 text-purple-700 border-purple-200"
                         >
-                          Tự động áp dụng
+                          {coupon.code}
                         </Badge>
-                      )}
-                    </div>
-                  </TableCell>
-
-                  {/* LOẠI */}
-                  <TableCell>
-                    <Badge variant="outline">
-                      {getDiscountTypeLabel(coupon.discountType)}
-                    </Badge>
-                  </TableCell>
-
-                  {/* GIÁ TRỊ GIẢM */}
-                  <TableCell>{formatDiscount(coupon)}</TableCell>
-
-                  {/* ĐƠN TỐI THIỂU */}
-                  <TableCell>
-                    {coupon.minOrderAmount ? (
-                      <span className="text-sm">
-                        {formatCurrency(coupon.minOrderAmount)}
-                      </span>
-                    ) : (
-                      <span className="text-gray-400">-</span>
-                    )}
-                  </TableCell>
-
-                  {/* SỬ DỤNG */}
-                  <TableCell>
-                    <div className="text-sm">
-                      <span className="font-bold text-indigo-600">
-                        {coupon.usedCount}
-                      </span>
-                      {coupon.usageLimit && (
-                        <span className="text-gray-500">
-                          {' / '}
-                          {coupon.usageLimit}
-                        </span>
-                      )}
-                    </div>
-                  </TableCell>
-
-                  {/* ÁP DỤNG CHO */}
-                  <TableCell>
-                    <Badge
-                      variant="outline"
-                      className="text-xs bg-slate-50 text-slate-700"
-                    >
-                      {getCustomerTypeLabel(coupon.customerType)}
-                    </Badge>
-                  </TableCell>
-
-                  {/* THỜI GIAN */}
-                  <TableCell>
-                    <div className="text-xs space-y-1">
-                      <div className="text-gray-600">
-                        {new Date(coupon.startDate).toLocaleDateString('vi-VN')}
                       </div>
-                      <div className="text-gray-400">
-                        → {new Date(coupon.endDate).toLocaleDateString('vi-VN')}
-                      </div>
-                    </div>
-                  </TableCell>
+                    </TableCell>
 
-                  {/* TRẠNG THÁI */}
-                  <TableCell>
-                    <div className="flex flex-col gap-1">
-                      <Badge className={`${status.color} text-xs`}>
-                        {status.label}
-                      </Badge>
-                      <button
-                        onClick={() =>
-                          toggleStatus(coupon._id, coupon.isActive)
-                        }
-                        className="flex items-center"
-                      >
-                        {coupon.isActive ? (
-                          <ToggleRight className="w-6 h-6 text-green-500" />
-                        ) : (
-                          <ToggleLeft className="w-6 h-6 text-gray-400" />
-                        )}
-                      </button>
-                    </div>
-                  </TableCell>
-
-                  {/* THAO TÁC */}
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <Link href={`/admin/coupons/${coupon._id}`}>
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="h-8 w-8"
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                      </Link>
-                      <ConfirmDeleteDialog
-                        trigger={
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50"
+                    {/* MÔ TẢ */}
+                    <TableCell>
+                      <div className="space-y-1">
+                        <div className="text-xs line-clamp-2">
+                          {coupon.description}
+                        </div>
+                        {coupon.autoApply && (
+                          <Badge
+                            variant="outline"
+                            className="text-[10px] bg-blue-50 text-blue-600 border-blue-200"
                           >
-                            <span className="sr-only">Delete</span>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="16"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <path d="M3 6h18" />
-                              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                              <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                              <line x1="10" x2="10" y1="11" y2="17" />
-                              <line x1="14" x2="14" y1="11" y2="17" />
-                            </svg>
+                            Auto
+                          </Badge>
+                        )}
+                      </div>
+                    </TableCell>
+
+                    {/* LOẠI */}
+                    <TableCell>
+                      <Badge variant="outline" className="text-[10px]">
+                        {getDiscountTypeLabel(coupon.discountType)}
+                      </Badge>
+                    </TableCell>
+
+                    {/* GIÁ TRỊ */}
+                    <TableCell>{formatDiscount(coupon)}</TableCell>
+
+                    {/* ĐƠN TỐI THIỂU */}
+                    <TableCell>
+                      {coupon.minOrderAmount ? (
+                        <span className="text-xs">
+                          {formatCurrency(coupon.minOrderAmount)}
+                        </span>
+                      ) : (
+                        <span className="text-gray-400 text-xs">-</span>
+                      )}
+                    </TableCell>
+
+                    {/* SỬ DỤNG */}
+                    <TableCell>
+                      <div className="text-xs">
+                        <span className="font-bold text-indigo-600">
+                          {coupon.usedCount}
+                        </span>
+                        {coupon.usageLimit && (
+                          <span className="text-gray-500">
+                            /{coupon.usageLimit}
+                          </span>
+                        )}
+                      </div>
+                    </TableCell>
+
+                    {/* KHÁCH */}
+                    <TableCell>
+                      <Badge
+                        variant="outline"
+                        className="text-[10px] bg-slate-50"
+                      >
+                        {getCustomerTypeLabel(coupon.customerType)}
+                      </Badge>
+                    </TableCell>
+
+                    {/* THỜI GIAN */}
+                    <TableCell>
+                      <div className="text-[10px] space-y-0.5">
+                        <div className="text-gray-600">
+                          {new Date(coupon.startDate).toLocaleDateString(
+                            'vi-VN'
+                          )}
+                        </div>
+                        <div className="text-gray-400">
+                          →{' '}
+                          {new Date(coupon.endDate).toLocaleDateString('vi-VN')}
+                        </div>
+                      </div>
+                    </TableCell>
+
+                    {/* TRẠNG THÁI */}
+                    <TableCell>
+                      <div className="flex flex-col gap-1">
+                        <Badge className={`${status.color} text-[10px] px-1.5`}>
+                          {status.label}
+                        </Badge>
+                        <button
+                          onClick={() =>
+                            toggleStatus(coupon._id, coupon.isActive)
+                          }
+                          className="flex items-center"
+                        >
+                          {coupon.isActive ? (
+                            <ToggleRight className="w-5 h-5 text-green-500" />
+                          ) : (
+                            <ToggleLeft className="w-5 h-5 text-gray-400" />
+                          )}
+                        </button>
+                      </div>
+                    </TableCell>
+
+                    {/* THAO TÁC */}
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-1">
+                        <Link href={`/admin/coupons/${coupon._id}`}>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-7 w-7"
+                          >
+                            <Edit className="h-3.5 w-3.5" />
                           </Button>
-                        }
-                        title="Xóa mã giảm giá?"
-                        description="Hành động này không thể hoàn tác. Mã đã được sử dụng sẽ chỉ bị vô hiệu hóa."
-                        onConfirm={() => deleteCoupon(coupon._id)}
-                      />
-                    </div>
+                        </Link>
+                        <ConfirmDeleteDialog
+                          trigger={
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7 text-red-500 hover:text-red-700 hover:bg-red-50"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="14"
+                                height="14"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
+                                <path d="M3 6h18" />
+                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                <line x1="10" x2="10" y1="11" y2="17" />
+                                <line x1="14" x2="14" y1="11" y2="17" />
+                              </svg>
+                            </Button>
+                          }
+                          title="Xóa mã giảm giá?"
+                          description="Mã đã được sử dụng sẽ chỉ bị vô hiệu hóa."
+                          onConfirm={() => deleteCoupon(coupon._id)}
+                        />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
+
+              {coupons.length === 0 && (
+                <TableRow>
+                  <TableCell
+                    colSpan={10}
+                    className="text-center py-8 text-muted-foreground"
+                  >
+                    Không có mã giảm giá nào. Hãy tạo mới!
                   </TableCell>
                 </TableRow>
-              )
-            })}
-
-            {coupons.length === 0 && (
-              <TableRow>
-                <TableCell
-                  colSpan={10}
-                  className="text-center py-8 text-muted-foreground"
-                >
-                  Không có mã giảm giá nào. Hãy tạo mới ngay!
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              )}
+            </TableBody>
+          </Table>
+        </div>
 
         {/* PAGINATION */}
         {pagination.pages > 1 && (
-          <div className="flex justify-end gap-2 mt-4">
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={page <= 1}
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-            >
-              Trước
-            </Button>
-            <span className="flex items-center px-3 text-sm text-muted-foreground">
-              Trang {page} / {pagination.pages}
-            </span>
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={page >= pagination.pages}
-              onClick={() => setPage((p) => Math.min(pagination.pages, p + 1))}
-            >
-              Sau
-            </Button>
+          <div className="flex justify-between items-center p-4 border-t text-xs text-gray-600">
+            <div>
+              Trang {page}/{pagination.pages} · {pagination.total} mã
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={page <= 1}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+              >
+                ‹ Trước
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={page >= pagination.pages}
+                onClick={() =>
+                  setPage((p) => Math.min(pagination.pages, p + 1))
+                }
+              >
+                Sau ›
+              </Button>
+            </div>
           </div>
         )}
       </GlassCard>

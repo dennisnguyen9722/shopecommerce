@@ -30,6 +30,7 @@ import ProductVariantSelector from './components/ProductVariantSelector'
 import ProductSpecs from './components/ProductSpecs'
 import { toast } from 'sonner'
 import ReviewSection from '@/src/components/store/ReviewSection'
+import Link from 'next/link'
 
 type Product = {
   _id: string
@@ -42,7 +43,10 @@ type Product = {
   images?: { url: string }[]
   category?: { _id: string; name: string; slug: string } | null
   isPublished?: boolean
-  brand?: string
+  brand?:
+    | { _id: string; name: string; slug: string; logo?: string }
+    | string
+    | null
   stock: number
   hasVariants?: boolean
   variantGroups?: any[]
@@ -405,10 +409,34 @@ export default function ProductDetailPage({
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                {product.brand && (
-                  <span className="bg-gradient-to-r from-gray-800! to-gray-900! text-white! text-xs px-4 py-1.5 rounded-full font-bold uppercase tracking-wide shadow-md">
-                    {product.brand}
-                  </span>
+                {/* HIỂN THỊ BRAND */}
+                {product.brand && typeof product.brand === 'object' ? (
+                  <Link href={`/brand/${product.brand.slug}`} className="group">
+                    {product.brand.logo ? (
+                      // Nếu có Logo -> Hiển thị ảnh
+                      <div className="h-8 w-auto relative">
+                        <Image
+                          src={product.brand.logo}
+                          alt={product.brand.name}
+                          width={80}
+                          height={32}
+                          className="object-contain h-full w-auto grayscale group-hover:grayscale-0 transition-all"
+                        />
+                      </div>
+                    ) : (
+                      // Nếu không có Logo -> Hiển thị Badge Tên
+                      <span className="bg-gray-100 text-gray-800 text-xs px-3 py-1.5 rounded-full font-bold uppercase tracking-wide hover:bg-gray-200 transition-colors">
+                        {product.brand.name}
+                      </span>
+                    )}
+                  </Link>
+                ) : (
+                  product.brand && (
+                    // Fallback nếu brand là string (chưa populate hoặc data cũ)
+                    <span className="bg-gray-100 text-gray-800 text-xs px-3 py-1.5 rounded-full font-bold uppercase tracking-wide">
+                      {String(product.brand)}
+                    </span>
+                  )
                 )}
                 <div className="flex items-center gap-1">
                   {[...Array(5)].map((_, i) => (

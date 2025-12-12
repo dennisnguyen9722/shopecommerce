@@ -24,12 +24,14 @@ function SortableImage({
   item,
   isCover,
   onRemove,
-  onChooseCover
+  onChooseCover,
+  showCoverBadge = true
 }: {
   item: { url: string; public_id: string }
   isCover: boolean
   onRemove: () => void
   onChooseCover: () => void
+  showCoverBadge?: boolean
 }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({
@@ -55,8 +57,8 @@ function SortableImage({
         {...listeners}
       />
 
-      {/* COVER BADGE */}
-      {isCover && (
+      {/* COVER BADGE - chỉ hiện khi có nhiều ảnh */}
+      {showCoverBadge && isCover && (
         <div className="absolute bottom-1 left-1 bg-blue-600 text-white text-[10px] px-2 py-[2px] rounded shadow">
           Ảnh đại diện
         </div>
@@ -74,8 +76,8 @@ function SortableImage({
         X
       </button>
 
-      {/* SET COVER BUTTON */}
-      {!isCover && (
+      {/* SET COVER BUTTON - chỉ hiện khi có nhiều ảnh */}
+      {showCoverBadge && !isCover && (
         <button
           type="button"
           onClick={onChooseCover}
@@ -93,10 +95,12 @@ function SortableImage({
 -------------------------------------------------------- */
 export default function ImageUploader({
   initial = [],
-  onChange
+  onChange,
+  maxImages
 }: {
   initial?: { url: string; public_id: string }[]
   onChange: (imgs: { url: string; public_id: string }[]) => void
+  maxImages?: number // Optional: 1 cho brand, undefined cho product
 }) {
   const [images, setImages] = useState<{ url: string; public_id: string }[]>([])
   const [coverId, setCoverId] = useState<string | null>(null)
@@ -106,7 +110,7 @@ export default function ImageUploader({
      APPLY INITIAL DATA (EDIT ONLY)
   ------------------------ */
   useEffect(() => {
-    // Chỉ chạy khi EDIT PRODUCT (initial có ảnh)
+    // Chỉ chạy khi EDIT (initial có ảnh)
     if (initial && initial.length > 0) {
       setImages(initial)
       setCoverId(initial[0].public_id)
@@ -118,10 +122,27 @@ export default function ImageUploader({
   ------------------------ */
   const handleUpload = async (files: FileList | null) => {
     if (!files || files.length === 0) return
+
+    // Kiểm tra giới hạn số ảnh
+    if (maxImages && images.length >= maxImages) {
+      alert(`Chỉ được phép upload tối đa ${maxImages} ảnh`)
+      return
+    }
+
+    // Giới hạn số file được chọn
+    let filesToUpload = Array.from(files)
+    if (maxImages) {
+      const remaining = maxImages - images.length
+      if (filesToUpload.length > remaining) {
+        filesToUpload = filesToUpload.slice(0, remaining)
+        alert(`Chỉ có thể thêm ${remaining} ảnh nữa`)
+      }
+    }
+
     setUploading(true)
 
     const form = new FormData()
-    Array.from(files).forEach((f) => form.append('images', f))
+    filesToUpload.forEach((f) => form.append('images', f))
 
     try {
       const res = await api.post('/admin/products/upload', form, {
@@ -138,6 +159,9 @@ export default function ImageUploader({
 
       setImages(updated)
       onChange(updated)
+    } catch (error) {
+      console.error('Upload error:', error)
+      alert('Lỗi khi upload ảnh')
     } finally {
       setUploading(false)
     }
@@ -162,22 +186,45 @@ export default function ImageUploader({
     }
   }
 
+  // Kiểm tra có thể upload thêm không
+  const canUploadMore = !maxImages || images.length < maxImages
+  const remainingSlots = maxImages ? maxImages - images.length : null
+  const showCoverFeatures = !maxImages || maxImages > 1 // Chỉ hiện cover badge khi nhiều ảnh
+
   /* -------------------------------------------------------
      RENDER
   -------------------------------------------------------- */
   return (
     <div className="space-y-4">
       {/* UPLOAD BOX */}
-      <label className="block border-2 border-dashed rounded-xl p-6 cursor-pointer hover:bg-gray-50 transition text-center text-gray-600 font-medium">
-        <div>Chọn ảnh sản phẩm</div>
-        <input
-          type="file"
-          multiple
-          className="hidden"
-          accept="image/*"
-          onChange={(e) => handleUpload(e.target.files)}
-        />
-      </label>
+      {canUploadMore && (
+        <label
+          className={`block border-2 border-dashed rounded-xl p-6 cursor-pointer hover:bg-gray-50 transition text-center text-gray-600 font-medium ${
+            uploading ? 'opacity-50 cursor-not-allowed' : ''
+          }`}
+        >
+          <div>
+            {maxImages === 1
+              ? 'Chọn ảnh'
+              : maxImages
+              ? `Chọn ảnh (còn ${remainingSlots} ảnh)`
+              : 'Chọn ảnh sản phẩm'}
+          </div>
+          {maxImages && maxImages > 1 && (
+            <div className="text-xs text-gray-400 mt-1">
+              Giới hạn: {maxImages} ảnh
+            </div>
+          )}
+          <input
+            type="file"
+            multiple={!maxImages || maxImages > 1}
+            className="hidden"
+            accept="image/*"
+            onChange={(e) => handleUpload(e.target.files)}
+            disabled={uploading}
+          />
+        </label>
+      )}
 
       {uploading && (
         <p className="text-sm text-blue-600 animate-pulse">
@@ -202,6 +249,7 @@ export default function ImageUploader({
                   key={img.public_id}
                   item={img}
                   isCover={coverId === img.public_id}
+                  showCoverBadge={showCoverFeatures}
                   onRemove={() => {
                     const newList = images.filter(
                       (i) => i.public_id !== img.public_id

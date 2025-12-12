@@ -25,6 +25,16 @@ export const PERMISSION_GROUPS = [
       { key: PERMISSIONS.CATEGORIES.DELETE, label: 'Xóa danh mục' }
     ]
   },
+  // ✅ NEW: Thương hiệu
+  {
+    label: 'Thương hiệu',
+    permissions: [
+      { key: PERMISSIONS.BRANDS.READ, label: 'Xem thương hiệu' },
+      { key: PERMISSIONS.BRANDS.CREATE, label: 'Tạo thương hiệu' },
+      { key: PERMISSIONS.BRANDS.UPDATE, label: 'Sửa thương hiệu' },
+      { key: PERMISSIONS.BRANDS.DELETE, label: 'Xóa thương hiệu' }
+    ]
+  },
   {
     label: 'Đơn hàng',
     permissions: [
@@ -92,7 +102,7 @@ export const PERMISSION_GROUPS = [
         label: 'Xem báo cáo Analytics'
       },
       {
-        key: PERMISSIONS.SETTINGS.EXPORT_DATA, // 👈 THÊM DÒNG NÀY
+        key: PERMISSIONS.SETTINGS.EXPORT_DATA,
         label: 'Xuất dữ liệu (Export Excel/CSV)'
       },
       {

@@ -24,7 +24,8 @@ import {
   Gift,
   Star,
   BarChart3,
-  Download
+  Download,
+  Building2
 } from 'lucide-react'
 
 import { motion, AnimatePresence } from 'framer-motion'
@@ -74,6 +75,7 @@ export function Sidebar({
   const canOrders = useAdminPermission(PERMISSIONS.ORDERS.READ)
   const canProducts = useAdminPermission(PERMISSIONS.PRODUCTS.READ)
   const canCategories = useAdminPermission(PERMISSIONS.CATEGORIES.READ)
+  const canBrands = useAdminPermission(PERMISSIONS.BRANDS.READ) // ✅ NEW
   const canCustomers = useAdminPermission(PERMISSIONS.CUSTOMERS.READ)
   const canRewards = useAdminPermission(PERMISSIONS.REWARDS.MANAGE)
   const canBanners = useAdminPermission(PERMISSIONS.BANNERS.MANAGE)
@@ -136,7 +138,7 @@ export function Sidebar({
             />
           )}
 
-          {/* 🎯 XUẤT DỮ LIỆU - ĐÃ SỬA */}
+          {/* Xuất dữ liệu */}
           {canExport && (
             <NavItem
               href="/admin/export"
@@ -173,6 +175,17 @@ export function Sidebar({
               icon={FolderTree}
               label="Danh mục SP"
               active={pathname.startsWith('/admin/categories')}
+              collapsed={collapsed}
+            />
+          )}
+
+          {/* ✅ NEW: Thương hiệu */}
+          {canBrands && (
+            <NavItem
+              href="/admin/brands"
+              icon={Building2}
+              label="Thương hiệu"
+              active={pathname.startsWith('/admin/brands')}
               collapsed={collapsed}
             />
           )}

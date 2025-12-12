@@ -5,7 +5,7 @@ import { vi } from 'date-fns/locale'
 
 export const exportService = {
   // 1. Export Orders to Excel
-  async exportOrdersToExcel(orders: any[]) {
+  async exportOrdersToExcel(orders: any[], customTitle?: string) {
     const workbook = new ExcelJS.Workbook()
     const worksheet = workbook.addWorksheet('Đơn hàng')
 
@@ -26,7 +26,7 @@ export const exportService = {
       }
     }
 
-    // Định nghĩa columns
+    // Định nghĩa columns TRƯỚC KHI thêm title
     worksheet.columns = [
       { header: 'Mã đơn hàng', key: 'orderId', width: 15 },
       { header: 'Khách hàng', key: 'customerName', width: 25 },
@@ -40,11 +40,38 @@ export const exportService = {
       { header: 'Địa chỉ', key: 'shippingAddress', width: 50 }
     ]
 
-    // Apply style cho header
-    worksheet.getRow(1).eachCell((cell) => {
+    let headerRow = 1
+
+    // 🆕 Add title row if provided
+    if (customTitle) {
+      // Insert row phía trên
+      worksheet.insertRow(1, [])
+      const numColumns = worksheet.columns.length
+      worksheet.mergeCells(1, 1, 1, numColumns) // Merge từ cột 1 đến cột cuối
+      const titleCell = worksheet.getCell(1, 1)
+      titleCell.value = customTitle
+      titleCell.font = {
+        size: 16,
+        bold: true,
+        color: { argb: 'FF000000' }
+      }
+      titleCell.alignment = {
+        horizontal: 'center',
+        vertical: 'middle'
+      }
+      worksheet.getRow(1).height = 30
+
+      // Insert empty row
+      worksheet.insertRow(2, [])
+
+      headerRow = 3 // Header giờ ở row 3
+    }
+
+    // Apply style cho header row
+    worksheet.getRow(headerRow).eachCell((cell) => {
       cell.style = headerStyle
     })
-    worksheet.getRow(1).height = 25
+    worksheet.getRow(headerRow).height = 25
 
     // Thêm data
     orders.forEach((order) => {
@@ -73,19 +100,12 @@ export const exportService = {
       row.getCell('paymentMethod').alignment = { horizontal: 'center' }
     })
 
-    // Auto-fit columns
-    worksheet.columns.forEach((column) => {
-      if (column.header) {
-        column.width = Math.max(column.width || 10, column.header.length + 5)
-      }
-    })
-
     // Generate buffer
     return await workbook.xlsx.writeBuffer()
   },
 
   // 2. Export Products to Excel
-  async exportProductsToExcel(products: any[]) {
+  async exportProductsToExcel(products: any[], customTitle?: string) {
     const workbook = new ExcelJS.Workbook()
     const worksheet = workbook.addWorksheet('Sản phẩm')
 
@@ -118,10 +138,33 @@ export const exportService = {
       { header: 'Ngày tạo', key: 'createdAt', width: 20 }
     ]
 
-    worksheet.getRow(1).eachCell((cell) => {
+    let headerRow = 1
+
+    // 🆕 Add title row if provided
+    if (customTitle) {
+      worksheet.insertRow(1, [])
+      const numColumns = worksheet.columns.length
+      worksheet.mergeCells(1, 1, 1, numColumns)
+      const titleCell = worksheet.getCell(1, 1)
+      titleCell.value = customTitle
+      titleCell.font = {
+        size: 16,
+        bold: true,
+        color: { argb: 'FF000000' }
+      }
+      titleCell.alignment = {
+        horizontal: 'center',
+        vertical: 'middle'
+      }
+      worksheet.getRow(1).height = 30
+      worksheet.insertRow(2, [])
+      headerRow = 3
+    }
+
+    worksheet.getRow(headerRow).eachCell((cell) => {
       cell.style = headerStyle
     })
-    worksheet.getRow(1).height = 25
+    worksheet.getRow(headerRow).height = 25
 
     products.forEach((product) => {
       const row = worksheet.addRow({
@@ -163,7 +206,7 @@ export const exportService = {
   },
 
   // 3. Export Customers to Excel
-  async exportCustomersToExcel(customers: any[]) {
+  async exportCustomersToExcel(customers: any[], customTitle?: string) {
     const workbook = new ExcelJS.Workbook()
     const worksheet = workbook.addWorksheet('Khách hàng')
 
@@ -194,10 +237,33 @@ export const exportService = {
       { header: 'Ngày đăng ký', key: 'createdAt', width: 20 }
     ]
 
-    worksheet.getRow(1).eachCell((cell) => {
+    let headerRow = 1
+
+    // 🆕 Add title row if provided
+    if (customTitle) {
+      worksheet.insertRow(1, [])
+      const numColumns = worksheet.columns.length
+      worksheet.mergeCells(1, 1, 1, numColumns)
+      const titleCell = worksheet.getCell(1, 1)
+      titleCell.value = customTitle
+      titleCell.font = {
+        size: 16,
+        bold: true,
+        color: { argb: 'FF000000' }
+      }
+      titleCell.alignment = {
+        horizontal: 'center',
+        vertical: 'middle'
+      }
+      worksheet.getRow(1).height = 30
+      worksheet.insertRow(2, [])
+      headerRow = 3
+    }
+
+    worksheet.getRow(headerRow).eachCell((cell) => {
       cell.style = headerStyle
     })
-    worksheet.getRow(1).height = 25
+    worksheet.getRow(headerRow).height = 25
 
     customers.forEach((customer) => {
       const row = worksheet.addRow({
@@ -222,7 +288,7 @@ export const exportService = {
   },
 
   // 4. Export Orders to CSV (lightweight alternative)
-  async exportOrdersToCSV(orders: any[]) {
+  async exportOrdersToCSV(orders: any[], customTitle?: string) {
     const headers = [
       'Mã đơn hàng',
       'Khách hàng',
@@ -245,8 +311,16 @@ export const exportService = {
       order.customerAddress || 'N/A'
     ])
 
-    const csv = [headers, ...rows].map((row) => row.join(',')).join('\n')
-    return Buffer.from('\uFEFF' + csv, 'utf-8') // Add BOM for Excel UTF-8 support
+    let csvContent = ''
+
+    // Add title if provided
+    if (customTitle) {
+      csvContent += `"${customTitle}"\n\n`
+    }
+
+    csvContent += [headers, ...rows].map((row) => row.join(',')).join('\n')
+
+    return Buffer.from('\uFEFF' + csvContent, 'utf-8') // Add BOM for Excel UTF-8 support
   },
 
   // 5. 🆕 Export ALL data to single Excel file with multiple sheets

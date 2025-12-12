@@ -15,6 +15,7 @@ import authRoutes from './routes/auth'
 
 // ADMIN RESOURCES
 import productsRoutes from './routes/products'
+import brandRoutes from './routes/brands'
 import categoriesRoutes from './routes/categories'
 import stockLogsRoutes from './routes/stockLogs'
 import analyticsRoutes from './routes/analytics'
@@ -53,6 +54,7 @@ import { seedSuperAdmin } from './seed/superAdminSeed'
 import publicBanners from './routes/public/banners'
 import publicCategories from './routes/public/categories'
 import publicProducts from './routes/public/products'
+import publicBrands from './routes/public/brands'
 import publicBlog from './routes/public/blog'
 import publicOrders from './routes/public/orders'
 import publicCoupons from './routes/public/coupons'
@@ -102,6 +104,7 @@ app.use('/auth', authRoutes)
 
 // ADMIN RESOURCES
 app.use('/admin/products', productsRoutes)
+app.use('/admin/brands', brandRoutes)
 app.use('/admin/categories', categoriesRoutes)
 app.use('/admin/inventory', inventoryRoutes)
 app.use('/admin/stock-logs', stockLogsRoutes)
@@ -142,6 +145,7 @@ app.use('/uploads', uploadsRoutes)
 app.use('/public/banners', publicBanners)
 app.use('/public/categories', publicCategories)
 app.use('/public/products', publicProducts)
+app.use('/public/brands', publicBrands)
 app.use('/public/blog', publicBlog)
 app.use('/public/orders', publicOrders)
 app.use('/public/coupons', publicCoupons)

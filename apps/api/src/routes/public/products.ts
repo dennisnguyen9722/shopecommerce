@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express'
+import mongoose from 'mongoose' // 👈 Import mongoose để check ID/Slug
 import Product from '../../models/Product'
 
 const router = express.Router()
@@ -18,6 +19,7 @@ const PRODUCT_FIELDS = `
   createdAt
   images
   category
+  brand
   specs
   hasVariants
   variantGroups
@@ -37,12 +39,17 @@ const applyFilters = (req: Request) => {
     $or: [{ isPublished: true }, { isPublished: { $exists: false } }]
   }
 
-  // lọc theo category
+  // 1. Lọc theo category
   if (req.query.category) {
     filter.category = req.query.category
   }
 
-  // lọc theo khoảng giá
+  // 2. Lọc theo brand (ID đã được xử lý ở route handler)
+  if (req.query.brand) {
+    filter.brand = req.query.brand
+  }
+
+  // 3. Lọc theo khoảng giá
   if (req.query.minPrice || req.query.maxPrice) {
     filter.price = {}
     if (req.query.minPrice) filter.price.$gte = Number(req.query.minPrice)
@@ -67,12 +74,15 @@ const applySort = (sortQuery?: string): Record<string, 1 | -1> => {
 }
 
 // ======================================================
-// ⭐ NEW PRODUCTS — phải đặt TRÊN slug
+// ROUTES
 // ======================================================
+
+// 1. NEW PRODUCTS
 router.get('/new', async (_req, res) => {
   try {
     const products = await Product.find({ isPublished: true })
-      .populate('category', 'name slug _id') // ⭐ FIX _id
+      .populate('category', 'name slug _id')
+      .populate('brand', 'name slug logo')
       .sort({ createdAt: -1 })
       .limit(10)
       .lean()
@@ -84,9 +94,7 @@ router.get('/new', async (_req, res) => {
   }
 })
 
-// ======================================================
-// 🔍 SEARCH REALTIME
-// ======================================================
+// 2. SEARCH REALTIME
 router.get('/search', async (req: Request, res: Response) => {
   try {
     const query = String(req.query.query || '').trim()
@@ -98,8 +106,9 @@ router.get('/search', async (req: Request, res: Response) => {
       $or: [{ isPublished: true }, { isPublished: { $exists: false } }]
     })
       .populate('category', 'name slug _id')
+      .populate('brand', 'name slug logo')
       .limit(10)
-      .select('_id name slug images price comparePrice')
+      .select('_id name slug images price comparePrice brand')
       .lean()
 
     res.json(products)
@@ -109,16 +118,15 @@ router.get('/search', async (req: Request, res: Response) => {
   }
 })
 
-// ======================================================
-// 💸 DISCOUNT PRODUCTS — TRƯỚC slug
-// ======================================================
+// 3. DISCOUNT PRODUCTS
 router.get('/discount', async (_req, res) => {
   try {
     const products = await Product.find({
       comparePrice: { $gt: 0 },
       $or: [{ isPublished: true }, { isPublished: { $exists: false } }]
     })
-      .populate('category', 'name slug _id') // ⭐ FIX _id
+      .populate('category', 'name slug _id')
+      .populate('brand', 'name slug logo')
       .sort({ discountPercent: -1 })
       .limit(10)
       .lean()
@@ -130,18 +138,17 @@ router.get('/discount', async (_req, res) => {
   }
 })
 
-// ======================================================
-// ⭐ FEATURED PRODUCTS
-// ======================================================
+// 4. FEATURED PRODUCTS
 router.get('/featured', async (_req: Request, res: Response) => {
   try {
     const products = await Product.find({
       isFeatured: true,
       $or: [{ isPublished: true }, { isPublished: { $exists: false } }]
     })
-      .populate('category', 'name slug _id') // ⭐ FIX _id
+      .populate('category', 'name slug _id')
+      .populate('brand', 'name slug logo')
       .sort({ createdAt: -1 })
-      .limit(8)
+      .limit(10)
       .select(PRODUCT_FIELDS)
       .lean()
 
@@ -152,39 +159,59 @@ router.get('/featured', async (_req: Request, res: Response) => {
   }
 })
 
-// ======================================================
-// ⚡ GET ALL PRODUCTS (GRID)
-// ======================================================
+// 5. ⚡ GET ALL PRODUCTS (GRID) - ĐÃ FIX LOGIC BRAND SLUG
 router.get('/', async (req: Request, res: Response) => {
   try {
+    // 👇 FIX: Xử lý Brand Slug trước khi tạo filter
+    if (req.query.brand) {
+      const brandInput = String(req.query.brand)
+
+      // Nếu input KHÔNG phải là ObjectId (tức là Slug) -> Tìm ID
+      if (!mongoose.Types.ObjectId.isValid(brandInput)) {
+        const BrandModel = mongoose.models.Brand || mongoose.model('Brand')
+        const brandDoc = await BrandModel.findOne({ slug: brandInput }).select(
+          '_id'
+        )
+
+        if (brandDoc) {
+          // Thay thế slug bằng _id thật để filter hoạt động
+          req.query.brand = brandDoc._id.toString()
+        } else {
+          // Nếu không tìm thấy brand -> Trả về rỗng luôn
+          return res.json([])
+        }
+      }
+    }
+    // 👆 END FIX
+
     const filter = applyFilters(req)
     const sortObj = applySort(String(req.query.sort || ''))
     const limit = Number(req.query.limit) || 50
 
     const products = await Product.find(filter)
-      .populate('category', 'name slug _id') // ⭐ FIX _id HERE
+      .populate('category', 'name slug _id')
+      .populate('brand', 'name slug logo')
       .sort(sortObj)
       .limit(limit)
       .select(PRODUCT_FIELDS)
       .lean()
 
     res.json(products)
-  } catch (err) {
-    console.error('❌ [GET /public/products] ERROR:', err)
+  } catch (err: any) {
+    console.error('❌ [GET /public/products] ERROR:', err.message)
     res.status(500).json({ error: 'Server error' })
   }
 })
 
-// ======================================================
-// 🔍 GET PRODUCT DETAIL — luôn đặt cuối
-// ======================================================
+// 6. GET PRODUCT DETAIL
 router.get('/:slug', async (req: Request, res: Response) => {
   try {
     const product = await Product.findOne({
       slug: req.params.slug,
       $or: [{ isPublished: true }, { isPublished: { $exists: false } }]
     })
-      .populate('category', 'name slug _id') // ⭐ FIX _id HERE
+      .populate('category', 'name slug _id')
+      .populate('brand', 'name slug logo') // Lấy cả thông tin brand
       .select(PRODUCT_FIELDS)
       .lean()
 

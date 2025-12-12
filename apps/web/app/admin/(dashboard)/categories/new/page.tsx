@@ -67,108 +67,114 @@ export default function CreateCategoryPage() {
   })
 
   return (
-    <div className="max-w-3xl mx-auto p-6 space-y-8">
-      {/* HEADER */}
-      <div className="flex items-center justify-between">
-        <div>
-          <div className="text-sm text-muted-foreground">
-            Danh mục / Tạo mới
-          </div>
-          <h1 className="text-2xl font-semibold mt-1 dark:text-gray-900">
-            Tạo danh mục
-          </h1>
-        </div>
-        <Button onClick={() => mut.mutate()} disabled={mut.isPending}>
-          {mut.isPending ? 'Đang tạo...' : 'Tạo danh mục'}
-        </Button>
-      </div>
-
-      {/* FORM */}
-      <GlassCard className="p-6 space-y-6">
-        {/* NAME */}
-        <div className="space-y-2">
-          <Label>Tên danh mục</Label>
-          <Input
-            value={name}
-            onChange={(e) => handleName(e.target.value)}
-            placeholder="Ví dụ: Điện thoại"
-          />
-        </div>
-
-        {/* SLUG */}
-        <div className="space-y-2">
-          <Label>Slug</Label>
-          <Input
-            value={slug}
-            onChange={(e) => setSlug(e.target.value)}
-            placeholder="dien-thoai"
-          />
-        </div>
-
-        {/* DESCRIPTION */}
-        <div className="space-y-2">
-          <Label>Mô tả</Label>
-          <Input
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Mô tả ngắn..."
-          />
-        </div>
-
-        {/* STATUS */}
-        <div className="space-y-2">
-          <Label>Trạng thái</Label>
-          <Select
-            value={isActive}
-            onValueChange={(v: 'active' | 'inactive') => setIsActive(v)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Chọn trạng thái" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="active">Hiển thị</SelectItem>
-              <SelectItem value="inactive">Ẩn</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* PARENT */}
-        <div className="space-y-2">
-          <Label>Danh mục cha</Label>
-          <Select value={parent} onValueChange={(v) => setParent(v)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Không có" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none">Không có</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* ICON UPLOADER */}
-        <div className="space-y-3">
-          <Label>Icon danh mục (tuỳ chọn)</Label>
-
-          {/* ⭐ Không có max → tự giới hạn bằng logic */}
-          <ImageUploader
-            initial={icon ? [icon] : []}
-            onChange={(imgs) => setIcon(imgs[0] || null)}
-          />
-
-          {icon && (
-            <div className="flex items-center gap-3 mt-2">
-              <img
-                src={icon.url}
-                alt="icon"
-                className="w-10 h-10 object-contain rounded"
-              />
-              <Button variant="outline" size="sm" onClick={() => setIcon(null)}>
-                Xoá icon
-              </Button>
+    <div className="p-6 space-y-6 max-w-5xl mx-auto">
+      <div className="max-w-4xl mx-auto space-y-6">
+        {/* HEADER */}
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-sm text-muted-foreground">
+              Danh mục / Tạo mới
             </div>
-          )}
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-600 via-pink-600 to-purple-600 bg-clip-text text-transparent">
+              Tạo danh mục
+            </h1>
+          </div>
+          <Button onClick={() => mut.mutate()} disabled={mut.isPending}>
+            {mut.isPending ? 'Đang tạo...' : 'Tạo danh mục'}
+          </Button>
         </div>
-      </GlassCard>
+
+        {/* FORM */}
+        <GlassCard className="p-6 space-y-6">
+          {/* NAME */}
+          <div className="space-y-2">
+            <Label>Tên danh mục</Label>
+            <Input
+              value={name}
+              onChange={(e) => handleName(e.target.value)}
+              placeholder="Ví dụ: Điện thoại"
+            />
+          </div>
+
+          {/* SLUG */}
+          <div className="space-y-2">
+            <Label>Slug</Label>
+            <Input
+              value={slug}
+              onChange={(e) => setSlug(e.target.value)}
+              placeholder="dien-thoai"
+            />
+          </div>
+
+          {/* DESCRIPTION */}
+          <div className="space-y-2">
+            <Label>Mô tả</Label>
+            <Input
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Mô tả ngắn..."
+            />
+          </div>
+
+          {/* STATUS */}
+          <div className="space-y-2">
+            <Label>Trạng thái</Label>
+            <Select
+              value={isActive}
+              onValueChange={(v: 'active' | 'inactive') => setIsActive(v)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Chọn trạng thái" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="active">Hiển thị</SelectItem>
+                <SelectItem value="inactive">Ẩn</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* PARENT */}
+          <div className="space-y-2">
+            <Label>Danh mục cha</Label>
+            <Select value={parent} onValueChange={(v) => setParent(v)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Không có" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">Không có</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* ICON UPLOADER */}
+          <div className="space-y-3">
+            <Label>Icon danh mục (tuỳ chọn)</Label>
+
+            {/* ⭐ Không có max → tự giới hạn bằng logic */}
+            <ImageUploader
+              initial={icon ? [icon] : []}
+              onChange={(imgs) => setIcon(imgs[0] || null)}
+            />
+
+            {icon && (
+              <div className="flex items-center gap-3 mt-2">
+                <img
+                  src={icon.url}
+                  alt="icon"
+                  className="w-10 h-10 object-contain rounded"
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIcon(null)}
+                >
+                  Xoá icon
+                </Button>
+              </div>
+            )}
+          </div>
+        </GlassCard>
+      </div>
     </div>
   )
 }

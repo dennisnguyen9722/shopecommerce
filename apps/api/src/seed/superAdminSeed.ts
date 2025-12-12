@@ -40,10 +40,6 @@ export const seedSuperAdmin = async () => {
     } else {
       console.log(`⚠️  Không tìm thấy user với email: ${myEmail}`)
     }
-
-    // 3. Log ra tất cả permissions hiện tại
-    console.log(`📋 Tổng số permissions: ${ALL_PERMISSIONS.length}`)
-    console.log(`📋 Permissions bao gồm:`, ALL_PERMISSIONS)
   } catch (error) {
     console.error('❌ Lỗi khi seed Super Admin:', error)
   }

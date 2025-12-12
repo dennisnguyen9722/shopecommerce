@@ -39,6 +39,12 @@ export const PERMISSIONS = {
   BANNERS: {
     MANAGE: 'banners.manage'
   },
+  BRANDS: {
+    READ: 'brands.read',
+    CREATE: 'brands.create',
+    UPDATE: 'brands.update',
+    DELETE: 'brands.delete'
+  },
   REWARDS: {
     MANAGE: 'rewards.manage'
   },

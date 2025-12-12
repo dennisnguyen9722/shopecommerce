@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { use } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useRouter } from 'next/navigation' // ✅ Import useRouter
 
 import api from '@/src/lib/api'
 import ImageUploader from '@/src/components/admin/ImageUploader'
@@ -26,10 +27,18 @@ import AdjustStockModal from '@/src/components/admin/AdjustStockModal'
 import InventoryLog from '@/src/components/admin/InventoryLog'
 import GlassCard from '@/src/components/admin/GlassCard'
 import Editor from '@/src/components/editor/Editor'
-import VariantManager from '@/src/components/admin/VariantManager' // 👈 Import Mới
-import SpecsManager from '@/src/components/admin/SpecsManager' // 👈 Import Mới
+import VariantManager from '@/src/components/admin/VariantManager'
+import SpecsManager from '@/src/components/admin/SpecsManager'
 
-import { ToggleLeft, ToggleRight, Layers, Settings2 } from 'lucide-react'
+import {
+  ToggleLeft,
+  ToggleRight,
+  Layers,
+  Settings2,
+  Building2
+} from 'lucide-react'
+
+type Brand = { _id: string; name: string; slug: string; logo?: string }
 
 export default function EditProductPage({
   params
@@ -38,6 +47,7 @@ export default function EditProductPage({
 }) {
   const { id } = use(params)
   const queryClient = useQueryClient()
+  const router = useRouter() // ✅ Khởi tạo router
 
   const [openAdjust, setOpenAdjust] = useState(false)
 
@@ -52,7 +62,7 @@ export default function EditProductPage({
     formState: { isSubmitting }
   } = useForm()
 
-  const hasVariants = watch('hasVariants') // Theo dõi state để ẩn hiện UI
+  const hasVariants = watch('hasVariants')
 
   // FETCH PRODUCT
   const { data, isLoading } = useQuery({
@@ -74,6 +84,16 @@ export default function EditProductPage({
 
   const categories = catData ?? []
 
+  // ✅ NEW: FETCH BRANDS
+  const { data: brandsData } = useQuery<Brand[]>({
+    queryKey: ['admin-brands-all'],
+    queryFn: async () => {
+      const res = await api.get('/admin/brands/all')
+      return res.data
+    }
+  })
+  const brands = brandsData ?? []
+
   // RESET FORM WHEN data READY
   useEffect(() => {
     if (!data) return
@@ -83,17 +103,23 @@ export default function EditProductPage({
         ? data.category._id
         : data.category || null
 
+    // ✅ NEW: Extract brand ID
+    const brandId =
+      data.brand && typeof data.brand === 'object'
+        ? data.brand._id
+        : data.brand || null
+
     reset({
       ...data,
       description: data.description || '',
       price: data.price || 0,
       comparePrice: data.comparePrice || 0,
       category: catId || 'none',
+      brand: brandId || 'none',
       stock: data.stock || 0,
       images: data.images || [],
       isFeatured: data.isFeatured || false,
       isPublished: data.isPublished ?? true,
-      // 👇 Dữ liệu mới
       hasVariants: data.hasVariants || false,
       variantGroups: data.variantGroups || [],
       variants: data.variants || [],
@@ -107,7 +133,7 @@ export default function EditProductPage({
       const payload = {
         ...values,
         category: values.category === 'none' ? null : values.category,
-        // Nếu dùng biến thể, tự động tính tổng stock
+        brand: values.brand === 'none' ? null : values.brand,
         stock: values.hasVariants
           ? values.variants.reduce((acc: number, v: any) => acc + v.stock, 0)
           : values.stock
@@ -118,6 +144,12 @@ export default function EditProductPage({
     onSuccess: () => {
       toast.success('Lưu sản phẩm thành công!')
       queryClient.invalidateQueries({ queryKey: ['product', id] })
+      queryClient.invalidateQueries({ queryKey: ['products'] })
+
+      // ✅ Redirect về trang danh sách sau 500ms
+      setTimeout(() => {
+        router.push('/admin/products')
+      }, 500)
     },
     onError: () => toast.error('Lưu thất bại! Vui lòng thử lại.')
   })
@@ -142,6 +174,15 @@ export default function EditProductPage({
         </div>
 
         <div className="flex gap-3">
+          {/* ✅ Nút Hủy quay lại */}
+          <Button
+            variant="outline"
+            onClick={() => router.push('/admin/products')}
+            disabled={mutation.isPending}
+          >
+            Hủy
+          </Button>
+
           <Button variant="outline" onClick={() => setOpenAdjust(true)}>
             Điều chỉnh tồn kho
           </Button>
@@ -172,30 +213,73 @@ export default function EditProductPage({
             <Input {...register('slug')} placeholder="san-pham" />
           </div>
 
-          <div className="space-y-2 max-w-sm">
-            <Label>Danh mục</Label>
-            <Controller
-              control={control}
-              name="category"
-              render={({ field }) => (
-                <Select
-                  value={field.value || 'none'}
-                  onValueChange={(v) => field.onChange(v)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Chọn danh mục" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">Không danh mục</SelectItem>
-                    {categories.map((cat: any) => (
-                      <SelectItem key={cat._id} value={cat._id}>
-                        {cat.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            />
+          {/* ✅ NEW: Grid layout cho Category và Brand */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Danh mục */}
+            <div className="space-y-2">
+              <Label>Danh mục</Label>
+              <Controller
+                control={control}
+                name="category"
+                render={({ field }) => (
+                  <Select
+                    value={field.value || 'none'}
+                    onValueChange={(v) => field.onChange(v)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Chọn danh mục" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">Không danh mục</SelectItem>
+                      {categories.map((cat: any) => (
+                        <SelectItem key={cat._id} value={cat._id}>
+                          {cat.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </div>
+
+            {/* ✅ NEW: Thương hiệu */}
+            <div className="space-y-2">
+              <Label className="flex items-center gap-2">
+                <Building2 className="w-4 h-4 text-orange-500" />
+                Thương hiệu
+              </Label>
+              <Controller
+                control={control}
+                name="brand"
+                render={({ field }) => (
+                  <Select
+                    value={field.value || 'none'}
+                    onValueChange={(v) => field.onChange(v)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Chọn thương hiệu" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">Không có thương hiệu</SelectItem>
+                      {brands.map((brand) => (
+                        <SelectItem key={brand._id} value={brand._id}>
+                          <div className="flex items-center gap-2">
+                            {brand.logo && (
+                              <img
+                                src={brand.logo}
+                                alt={brand.name}
+                                className="w-4 h-4 rounded object-contain"
+                              />
+                            )}
+                            <span>{brand.name}</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </div>
           </div>
 
           <div className="grid grid-cols-2 max-w-md gap-6 pt-4">
@@ -297,7 +381,6 @@ export default function EditProductPage({
           </div>
         </div>
 
-        {/* Chỉ hiện tồn kho tổng nếu KHÔNG dùng variant */}
         {!hasVariants && (
           <div className="space-y-2 mt-6 max-w-xs">
             <Label>Tồn kho hiện tại</Label>
@@ -306,7 +389,7 @@ export default function EditProductPage({
         )}
       </GlassCard>
 
-      {/* 🟢 PHẦN MỚI: QUẢN LÝ BIẾN THỂ (VARIANTS) */}
+      {/* PHẦN MỚI: QUẢN LÝ BIẾN THỂ (VARIANTS) */}
       <GlassCard>
         <div className="border-b border-white/20 pb-4 mb-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -351,11 +434,10 @@ export default function EditProductPage({
           <>
             <Controller
               control={control}
-              name="variants" // Dummy controller để re-render khi variants đổi
+              name="variants"
               render={() => <></>}
             />
             <VariantManager
-              // Kết nối React Hook Form với Component VariantManager
               groups={watch('variantGroups') || []}
               setGroups={(g) => setValue('variantGroups', g)}
               variants={watch('variants') || []}
@@ -370,7 +452,7 @@ export default function EditProductPage({
         )}
       </GlassCard>
 
-      {/* 🟢 PHẦN MỚI: THÔNG SỐ KỸ THUẬT (SPECS) */}
+      {/* PHẦN MỚI: THÔNG SỐ KỸ THUẬT (SPECS) */}
       <GlassCard>
         <div className="border-b border-white/20 pb-4 mb-4 flex items-center gap-2">
           <Settings2 className="text-blue-600" size={20} />

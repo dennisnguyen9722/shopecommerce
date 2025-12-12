@@ -30,7 +30,7 @@ export default function TopProductsTable({ data }: TopProductsTableProps) {
     <div className="space-y-4">
       {data.map((product, index) => (
         <div
-          key={product._id}
+          key={product._id || index}
           className="flex items-center gap-4 p-3 rounded-lg hover:bg-accent/50 transition-colors"
         >
           {/* Rank */}

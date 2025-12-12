@@ -6,6 +6,10 @@ export const PERMISSION_ROUTES = [
     route: '/admin/products'
   },
   {
+    perms: [PERMISSIONS.BRANDS.READ],
+    route: '/admin/brands'
+  },
+  {
     perms: [PERMISSIONS.CATEGORIES.READ],
     route: '/admin/categories'
   },

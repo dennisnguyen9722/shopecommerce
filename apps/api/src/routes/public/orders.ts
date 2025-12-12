@@ -515,19 +515,45 @@ router.get('/', protect, async (req: any, res: Response) => {
   }
 })
 
+// ==================================================
+// 6. GET ORDER DETAIL (Đã Fix lỗi 500 do sai ID)
+// ==================================================
 router.get('/:id', protect, async (req: any, res: Response) => {
   try {
-    const order = await Order.findOne({
-      _id: req.params.id,
-      // Chỉ cho phép xem nếu email khớp với user đang login
-      customerEmail: req.user.email.toLowerCase()
-    })
+    const { id } = req.params
+    const userEmail = req.user.email?.toLowerCase()
 
-    if (!order)
-      return res.status(404).json({ error: 'Không tìm thấy đơn hàng' })
+    // 1. 👇 FIX QUAN TRỌNG: Kiểm tra ID có chuẩn MongoDB không
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      console.log(`❌ Invalid Order ID: ${id}`)
+      return res.status(400).json({ error: 'Mã đơn hàng không hợp lệ' })
+    }
+
+    // 2. Tìm đơn hàng (kết hợp check quyền sở hữu)
+    const order = await Order.findOne({
+      _id: id,
+      $or: [
+        { customerEmail: userEmail }, // Khớp email
+        { customerId: req.user._id }, // Hoặc khớp ID (nếu có lưu)
+        { customerId: req.user.id } // Fallback ID string
+      ]
+    }).lean()
+
+    if (!order) {
+      console.log(
+        `❌ Order not found or Unauthorized. ID: ${id} - User: ${userEmail}`
+      )
+      return res
+        .status(404)
+        .json({ error: 'Không tìm thấy đơn hàng hoặc bạn không có quyền xem' })
+    }
+
     return res.json(order)
-  } catch (err) {
-    return res.status(500).json({ error: 'Server error' })
+  } catch (err: any) {
+    console.error('🔥 GET ORDER DETAIL ERROR:', err)
+    return res
+      .status(500)
+      .json({ error: 'Lỗi server khi xem chi tiết đơn hàng' })
   }
 })
 

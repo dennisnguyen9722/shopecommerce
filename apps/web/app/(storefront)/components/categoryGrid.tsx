@@ -135,16 +135,33 @@ export default function CategoryGrid({
   const safeProducts = products || []
   const safeCategories = categories || []
 
+  // 🔥 GIỚI HẠN MỖI CATEGORY CHỈ 10 SẢN PHẨM
+  const LIMIT_PER_CATEGORY = 10
+
   const filteredProducts =
     selectedCategory === 'all'
-      ? safeProducts
+      ? safeProducts.slice(0, LIMIT_PER_CATEGORY) // Limit cho "all"
+      : safeProducts
+          .filter((p) => {
+            const slug =
+              typeof p.category === 'object'
+                ? p.category?.slug
+                : safeCategories.find((c) => c._id === p.category)?.slug
+            return slug === selectedCategory
+          })
+          .slice(0, LIMIT_PER_CATEGORY) // Limit cho mỗi category
+
+  // Đếm tổng số products trong category (trước khi limit)
+  const totalInCategory =
+    selectedCategory === 'all'
+      ? safeProducts.length
       : safeProducts.filter((p) => {
           const slug =
             typeof p.category === 'object'
               ? p.category?.slug
               : safeCategories.find((c) => c._id === p.category)?.slug
           return slug === selectedCategory
-        })
+        }).length
 
   return (
     <section className="w-full py-16 relative overflow-hidden">
@@ -205,19 +222,24 @@ export default function CategoryGrid({
           </div>
         </div>
 
-        {/* HEADER - ĐƠN GIẢN HƠN */}
+        {/* HEADER - HIỂN THỊ SỐ LƯỢNG */}
         <div className="flex items-center justify-between pt-4">
           <h3 className="text-xl font-bold text-gray-900">
             {selectedCategory === 'all'
               ? 'Tất cả sản phẩm'
               : safeCategories.find((c) => c.slug === selectedCategory)?.name}
           </h3>
-          <span className="text-sm text-gray-500 font-medium">
-            {filteredProducts.length} sản phẩm
-          </span>
+          <div className="text-sm text-gray-500 font-medium">
+            {filteredProducts.length} / {totalInCategory} sản phẩm
+            {totalInCategory > LIMIT_PER_CATEGORY && (
+              <span className="ml-2 text-orange-600">
+                (Hiển thị {LIMIT_PER_CATEGORY} đầu tiên)
+              </span>
+            )}
+          </div>
         </div>
 
-        {/* PRODUCTS GRID - DÙNG PRODUCTCARD */}
+        {/* PRODUCTS GRID */}
         {filteredProducts.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-gray-200">
             <div className="text-6xl mb-4">📦</div>
@@ -226,74 +248,100 @@ export default function CategoryGrid({
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
-            {filteredProducts.map((p) => {
-              const img = getProductImage(p)
-              const { finalPct, hasDiscount, isNew, isHot } =
-                computeBadgeInfo(p)
-              const price = toNumber(p.price)
+          <>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+              {filteredProducts.map((p) => {
+                const img = getProductImage(p)
+                const { finalPct, hasDiscount, isNew, isHot } =
+                  computeBadgeInfo(p)
+                const price = toNumber(p.price)
 
-              return (
+                return (
+                  <Link
+                    key={p._id}
+                    href={`/products/${p.slug}`}
+                    className="
+                      group relative rounded-3xl overflow-hidden
+                      bg-white border border-gray-200
+                      hover:shadow-xl hover:border-orange-300
+                      transition-all duration-300 hover:-translate-y-1
+                      p-4 block
+                    "
+                  >
+                    {/* BADGES ĐỨNG DỌC */}
+                    <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
+                      {finalPct > 0 && (
+                        <div className="px-2.5 py-1 text-xs font-black rounded-full bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-md">
+                          -{finalPct}%
+                        </div>
+                      )}
+                      {isNew && (
+                        <div className="px-2.5 py-1 text-xs font-black rounded-full bg-gradient-to-r from-emerald-400 to-cyan-500 text-white shadow-md">
+                          ✨ NEW
+                        </div>
+                      )}
+                      {!finalPct && !isNew && isHot && (
+                        <div className="px-2.5 py-1 text-xs font-black rounded-full bg-gradient-to-r from-yellow-400 to-red-500 text-white shadow-md">
+                          🔥 HOT
+                        </div>
+                      )}
+                    </div>
+
+                    {/* HÌNH ẢNH */}
+                    <div className="relative w-full aspect-square rounded-2xl overflow-hidden mb-3">
+                      {img ? (
+                        <Image
+                          src={img}
+                          fill
+                          alt={p.name}
+                          className="object-contain p-3 group-hover:scale-110 transition-transform duration-300"
+                          unoptimized
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-300">
+                          <Smartphone className="w-12 h-12" />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* TÊN SẢN PHẨM */}
+                    <h3 className="font-semibold text-gray-800 text-sm mb-2 line-clamp-2 min-h-[2.5rem] group-hover:text-orange-600 transition-colors">
+                      {p.name}
+                    </h3>
+
+                    {/* GIÁ */}
+                    <p className="text-lg font-black text-orange-600">
+                      {price ? price.toLocaleString('vi-VN') + '₫' : '-'}
+                    </p>
+                  </Link>
+                )
+              })}
+            </div>
+
+            {/* VIEW MORE BUTTON */}
+            {totalInCategory > LIMIT_PER_CATEGORY && (
+              <div className="flex justify-center pt-6">
                 <Link
-                  key={p._id}
-                  href={`/products/${p.slug}`}
+                  href={
+                    selectedCategory === 'all'
+                      ? '/products'
+                      : `/category/${selectedCategory}`
+                  }
                   className="
-                    group relative rounded-3xl overflow-hidden
-                    bg-white border border-gray-200
-                    hover:shadow-xl hover:border-orange-300
-                    transition-all duration-300 hover:-translate-y-1
-                    p-4 block
+                    px-8 py-3 rounded-full 
+                    bg-gradient-to-r from-orange-500 to-pink-500 
+                    text-white font-bold text-sm
+                    hover:shadow-lg hover:scale-105
+                    transition-all duration-300
+                    flex items-center gap-2
                   "
                 >
-                  {/* BADGES ĐỨNG DỌC */}
-                  <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
-                    {finalPct > 0 && (
-                      <div className="px-2.5 py-1 text-xs font-black rounded-full bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-md">
-                        -{finalPct}%
-                      </div>
-                    )}
-                    {isNew && (
-                      <div className="px-2.5 py-1 text-xs font-black rounded-full bg-gradient-to-r from-emerald-400 to-cyan-500 text-white shadow-md">
-                        ✨ NEW
-                      </div>
-                    )}
-                    {!finalPct && !isNew && isHot && (
-                      <div className="px-2.5 py-1 text-xs font-black rounded-full bg-gradient-to-r from-yellow-400 to-red-500 text-white shadow-md">
-                        🔥 HOT
-                      </div>
-                    )}
-                  </div>
-
-                  {/* HÌNH ẢNH */}
-                  <div className="relative w-full aspect-square rounded-2xl overflow-hidden mb-3">
-                    {img ? (
-                      <Image
-                        src={img}
-                        fill
-                        alt={p.name}
-                        className="object-contain p-3 group-hover:scale-110 transition-transform duration-300"
-                        unoptimized
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-gray-300">
-                        <Smartphone className="w-12 h-12" />
-                      </div>
-                    )}
-                  </div>
-
-                  {/* TÊN SẢN PHẨM */}
-                  <h3 className="font-semibold text-gray-800 text-sm mb-2 line-clamp-2 min-h-[2.5rem] group-hover:text-orange-600 transition-colors">
-                    {p.name}
-                  </h3>
-
-                  {/* GIÁ */}
-                  <p className="text-lg font-black text-orange-600">
-                    {price ? price.toLocaleString('vi-VN') + '₫' : '-'}
-                  </p>
+                  Xem thêm {totalInCategory - LIMIT_PER_CATEGORY} sản phẩm
+                  <span className="text-lg">→</span>
                 </Link>
-              )
-            })}
-          </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </section>
