@@ -203,6 +203,48 @@ router.get('/', async (req: Request, res: Response) => {
   }
 })
 
+// ======================================================
+// 7. GET RELATED PRODUCTS (RECOMMENDATION)
+// ======================================================
+router.get('/related', async (req: Request, res: Response) => {
+  try {
+    const { currentProductId, categoryId } = req.query
+    const limit = Number(req.query.limit) || 4
+
+    // Validate input cơ bản
+    if (!currentProductId || !categoryId) {
+      return res
+        .status(400)
+        .json({ error: 'Missing currentProductId or categoryId' })
+    }
+
+    // Logic Content-based:
+    // 1. Cùng Category
+    // 2. Không phải sản phẩm hiện tại ($ne: Not Equal)
+    // 3. Chỉ lấy sản phẩm Đang Published
+    const query = {
+      category: categoryId,
+      _id: { $ne: currentProductId },
+      $or: [{ isPublished: true }, { isPublished: { $exists: false } }]
+    }
+
+    const products = await Product.find(query)
+      .populate('category', 'name slug _id')
+      .populate('brand', 'name slug logo')
+      // Sắp xếp thông minh hơn một chút:
+      // Ưu tiên sản phẩm nổi bật (isFeatured) -> Bán chạy (sold) -> Mới nhất (createdAt)
+      .sort({ isFeatured: -1, sold: -1, createdAt: -1 })
+      .limit(limit)
+      .select(PRODUCT_FIELDS) // Dùng lại hằng số field bạn đã định nghĩa
+      .lean()
+
+    res.json(products)
+  } catch (err) {
+    console.error('❌ [GET /public/products/related] ERROR:', err)
+    res.status(500).json({ error: 'Server error' })
+  }
+})
+
 // 6. GET PRODUCT DETAIL
 router.get('/:slug', async (req: Request, res: Response) => {
   try {

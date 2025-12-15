@@ -43,22 +43,53 @@ api.interceptors.request.use((config) => {
   return config
 })
 
-// Response Interceptor: Xử lý khi token hết hạn (401)
+// Response Interceptor: Xử lý khi token hết hạn (401) hoặc bị cấm (403)
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Nếu lỗi 401 (Unauthorized)
-    if (error.response?.status === 401) {
-      const isUrlAdmin =
-        typeof window !== 'undefined' &&
-        window.location.pathname.startsWith('/admin')
+    // Bắt cả lỗi 401 (Hết hạn) và 403 (Không có quyền)
+    if (error.response?.status === 401 || error.response?.status === 403) {
+      // Kiểm tra xem code có đang chạy ở trình duyệt không
+      if (typeof window !== 'undefined') {
+        const pathname = window.location.pathname
 
-      if (isUrlAdmin) {
-        // Đang ở trang Admin -> Logout Admin
-        useAdminAuthStore.getState().logoutAdmin()
-      } else {
-        // Đang ở trang Khách -> Logout Khách
-        useAuthStore.getState().logout()
+        // Logic kiểm tra xem đang ở trang Admin hay trang User
+        const isUrlAdmin = pathname.startsWith('/admin')
+
+        if (isUrlAdmin) {
+          // ==============================
+          // 🛡️ XỬ LÝ CHO ADMIN
+          // ==============================
+          // Chỉ redirect nếu chưa ở trang login admin (tránh lặp vô tận)
+          if (!pathname.includes('/admin/login')) {
+            console.log(
+              '🚨 Admin Token hết hạn - Đang Redirect về Login Admin...'
+            )
+
+            // 1. Logout xóa state
+            useAdminAuthStore.getState().logoutAdmin()
+
+            // 2. Đá về trang Login Admin (Kèm link redirect để quay lại sau khi login)
+            window.location.href = `/admin/login?redirect=${encodeURIComponent(
+              pathname
+            )}`
+          }
+        } else {
+          // ==============================
+          // 👤 XỬ LÝ CHO KHÁCH HÀNG
+          // ==============================
+          if (!pathname.includes('/login')) {
+            console.log('🚨 User Token hết hạn - Đang Redirect về Login...')
+
+            // 1. Logout xóa state user
+            useAuthStore.getState().logout()
+
+            // 2. Đá về trang Login User
+            window.location.href = `/login?redirect=${encodeURIComponent(
+              pathname
+            )}`
+          }
+        }
       }
     }
     return Promise.reject(error)

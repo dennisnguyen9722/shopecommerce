@@ -5,7 +5,6 @@ import { useEffect, useState, use, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import serverApi from '@/src/lib/serverApi'
 import Image from 'next/image'
-import ProductCard from '@/app/(storefront)/components/productCard'
 import {
   ShoppingCart,
   Zap,
@@ -21,7 +20,7 @@ import {
   Award,
   Package,
   X,
-  MessageSquare // 👈 Import icon cho tab Review
+  MessageSquare
 } from 'lucide-react'
 import { useCart } from '@/app/contexts/CartContext'
 import { useToast } from '@/app/(storefront)/components/ToastProvider'
@@ -31,6 +30,9 @@ import ProductSpecs from './components/ProductSpecs'
 import { toast } from 'sonner'
 import ReviewSection from '@/src/components/store/ReviewSection'
 import Link from 'next/link'
+
+// 👇 IMPORT MỚI
+import RelatedProducts from './components/RelatedProducts'
 
 type Product = {
   _id: string
@@ -61,7 +63,6 @@ export default function ProductDetailPage({
 }) {
   const { slug } = use(params)
   const [product, setProduct] = useState<Product | null>(null)
-  const [related, setRelated] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
 
   const [activeVariant, setActiveVariant] = useState<any>(null)
@@ -77,23 +78,22 @@ export default function ProductDetailPage({
   const { showToast } = useToast()
   const router = useRouter()
 
+  // --- LOGIC REALTIME STOCK ---
   useRealtimeStock({
     productId: product?._id || '',
     activeVariantId: activeVariant?._id,
-    enabled: !!product, // Chỉ enable khi đã load xong product
+    enabled: !!product,
     onStockUpdate: (data) => {
       console.log('🔄 [UI] Updating stock:', data)
 
       setProduct((prev) => {
         if (!prev) return prev
 
-        // ⭐ UPDATE VARIANT STOCK
         if (data.type === 'variant' && data.variantId) {
           const updatedVariants = prev.variants?.map((v: any) =>
             v._id === data.variantId ? { ...v, stock: data.newStock } : v
           )
 
-          // Nếu đang xem variant này, cập nhật activeVariant
           if (activeVariant && activeVariant._id === data.variantId) {
             setActiveVariant((prevVariant: any) => ({
               ...prevVariant,
@@ -107,7 +107,6 @@ export default function ProductDetailPage({
           }
         }
 
-        // ⭐ UPDATE PRODUCT STOCK
         if (data.type === 'product') {
           return {
             ...prev,
@@ -118,13 +117,13 @@ export default function ProductDetailPage({
         return prev
       })
 
-      // ⭐ OPTIONAL: Hiển thị toast thông báo
       if (data.newStock === 0) {
         toast.error('Sản phẩm vừa hết hàng!')
       }
     }
   })
 
+  // --- FETCH PRODUCT DETAIL ---
   useEffect(() => {
     let mounted = true
     setLoading(true)
@@ -133,22 +132,7 @@ export default function ProductDetailPage({
         const { data: p } = await serverApi.get(`/public/products/${slug}`)
         if (!mounted) return
         setProduct(p)
-
-        if (p?.category?._id) {
-          const { data: rel } = await serverApi.get('/public/products', {
-            params: {
-              category: p.category._id,
-              limit: 4,
-              sort: 'newest'
-            }
-          })
-          const filtered = (rel || []).filter(
-            (x: Product) => x._id !== p._id && (x.isPublished ?? true)
-          )
-          setRelated(filtered)
-        } else {
-          setRelated([])
-        }
+        // ✅ ĐÃ XÓA logic fetch related cũ ở đây cho code gọn gàng
       } catch (err) {
         console.error('Product fetch error', err)
       } finally {
@@ -161,6 +145,7 @@ export default function ProductDetailPage({
     }
   }, [slug])
 
+  // --- HANDLE VARIANT IMAGE CHANGE ---
   useEffect(() => {
     if (activeVariant && activeVariant.image) {
       const foundIndex = product?.images?.findIndex(
@@ -178,6 +163,7 @@ export default function ProductDetailPage({
     }
   }, [activeVariant, product])
 
+  // --- MEMO VARIANTS ---
   const derivedGroups = useMemo(() => {
     if (!product?.variants || product.variants.length === 0) return []
     if (product.variantGroups && product.variantGroups.length > 0) {
@@ -198,26 +184,28 @@ export default function ProductDetailPage({
     }))
   }, [product])
 
+  // --- LOADING / NOT FOUND UI ---
   if (loading)
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white!">
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-500! font-medium">Đang tải...</p>
+          <p className="text-gray-500 font-medium">Đang tải...</p>
         </div>
       </div>
     )
 
   if (!product)
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white!">
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          <Package className="w-20 h-20 text-gray-300! mx-auto mb-4" />
-          <p className="text-gray-500! text-lg">Không tìm thấy sản phẩm</p>
+          <Package className="w-20 h-20 text-gray-300 mx-auto mb-4" />
+          <p className="text-gray-500 text-lg">Không tìm thấy sản phẩm</p>
         </div>
       </div>
     )
 
+  // --- DISPLAY LOGIC ---
   const displayPrice = activeVariant ? activeVariant.price : product.price
   const displayStock = activeVariant ? activeVariant.stock : product.stock || 0
 
@@ -253,7 +241,6 @@ export default function ProductDetailPage({
       return
     }
 
-    // ⭐ BUILD CART ITEM VỚI ĐẦY ĐỦ THÔNG TIN VARIANT
     const cartItem: any = {
       _id: product._id,
       name: product.name,
@@ -263,40 +250,33 @@ export default function ProductDetailPage({
       image: currentDisplayImage
     }
 
-    // ⭐ NẾU CÓ VARIANT - THÊM ĐẦY ĐỦ THÔNG TIN
     if (activeVariant) {
       cartItem.variantId = activeVariant._id
       cartItem.sku = activeVariant.sku
       cartItem.variantName = Object.values(activeVariant.options || {}).join(
         ' / '
       )
-
-      // Lấy thông tin màu sắc và size từ options
       const options = activeVariant.options || {}
       cartItem.color =
         options['Màu sắc'] || options['Color'] || options['Màu'] || null
       cartItem.size =
         options['Kích thước'] || options['Size'] || options['Kích cỡ'] || null
-
-      // Lưu toàn bộ options
       cartItem.variantOptions = options
     }
-
-    console.log('🛒 Adding to cart:', cartItem)
 
     addToCart(cartItem)
     showToast(product.name, currentDisplayImage)
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50! to-white!">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <div className="container mx-auto px-4 max-w-7xl py-8">
         {/* Main Product Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
           {/* LEFT: Image Gallery */}
           <div className="space-y-4">
             <div className="relative group">
-              <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-white! border-2 border-gray-100! shadow-xl p-4">
+              <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-white border-2 border-gray-100 shadow-xl p-4">
                 <div className="w-full h-full relative">
                   <Image
                     src={currentDisplayImage}
@@ -311,10 +291,10 @@ export default function ProductDetailPage({
               <div className="absolute top-4 left-4 flex flex-col gap-2">
                 {showComparePrice && (
                   <>
-                    <span className="bg-red-500! text-white! text-xs font-bold px-3 py-1.5 rounded-full shadow-lg animate-pulse">
+                    <span className="bg-red-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg animate-pulse">
                       -{savingsPercent}%
                     </span>
-                    <span className="bg-gradient-to-r from-orange-500 to-red-500 text-white! text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
+                    <span className="bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
                       HOT
                     </span>
                   </>
@@ -326,15 +306,15 @@ export default function ProductDetailPage({
                   onClick={() => setIsLiked(!isLiked)}
                   className={`w-10 h-10 rounded-full backdrop-blur-md shadow-lg flex items-center justify-center transition-all ${
                     isLiked
-                      ? 'bg-red-500! text-white! scale-110'
-                      : 'bg-white!/90 text-gray-600! hover:bg-white!'
+                      ? 'bg-red-500 text-white scale-110'
+                      : 'bg-white/90 text-gray-600 hover:bg-white'
                   }`}
                 >
                   <Heart
                     className={`w-5 h-5 ${isLiked ? 'fill-current' : ''}`}
                   />
                 </button>
-                <button className="w-10 h-10 rounded-full bg-white!/90 backdrop-blur-md shadow-lg flex items-center justify-center hover:bg-white! transition-all text-gray-600!">
+                <button className="w-10 h-10 rounded-full bg-white/90 backdrop-blur-md shadow-lg flex items-center justify-center hover:bg-white transition-all text-gray-600">
                   <Share2 className="w-5 h-5" />
                 </button>
               </div>
@@ -351,8 +331,8 @@ export default function ProductDetailPage({
                     }}
                     className={`aspect-square rounded-xl overflow-hidden border-2 transition-all ${
                       selectedImage === idx && !variantImageOverride
-                        ? 'border-orange-500! shadow-lg scale-105'
-                        : 'border-gray-200! hover:border-orange-300!'
+                        ? 'border-orange-500 shadow-lg scale-105'
+                        : 'border-gray-200 hover:border-orange-300'
                     }`}
                   >
                     <Image
@@ -372,32 +352,32 @@ export default function ProductDetailPage({
                 {
                   icon: Award,
                   text: 'Chính hãng 100%',
-                  color: 'text-blue-600!'
+                  color: 'text-blue-600'
                 },
                 {
                   icon: ShieldCheck,
                   text: 'Bảo hành hãng',
-                  color: 'text-green-600!'
+                  color: 'text-green-600'
                 },
                 {
                   icon: Truck,
                   text: 'Giao toàn quốc',
-                  color: 'text-orange-600!'
+                  color: 'text-orange-600'
                 },
                 {
                   icon: RotateCcw,
                   text: 'Đổi trả 7 ngày',
-                  color: 'text-purple-600!'
+                  color: 'text-purple-600'
                 }
               ].map((badge, i) => (
                 <div
                   key={i}
-                  className="bg-white! rounded-xl p-2 border border-gray-100! shadow-sm hover:shadow-md transition-all group flex flex-col items-center text-center justify-center"
+                  className="bg-white rounded-xl p-2 border border-gray-100 shadow-sm hover:shadow-md transition-all group flex flex-col items-center text-center justify-center"
                 >
                   <badge.icon
                     className={`w-5 h-5 ${badge.color} mb-1 group-hover:scale-110 transition-transform`}
                   />
-                  <p className="text-[10px] sm:text-xs text-gray-600! font-medium leading-tight">
+                  <p className="text-[10px] sm:text-xs text-gray-600 font-medium leading-tight">
                     {badge.text}
                   </p>
                 </div>
@@ -409,11 +389,9 @@ export default function ProductDetailPage({
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                {/* HIỂN THỊ BRAND */}
                 {product.brand && typeof product.brand === 'object' ? (
                   <Link href={`/brand/${product.brand.slug}`} className="group">
                     {product.brand.logo ? (
-                      // Nếu có Logo -> Hiển thị ảnh
                       <div className="h-8 w-auto relative">
                         <Image
                           src={product.brand.logo}
@@ -424,7 +402,6 @@ export default function ProductDetailPage({
                         />
                       </div>
                     ) : (
-                      // Nếu không có Logo -> Hiển thị Badge Tên
                       <span className="bg-gray-100 text-gray-800 text-xs px-3 py-1.5 rounded-full font-bold uppercase tracking-wide hover:bg-gray-200 transition-colors">
                         {product.brand.name}
                       </span>
@@ -432,7 +409,6 @@ export default function ProductDetailPage({
                   </Link>
                 ) : (
                   product.brand && (
-                    // Fallback nếu brand là string (chưa populate hoặc data cũ)
                     <span className="bg-gray-100 text-gray-800 text-xs px-3 py-1.5 rounded-full font-bold uppercase tracking-wide">
                       {String(product.brand)}
                     </span>
@@ -442,50 +418,50 @@ export default function ProductDetailPage({
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
-                      className="w-4 h-4 fill-yellow-400! text-yellow-400!"
+                      className="w-4 h-4 fill-yellow-400 text-yellow-400"
                     />
                   ))}
                 </div>
               </div>
-              <span className="text-xs text-gray-500!">
+              <span className="text-xs text-gray-500">
                 SKU: {activeVariant?.sku || 'DEFAULT'}
               </span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900! leading-tight">
+            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight">
               {product.name}
             </h1>
 
-            <div className="bg-gradient-to-br from-orange-50! to-red-50! rounded-2xl p-6 border-2 border-orange-200! shadow-lg">
+            <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-2xl p-6 border-2 border-orange-200 shadow-lg">
               <div className="flex items-end gap-4 mb-3">
                 <div className="flex-1">
-                  <p className="text-sm text-gray-600! mb-1">Giá bán</p>
+                  <p className="text-sm text-gray-600 mb-1">Giá bán</p>
                   <div className="flex items-baseline gap-3">
-                    <span className="text-4xl font-bold text-orange-600!">
+                    <span className="text-4xl font-bold text-orange-600">
                       {displayPrice.toLocaleString('vi-VN')}₫
                     </span>
                     {showComparePrice && (
-                      <span className="text-xl text-gray-400! line-through">
+                      <span className="text-xl text-gray-400 line-through">
                         {product.comparePrice?.toLocaleString('vi-VN')}₫
                       </span>
                     )}
                   </div>
                 </div>
                 {showComparePrice && (
-                  <div className="bg-red-500! text-white! px-4 py-2 rounded-xl font-bold text-lg shadow-md">
+                  <div className="bg-red-500 text-white px-4 py-2 rounded-xl font-bold text-lg shadow-md">
                     -{savingsPercent}%
                   </div>
                 )}
               </div>
               <div className="flex items-center gap-2 text-sm flex-wrap">
                 {showComparePrice && (
-                  <div className="bg-green-100! text-green-700! px-3 py-1 rounded-full font-medium">
+                  <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full font-medium">
                     Tiết kiệm {savings.toLocaleString('vi-VN')}₫
                   </div>
                 )}
                 <div
                   className={`font-medium ${
-                    isOutOfStock ? 'text-red-500!' : 'text-green-600!'
+                    isOutOfStock ? 'text-red-500' : 'text-green-600'
                   }`}
                 >
                   {isOutOfStock
@@ -498,7 +474,7 @@ export default function ProductDetailPage({
             {product.variants &&
               product.variants.length > 0 &&
               derivedGroups.length > 0 && (
-                <div className="bg-white! rounded-xl p-4 border border-gray-200! shadow-sm">
+                <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
                   <ProductVariantSelector
                     groups={derivedGroups}
                     variants={product.variants}
@@ -516,8 +492,8 @@ export default function ProductDetailPage({
                   flex items-center justify-center gap-2 transition-all duration-300
                   ${
                     isOutOfStock
-                      ? 'bg-gray-300! text-gray-500! cursor-not-allowed'
-                      : 'bg-gradient-to-r from-orange-500 to-red-600 text-white! hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98]'
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      : 'bg-gradient-to-r from-orange-500 to-red-600 text-white hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98]'
                   }
                 `}
               >
@@ -531,8 +507,8 @@ export default function ProductDetailPage({
                   flex items-center justify-center gap-2 transition-all duration-300
                   ${
                     isOutOfStock
-                      ? 'bg-gray-200! text-gray-400! cursor-not-allowed'
-                      : 'bg-gray-900! text-white! hover:bg-black! hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98]'
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                      : 'bg-gray-900 text-white hover:bg-black hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98]'
                   }
                 `}
               >
@@ -541,16 +517,16 @@ export default function ProductDetailPage({
               </button>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 text-sm bg-white! rounded-xl p-4 border border-gray-100! shadow-sm">
-              <div className="flex items-center gap-2 text-gray-600!">
-                <div className="w-8 h-8 rounded-full bg-green-100! flex items-center justify-center flex-shrink-0">
-                  <Check className="w-5 h-5 text-green-600!" />
+            <div className="grid grid-cols-2 gap-3 text-sm bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+              <div className="flex items-center gap-2 text-gray-600">
+                <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                  <Check className="w-5 h-5 text-green-600" />
                 </div>
                 <span>Được kiểm tra hàng</span>
               </div>
-              <div className="flex items-center gap-2 text-gray-600!">
-                <div className="w-8 h-8 rounded-full bg-blue-100! flex items-center justify-center flex-shrink-0">
-                  <ShieldCheck className="w-5 h-5 text-blue-600!" />
+              <div className="flex items-center gap-2 text-gray-600">
+                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                  <ShieldCheck className="w-5 h-5 text-blue-600" />
                 </div>
                 <span>Hỗ trợ trả góp 0%</span>
               </div>
@@ -559,13 +535,12 @@ export default function ProductDetailPage({
         </div>
 
         {/* TABS SECTION */}
-        <div className="bg-white! rounded-2xl shadow-lg border border-gray-100! overflow-hidden mb-12">
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-12">
           {/* Tab Headers */}
-          <div className="flex border-b border-gray-200!">
+          <div className="flex border-b border-gray-200">
             {[
               { id: 'description', label: 'Mô tả sản phẩm', icon: FileText },
               { id: 'specs', label: 'Thông số kỹ thuật', icon: Cpu },
-              // 👇 THÊM TAB REVIEW
               {
                 id: 'reviews',
                 label: 'Đánh giá & Nhận xét',
@@ -577,8 +552,8 @@ export default function ProductDetailPage({
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex-1 py-4 px-6 font-medium text-sm transition-all flex items-center justify-center gap-2 ${
                   activeTab === tab.id
-                    ? 'text-orange-600! border-b-2 border-orange-600! bg-orange-50!'
-                    : 'text-gray-600! hover:text-gray-900! hover:bg-gray-50!'
+                    ? 'text-orange-600 border-b-2 border-orange-600 bg-orange-50'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                 }`}
               >
                 <tab.icon className="w-5 h-5" />
@@ -592,11 +567,11 @@ export default function ProductDetailPage({
             {activeTab === 'description' && (
               <div className="prose max-w-none">
                 <div
-                  className="text-gray-700! leading-relaxed"
+                  className="text-gray-700 leading-relaxed"
                   dangerouslySetInnerHTML={{
                     __html:
                       product.description ||
-                      '<p class="text-gray-400! italic">Đang cập nhật...</p>'
+                      '<p class="text-gray-400 italic">Đang cập nhật...</p>'
                   }}
                 />
               </div>
@@ -607,48 +582,36 @@ export default function ProductDetailPage({
                 {product.specs && product.specs.length > 0 ? (
                   <ProductSpecs specs={product.specs} />
                 ) : (
-                  <p className="text-gray-400! italic text-center py-12">
+                  <p className="text-gray-400 italic text-center py-12">
                     Chưa có thông số chi tiết.
                   </p>
                 )}
               </div>
             )}
 
-            {/* ⭐ THÊM TAB REVIEW TẠI ĐÂY */}
             {activeTab === 'reviews' && (
               <ReviewSection productId={product._id} />
             )}
           </div>
         </div>
 
-        {/* Related Products */}
-        {related.length > 0 && (
-          <section className="mt-16">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-900! mb-2">
-                Sản phẩm liên quan
-              </h2>
-              <p className="text-gray-600!">
-                Khám phá thêm các sản phẩm tương tự
-              </p>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-              {related.map((r) => (
-                <ProductCard key={r._id} product={r as any} />
-              ))}
-            </div>
-          </section>
+        {/* ⭐ NEW: RELATED PRODUCTS MODULE */}
+        {product.category && (
+          <RelatedProducts
+            categoryId={product.category._id}
+            currentProductId={product._id}
+          />
         )}
       </div>
 
       {/* Lightbox */}
       {lightboxOpen && (
-        <div className="fixed inset-0 bg-black!/95 z-[9999] flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/95 z-[9999] flex items-center justify-center p-4">
           <button
             onClick={() => setLightboxOpen(false)}
-            className="absolute top-4 right-4 w-12 h-12 rounded-full bg-white!/10 backdrop-blur-md flex items-center justify-center hover:bg-white!/20 transition-colors z-[10000]"
+            className="absolute top-4 right-4 w-12 h-12 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center hover:bg-white/20 transition-colors z-[10000]"
           >
-            <X className="w-6 h-6 text-white!" />
+            <X className="w-6 h-6 text-white" />
           </button>
           <div className="relative max-w-6xl max-h-[90vh] w-full flex items-center justify-center">
             <Image
