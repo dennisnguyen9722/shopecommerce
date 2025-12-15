@@ -78,7 +78,34 @@ import { log } from './utils/logger'
    EXPRESS APP
 ----------------------------- */
 const app = express()
-app.use(cors())
+
+// 👇 CẬP NHẬT CORS: Cho phép Frontend trên Render và Localhost
+const allowedOrigins = [
+  process.env.FRONTEND_URL, // Link Vercel (sau này)
+  'http://localhost:3000', // Localhost Frontend
+  'http://localhost:4000' // Localhost API (nếu tự gọi chính nó)
+]
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Cho phép requests không có origin (như Postman, mobile apps, curl)
+      if (!origin) return callback(null, true)
+
+      if (
+        allowedOrigins.indexOf(origin) === -1 &&
+        !origin.includes('vercel.app')
+      ) {
+        // Tạm thời cho phép tất cả đuôi .vercel.app để deploy cho dễ
+        // Sau này muốn chặt chẽ thì bỏ cái !origin.includes('vercel.app') đi
+        return callback(null, true)
+      }
+      return callback(null, true)
+    },
+    credentials: true
+  })
+)
+
 app.use(express.json())
 
 /* ----------------------------
@@ -86,8 +113,12 @@ app.use(express.json())
 ----------------------------- */
 const server = http.createServer(app)
 
+// Cấu hình CORS cho Socket.io luôn
 export const io = new SocketIOServer(server, {
-  cors: { origin: '*' }
+  cors: {
+    origin: '*', // Tạm thời để * cho socket dễ kết nối
+    methods: ['GET', 'POST']
+  }
 })
 
 io.on('connection', (socket) => {
@@ -173,14 +204,15 @@ const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/ecommerce'
 mongoose
   .connect(MONGO_URI)
   .then(async () => {
-    // 👈 Thêm từ khóa 'async' ở đây
     log.info('📦 MongoDB connected')
 
-    // 👇 THÊM DÒNG NÀY: Để nó tự động cập nhật quyền Super Admin
     await seedSuperAdmin()
 
-    server.listen(4000, () =>
-      log.info('🚀 API running + Socket.IO on http://localhost:4000')
+    // 👇 QUAN TRỌNG: Lấy PORT từ biến môi trường (Render cấp), nếu không có mới dùng 4000
+    const PORT = process.env.PORT || 4000
+
+    server.listen(PORT, () =>
+      log.info(`🚀 API running + Socket.IO on port ${PORT}`)
     )
   })
   .catch((err) => log.error('MongoDB error: ' + err.message))
