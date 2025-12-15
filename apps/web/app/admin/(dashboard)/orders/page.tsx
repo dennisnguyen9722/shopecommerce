@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react' // 👈 1. Thêm Suspense
 import { useQuery } from '@tanstack/react-query'
 import { useSearchParams, useRouter } from 'next/navigation'
 import api from '@/src/lib/api'
@@ -15,7 +15,7 @@ import {
   TableRow
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
-import { Eye, Search, Filter } from 'lucide-react'
+import { Eye, Search, Filter, Loader2 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import {
   Select,
@@ -75,7 +75,8 @@ const getStatusLabel = (status: string) => {
   return labels[status] || status
 }
 
-export default function OrdersPage() {
+// 👇 2. ĐỔI TÊN component chính thành OrdersContent (Bỏ export default)
+function OrdersContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -161,7 +162,12 @@ export default function OrdersPage() {
   })
 
   if (isLoading)
-    return <div className="p-6">Đang tải danh sách đơn hàng...</div>
+    return (
+      <div className="flex h-64 w-full items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-orange-500" />
+        <span className="ml-2 text-gray-500">Đang tải danh sách...</span>
+      </div>
+    )
   if (isError)
     return <div className="p-6 text-red-600">Lỗi tải danh sách đơn hàng.</div>
 
@@ -435,5 +441,20 @@ export default function OrdersPage() {
         onClose={handleCloseDialog}
       />
     </div>
+  )
+}
+
+// 👇 3. COMPONENT WRAPPER MỚI (Dùng Suspense để fix lỗi build Next.js)
+export default function OrdersPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex h-screen w-full items-center justify-center">
+          <Loader2 className="h-10 w-10 animate-spin text-orange-500" />
+        </div>
+      }
+    >
+      <OrdersContent />
+    </Suspense>
   )
 }
